@@ -1,0 +1,22 @@
+{
+  "name": "dekinai.moe",
+  "version": "1.0.0",
+  "description": "Minimalistic File Storage Server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "dekinai",
+    "dekinai.moe"
+  ],
+  "author": "Johann Rekowski <johann.rekowski@googlemail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "^2.2.0"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.0.39",
+    "typescript": "^2.4.0-dev.20170512"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "es7",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "downlevelIteration": true,
+    "sourceMap": true,
+
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "es7",
+      "scripthost"
+    ]
+  }
+}
