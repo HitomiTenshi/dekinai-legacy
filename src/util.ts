@@ -18,7 +18,7 @@ export module Util {
       .slice(0, length)
       + extension
 
-    const exists = await fs.exists(path.join(Config.uploadDir + filename))
+    const exists = await fs.exists(path.join(Config.uploadDir, filename))
 
     if (!exists) {
       return filename
