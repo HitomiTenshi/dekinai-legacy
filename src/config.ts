@@ -41,9 +41,15 @@ class Configuration {
     if (config.randomString.defaultLength === undefined) throw Error('"randomString.defaultLength" not defined in configuration file.')
     if (config.extensionBlacklist === undefined) throw Error('"extensionBlacklist" not defined in configuration file.')
 
+    if (config.randomString.maxLength < 1) throw Error('"randomString.maxLength" must be equal or greater than 1.')
+    if (config.randomString.minLength < 1) throw Error('"randomString.minLength" must be equal or greater than 1.')
+    if (config.randomString.defaultLength < 1) throw Error('"randomString.defaultLength" must be equal or greater than 1.')
+
     if (!config.randomString.forceDefaultLength) {
       if (config.randomString.maxLength < config.randomString.minLength) throw Error('"randomString.maxLength" cannot be smaller than "config.randomString.minLength".')
+      if (config.randomString.minLength > config.randomString.maxLength) throw Error('"randomString.minLength" cannot be greater than "config.randomString.maxLength".')
       if (config.randomString.defaultLength < config.randomString.minLength) throw Error('"randomString.defaultLength" cannot be smaller than "config.randomString.minLength".')
+      if (config.randomString.defaultLength > config.randomString.maxLength) throw Error('"randomString.defaultLength" cannot be greater than "config.randomString.maxLength".')
     }
 
     try {
