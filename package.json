@@ -1,7 +1,7 @@
 {
   "name": "dekinai.moe",
   "version": "1.0.0",
-  "description": "Minimalistic File Storage Server",
+  "description": "Public Temporary File Storage",
   "main": "index.js",
   "scripts": {
     "postinstall": "shx cp -n template/config.json .",
@@ -11,7 +11,11 @@
     "dekinai",
     "dekinai.moe"
   ],
-  "author": "Johann Rekowski <johann.rekowski@googlemail.com>",
+  "author": {
+    "name": "Johann Rekowski",
+    "email": "johann.rekowski@googlemail.com",
+    "url": "https://www.dekinai.moe"
+  },
   "license": "MIT",
   "dependencies": {
     "koa": "^2.2.0",
