@@ -2,7 +2,20 @@
   "port": 3100,
   "uploadUrl": "https://dekinai.moe",
   "uploadDir": "./uploads",
-  "filenameLength": 5,
+
+  "filename": {
+    "forceAppendFilename": false,
+    "appendFilename": false,
+    "separator": "_"
+  },
+
+  "randomString": {
+    "forceDefaultLength": false,
+    "maxLength": 10,
+    "minLength": 3,
+    "defaultLength": 5
+  },
+
   "extensionBlacklist": [
     ".html",
     ".htm",

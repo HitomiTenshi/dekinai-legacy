@@ -9,9 +9,11 @@ export module Util {
     return Config.extensionBlacklist.includes(extension) ? false : true
   }
 
-  export async function getRandomFilename(extension: string): Promise<string> {
-    const filename =
-      crypto.randomBytes(Math.ceil(Config.filenameLength / 2)).toString('hex').slice(0, Config.filenameLength)
+  export async function getRandomFilename(length: number, extension: string): Promise<string> {
+    const filename = crypto
+      .randomBytes(Math.ceil(length / 2))
+      .toString('hex')
+      .slice(0, length)
       + extension
 
     const exists = await fs.exists(path.join(Config.uploadDir + filename))
@@ -20,7 +22,7 @@ export module Util {
       return filename
     }
     else {
-      return await getRandomFilename(extension)
+      return await getRandomFilename(length, extension)
     }
   }
 }

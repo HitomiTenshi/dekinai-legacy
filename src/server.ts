@@ -13,6 +13,7 @@ export class Server {
     this.app.use(Middleware.checkFiles())
     this.app.use(Middleware.processFiles())
     this.app.use(Middleware.checkExtension())
+    this.app.use(Middleware.generateFilename())
     this.app.use(Middleware.resolveUrl())
   }
 
