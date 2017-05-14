@@ -5,6 +5,8 @@ import * as crypto from 'crypto'
 import { Config } from './config'
 
 export module Util {
+  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+
   export function isExtensionAllowed(extension: string): boolean {
     return Config.extensionBlacklist.includes(extension) ? false : true
   }
@@ -12,12 +14,14 @@ export module Util {
   export async function getRandomFilename(length: number, extension: string, tryCount: number = 0): Promise<string | null> {
     if (tryCount === 10) return null
 
-    const filename = crypto
-      .randomBytes(Math.ceil(length / 2))
-      .toString('hex')
-      .slice(0, length)
-      + extension
+    let filename = ''
+    const bytes = crypto.randomBytes(length)
 
+    for (let i = 0; i < bytes.length; i++) {
+      filename += charset[bytes.readUInt8(i) % charset.length]
+    }
+
+    filename += extension
     const exists = await fs.exists(path.join(Config.uploadDir, filename))
 
     if (!exists) {

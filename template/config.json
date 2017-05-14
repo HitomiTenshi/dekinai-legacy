@@ -12,7 +12,7 @@
   "randomString": {
     "forceDefaultLength": false,
     "maxLength": 10,
-    "minLength": 3,
+    "minLength": 5,
     "defaultLength": 5
   },
 
