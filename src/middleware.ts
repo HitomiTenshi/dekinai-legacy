@@ -104,6 +104,13 @@ export module Middleware {
 
       ctx.state.filename = await Util.getRandomFilename(length, extension)
 
+      if (ctx.state.filename === null) {
+        fs.unlink(ctx.state.filepath, () => null)
+        ctx.body = 'All generated filenames were taken. Try increasing randomString length.'
+        ctx.status = 409
+        return
+      }
+
       await next()
     }
   }

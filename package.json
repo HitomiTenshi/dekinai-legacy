@@ -1,7 +1,7 @@
 {
   "name": "dekinai.moe",
   "version": "1.0.0",
-  "description": "Public Temporary File Storage",
+  "description": "Self Hosted File Storage Server",
   "main": "index.js",
   "scripts": {
     "postinstall": "shx cp -n template/config.json .",
