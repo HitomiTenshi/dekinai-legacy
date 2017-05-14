@@ -4,7 +4,7 @@
   "description": "Minimalistic File Storage Server",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "tsc && node index.js"
   },
   "keywords": [
     "dekinai",
@@ -13,10 +13,13 @@
   "author": "Johann Rekowski <johann.rekowski@googlemail.com>",
   "license": "MIT",
   "dependencies": {
-    "koa": "^2.2.0"
+    "koa": "^2.2.0",
+    "koa-busboy": "^1.0.1",
+    "mz": "^2.6.0"
   },
   "devDependencies": {
     "@types/koa": "^2.0.39",
-    "typescript": "^2.4.0-dev.20170512"
+    "@types/mz": "0.0.31",
+    "typescript": "^2.3.2"
   }
 }
