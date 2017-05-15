@@ -32,49 +32,6 @@ export module Middleware {
     }
   }
 
-  export function validatePOST(): koa.Middleware {
-    return async (ctx: koa.Context, next: () => Promise<any>) => {
-      const post: POST = (ctx.request as any).body
-
-      if (!Config.randomString.forceDefaultLength && post.length !== undefined) {
-        const customLength = Number(post.length)
-
-        if (isNaN(customLength)) {
-          if (Config.strict) {
-            ctx.body = 'randomString length is not a number.'
-            ctx.status = 403
-            return
-          }
-        }
-        else if (customLength < Config.randomString.minLength || customLength > Config.randomString.maxLength) {
-          if (Config.strict) {
-            ctx.body = `randomString length needs to be between ${Config.randomString.minLength} and ${Config.randomString.maxLength}.`
-            ctx.status = 403
-            return
-          }
-        }
-        else {
-          ctx.state.postLength = customLength
-        }
-      }
-
-      if (!Config.filename.forceAppendFilename && post.appendFilename !== undefined) {
-        if (!(post.appendFilename === 'true' || post.appendFilename === 'false')) {
-          if (Config.strict) {
-            ctx.body = 'appendFilename can only be set to "true" or "false".'
-            ctx.status = 403
-            return
-          }
-        }
-        else {
-          ctx.state.postAppendFilename = post.appendFilename === 'true'
-        }
-      }
-
-      await next()
-    }
-  }
-
   export function processFiles(): koa.Middleware {
     return async (ctx: koa.Context, next: () => Promise<any>) => {
       const files: fs.ReadStream[] = (ctx.request as any).files
@@ -91,6 +48,52 @@ export module Middleware {
 
       ctx.state.originalFilename = (files[0] as any).filename
       ctx.state.filepath = files[0].path
+
+      await next()
+    }
+  }
+
+  export function validatePOST(): koa.Middleware {
+    return async (ctx: koa.Context, next: () => Promise<any>) => {
+      const post: POST = (ctx.request as any).body
+
+      if (!Config.randomString.forceDefaultLength && post.length !== undefined) {
+        const customLength = Number(post.length)
+
+        if (isNaN(customLength)) {
+          if (Config.strict) {
+            fs.unlink(ctx.state.filepath, () => null)
+            ctx.body = 'randomString length is not a number.'
+            ctx.status = 403
+            return
+          }
+        }
+        else if (customLength < Config.randomString.minLength || customLength > Config.randomString.maxLength) {
+          if (Config.strict) {
+            fs.unlink(ctx.state.filepath, () => null)
+            ctx.body = `randomString length needs to be between ${Config.randomString.minLength} and ${Config.randomString.maxLength}.`
+            ctx.status = 403
+            return
+          }
+        }
+        else {
+          ctx.state.postLength = customLength
+        }
+      }
+
+      if (!Config.filename.forceAppendFilename && post.appendFilename !== undefined) {
+        if (!(post.appendFilename === 'true' || post.appendFilename === 'false')) {
+          if (Config.strict) {
+            fs.unlink(ctx.state.filepath, () => null)
+            ctx.body = 'appendFilename can only be set to "true" or "false".'
+            ctx.status = 403
+            return
+          }
+        }
+        else {
+          ctx.state.postAppendFilename = post.appendFilename === 'true'
+        }
+      }
 
       await next()
     }
