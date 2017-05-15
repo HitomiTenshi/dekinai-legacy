@@ -32,6 +32,49 @@ export module Middleware {
     }
   }
 
+  export function validatePOST(): koa.Middleware {
+    return async (ctx: koa.Context, next: () => Promise<any>) => {
+      const post: POST = (ctx.request as any).body
+
+      if (!Config.randomString.forceDefaultLength && post.length !== undefined) {
+        const customLength = Number(post.length)
+
+        if (isNaN(customLength)) {
+          if (Config.strict) {
+            ctx.body = 'randomString length is not a number.'
+            ctx.status = 403
+            return
+          }
+        }
+        else if (customLength < Config.randomString.minLength || customLength > Config.randomString.maxLength) {
+          if (Config.strict) {
+            ctx.body = `randomString length needs to be between ${Config.randomString.minLength} and ${Config.randomString.maxLength}.`
+            ctx.status = 403
+            return
+          }
+        }
+        else {
+          ctx.state.postLength = customLength
+        }
+      }
+
+      if (!Config.filename.forceAppendFilename && post.appendFilename !== undefined) {
+        if (!(post.appendFilename === 'true' || post.appendFilename === 'false')) {
+          if (Config.strict) {
+            ctx.body = 'appendFilename can only be set to "true" or "false".'
+            ctx.status = 403
+            return
+          }
+        }
+        else {
+          ctx.state.postAppendFilename = post.appendFilename === 'true'
+        }
+      }
+
+      await next()
+    }
+  }
+
   export function processFiles(): koa.Middleware {
     return async (ctx: koa.Context, next: () => Promise<any>) => {
       const files: fs.ReadStream[] = (ctx.request as any).files
@@ -72,35 +115,17 @@ export module Middleware {
 
   export function generateFilename(): koa.Middleware {
     return async (ctx: koa.Context, next: () => Promise<any>) => {
-      const post: POST = (ctx.request as any).body
-      let length = Config.randomString.defaultLength
+      const appendFilename = ctx.state.postAppendFilename
+        ? ctx.state.postAppendFilename
+        : Config.filename.appendFilename
 
-      let extension: string = Config.filename.appendFilename
+      const length = ctx.state.postLength
+        ? ctx.state.postLength
+        : Config.randomString.defaultLength
+
+      const extension: string = appendFilename
         ? Config.filename.separator + ctx.state.originalFilename
         : ctx.state.extension
-
-      if (!Config.randomString.forceDefaultLength) {
-        const customLength = Number(post.length)
-
-        if (!isNaN(customLength) && customLength >= Config.randomString.minLength && customLength <= Config.randomString.maxLength) {
-          length = customLength
-        }
-      }
-
-      if (!Config.filename.forceAppendFilename) {
-        if (post.appendFilename !== undefined) {
-          switch (post.appendFilename) {
-            case 'true':
-              extension = Config.filename.separator + ctx.state.originalFilename
-              break
-            case 'false':
-              extension = ctx.state.extension
-              break
-            default:
-              break
-          }
-        }
-      }
 
       ctx.state.filename = await Util.getRandomFilename(length, extension)
 

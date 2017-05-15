@@ -11,6 +11,7 @@ export class Server {
     this.app.use(Middleware.onlyAllowPOST())
     this.app.use(uploader())
     this.app.use(Middleware.checkFiles())
+    this.app.use(Middleware.validatePOST())
     this.app.use(Middleware.processFiles())
     this.app.use(Middleware.checkExtension())
     this.app.use(Middleware.generateFilename())

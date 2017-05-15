@@ -2,6 +2,7 @@
   "port": 3100,
   "uploadUrl": "https://dekinai.moe",
   "uploadDir": "./uploads",
+  "strict": false,
 
   "filename": {
     "forceAppendFilename": false,

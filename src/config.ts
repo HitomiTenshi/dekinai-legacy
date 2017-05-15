@@ -4,6 +4,7 @@ class Configuration {
   readonly port: number
   readonly uploadUrl: string
   readonly uploadDir: string
+  readonly strict: boolean
 
   readonly filename: {
     forceAppendFilename: boolean
@@ -27,19 +28,20 @@ class Configuration {
 
     const config: Configuration = JSON.parse(fs.readFileSync('config.json').toString())
 
-    if (config.port === undefined) throw Error('"port" not defined in configuration file.')
-    if (config.uploadUrl === undefined) throw Error('"uploadUrl" not defined in configuration file.')
-    if (config.uploadDir === undefined) throw Error('"uploadDir" not defined in configuration file.')
-    if (config.filename === undefined) throw Error('"filename" not defined in configuration file.')
-    if (config.filename.forceAppendFilename === undefined) throw Error('"filename.forceAppendFilename" not defined in configuration file.')
-    if (config.filename.appendFilename === undefined) throw Error('"filename.appendFilename" not defined in configuration file.')
-    if (config.filename.separator === undefined) throw Error('"filename.separator" not defined in configuration file.')
-    if (config.randomString === undefined) throw Error('"randomString" not defined in configuration file.')
-    if (config.randomString.forceDefaultLength === undefined) throw Error('"randomString.forceDefaultLength" not defined in configuration file.')
-    if (config.randomString.maxLength === undefined) throw Error('"randomString.maxLength" not defined in configuration file.')
-    if (config.randomString.minLength === undefined) throw Error('"randomString.minLength" not defined in configuration file.')
-    if (config.randomString.defaultLength === undefined) throw Error('"randomString.defaultLength" not defined in configuration file.')
-    if (config.extensionBlacklist === undefined) throw Error('"extensionBlacklist" not defined in configuration file.')
+    if (config.port === undefined) throw Error('"port" is not defined in configuration file.')
+    if (config.uploadUrl === undefined) throw Error('"uploadUrl" is not defined in configuration file.')
+    if (config.uploadDir === undefined) throw Error('"uploadDir" is not defined in configuration file.')
+    if (config.strict === undefined) throw Error('"strict" is not defined in configuration file.')
+    if (config.filename === undefined) throw Error('"filename" is not defined in configuration file.')
+    if (config.filename.forceAppendFilename === undefined) throw Error('"filename.forceAppendFilename" is not defined in configuration file.')
+    if (config.filename.appendFilename === undefined) throw Error('"filename.appendFilename" is not defined in configuration file.')
+    if (config.filename.separator === undefined) throw Error('"filename.separator" is not defined in configuration file.')
+    if (config.randomString === undefined) throw Error('"randomString" is not defined in configuration file.')
+    if (config.randomString.forceDefaultLength === undefined) throw Error('"randomString.forceDefaultLength" is not defined in configuration file.')
+    if (config.randomString.maxLength === undefined) throw Error('"randomString.maxLength" is not defined in configuration file.')
+    if (config.randomString.minLength === undefined) throw Error('"randomString.minLength" is not defined in configuration file.')
+    if (config.randomString.defaultLength === undefined) throw Error('"randomString.defaultLength" is not defined in configuration file.')
+    if (config.extensionBlacklist === undefined) throw Error('"extensionBlacklist" is not defined in configuration file.')
 
     if (config.randomString.maxLength < 1) throw Error('"randomString.maxLength" must be equal or greater than 1.')
     if (config.randomString.minLength < 1) throw Error('"randomString.minLength" must be equal or greater than 1.')
@@ -62,6 +64,7 @@ class Configuration {
     this.port = config.port
     this.uploadUrl = config.uploadUrl
     this.uploadDir = config.uploadDir
+    this.strict = config.strict
     this.filename = config.filename
     this.filename.forceAppendFilename = config.filename.forceAppendFilename
     this.filename.appendFilename = config.filename.appendFilename
