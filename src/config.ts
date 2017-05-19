@@ -45,6 +45,11 @@ class Configuration {
     if (config.randomString.defaultLength === undefined) throw Error('"randomString.defaultLength" is not defined in configuration file.')
     if (config.extensionBlacklist === undefined) throw Error('"extensionBlacklist" is not defined in configuration file.')
 
+    if (!Number.isInteger(config.port)) throw Error('"port" is not an integer.')
+    if (!Number.isInteger(config.randomString.maxLength)) throw Error('"randomString.maxLength" is not an integer.')
+    if (!Number.isInteger(config.randomString.minLength)) throw Error('"randomString.minLength" is not an integer.')
+    if (!Number.isInteger(config.randomString.defaultLength)) throw Error('"randomString.defaultLength" is not an integer.')
+
     if (config.randomString.maxLength < 1) throw Error('"randomString.maxLength" must be equal or greater than 1.')
     if (config.randomString.minLength < 1) throw Error('"randomString.minLength" must be equal or greater than 1.')
     if (config.randomString.defaultLength < 1) throw Error('"randomString.defaultLength" must be equal or greater than 1.')
