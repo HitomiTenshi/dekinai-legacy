@@ -52,10 +52,10 @@ export module Middleware {
       if (!Config.randomString.forceDefaultLength && post.length !== undefined) {
         const customLength = Number(post.length)
 
-        if (isNaN(customLength)) {
+        if (!Number.isInteger(customLength)) {
           if (Config.strict) {
             fs.unlink(ctx.state.filepath, () => null)
-            ctx.body = 'randomString length is not a number.'
+            ctx.body = 'randomString length is not an integer.'
             ctx.status = 403
             return
           }
