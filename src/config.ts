@@ -4,6 +4,7 @@ class Configuration {
   readonly port: number
   readonly uploadUrl: string
   readonly uploadDir: string
+  readonly tempDir: string | null
   readonly strict: boolean
 
   readonly filename: {
@@ -31,6 +32,7 @@ class Configuration {
     if (config.port === undefined) throw Error('"port" is not defined in configuration file.')
     if (config.uploadUrl === undefined) throw Error('"uploadUrl" is not defined in configuration file.')
     if (config.uploadDir === undefined) throw Error('"uploadDir" is not defined in configuration file.')
+    if (config.tempDir === undefined) throw Error('"tempDir" is not defined in configuration file.')
     if (config.strict === undefined) throw Error('"strict" is not defined in configuration file.')
     if (config.filename === undefined) throw Error('"filename" is not defined in configuration file.')
     if (config.filename.forceAppendFilename === undefined) throw Error('"filename.forceAppendFilename" is not defined in configuration file.')
@@ -54,16 +56,18 @@ class Configuration {
       if (config.randomString.defaultLength > config.randomString.maxLength) throw Error('"randomString.defaultLength" cannot be greater than "config.randomString.maxLength".')
     }
 
-    try {
-      fs.accessSync(config.uploadDir, fs.constants.W_OK)
-    }
-    catch (error) {
-      throw Error(`The path defined in "uploadDir" does not exist or does not have write permissions. ${error}`)
+    try { fs.accessSync(config.uploadDir, fs.constants.W_OK) }
+    catch (error) { throw Error(`The path defined in "uploadDir" does not exist or does not have write permissions. ${error}`) }
+
+    if (config.tempDir !== null) {
+      try { fs.accessSync(config.tempDir as string, fs.constants.W_OK) }
+      catch (error) { throw Error(`The path defined in "tempDir" does not exist or does not have write permissions. ${error}`) }
     }
 
     this.port = config.port
     this.uploadUrl = config.uploadUrl
     this.uploadDir = config.uploadDir
+    this.tempDir = config.tempDir
     this.strict = config.strict
     this.filename = config.filename
     this.filename.forceAppendFilename = config.filename.forceAppendFilename

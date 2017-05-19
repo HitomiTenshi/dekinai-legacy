@@ -4,7 +4,7 @@
   "description": "Self Hosted File Storage Server",
   "main": "index.js",
   "scripts": {
-    "postinstall": "shx cp -n template/config.json . && shx mkdir -p uploads",
+    "postinstall": "shx cp -n template/config.json . && shx mkdir -p uploads temp",
     "start": "tsc && node index.js"
   },
   "keywords": [
