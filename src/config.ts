@@ -45,6 +45,21 @@ class Configuration {
     if (config.randomString.defaultLength === undefined) throw Error('"randomString.defaultLength" is not defined in configuration file.')
     if (config.extensionBlacklist === undefined) throw Error('"extensionBlacklist" is not defined in configuration file.')
 
+    if (typeof config.uploadUrl !== 'string') throw Error('"uploadUrl" is not a string.')
+    if (typeof config.uploadDir !== 'string') throw Error('"uploadDir" is not a string.')
+    if (typeof config.filename.separator !== 'string') throw Error('"filename.separator" is not a string.')
+
+    if (typeof config.strict !== 'boolean') throw Error('"strict" is not a boolean.')
+    if (typeof config.filename.forceAppendFilename !== 'boolean') throw Error('"filename.forceAppendFilename" is not a boolean.')
+    if (typeof config.filename.appendFilename !== 'boolean') throw Error('"filename.appendFilename" is not a boolean.')
+    if (typeof config.randomString.forceDefaultLength !== 'boolean') throw Error('"randomString.forceDefaultLength" is not a boolean.')
+
+    if (!Array.isArray(config.extensionBlacklist)) throw Error('"extensionBlacklist" is not an array.')
+
+    for (const item of config.extensionBlacklist) {
+      if (typeof item !== 'string') throw Error('"extensionBlacklist" contains values that are not strings.')
+    }
+
     if (!Number.isInteger(config.port)) throw Error('"port" is not an integer.')
     if (!Number.isInteger(config.randomString.maxLength)) throw Error('"randomString.maxLength" is not an integer.')
     if (!Number.isInteger(config.randomString.minLength)) throw Error('"randomString.minLength" is not an integer.')
@@ -65,6 +80,8 @@ class Configuration {
     catch (error) { throw Error(`The path defined in "uploadDir" does not exist or does not have write permissions. ${error}`) }
 
     if (config.tempDir !== null) {
+      if (typeof config.tempDir !== 'string') throw Error('"tempDir" is not a string.')
+
       try { fs.accessSync(config.tempDir as string, fs.constants.W_OK) }
       catch (error) { throw Error(`The path defined in "tempDir" does not exist or does not have write permissions. ${error}`) }
     }
