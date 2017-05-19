@@ -19,7 +19,7 @@ export module Middleware {
     }
   }
 
-  export function checkFiles(): koa.Middleware {
+  export function processFiles(): koa.Middleware {
     return async (ctx: koa.Context, next: () => Promise<any>) => {
       const files: fs.ReadStream[] = (ctx.request as any).files
 
@@ -27,14 +27,6 @@ export module Middleware {
         ctx.status = 404
         return
       }
-
-      await next()
-    }
-  }
-
-  export function processFiles(): koa.Middleware {
-    return async (ctx: koa.Context, next: () => Promise<any>) => {
-      const files: fs.ReadStream[] = (ctx.request as any).files
 
       for (const file of files) {
         file.close()

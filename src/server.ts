@@ -10,7 +10,6 @@ export class Server {
   constructor() {
     this.app.use(Middleware.onlyAllowPOST())
     this.app.use(uploader({ dest: Config.tempDir }))
-    this.app.use(Middleware.checkFiles())
     this.app.use(Middleware.processFiles())
     this.app.use(Middleware.validatePOST())
     this.app.use(Middleware.checkExtension())
