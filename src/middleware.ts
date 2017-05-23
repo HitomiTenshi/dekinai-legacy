@@ -49,41 +49,57 @@ export module Middleware {
     return async (ctx: koa.Context, next: () => Promise<any>) => {
       const post: POST = (ctx.request as any).body
 
-      if (!Config.randomString.forceDefaultLength && post.length !== undefined) {
-        const customLength = Number(post.length)
+      if (post.length !== undefined) {
+        if (Config.randomString.forceDefaultLength && Config.strict) {
+          fs.unlink(ctx.state.filepath, () => null)
+          ctx.body = `Custom length denied, server is set to a randomString length of ${Config.randomString.defaultLength} for all files.`
+          ctx.status = 403
+          return
+        }
+        else if (!Config.randomString.forceDefaultLength) {
+          const customLength = Number(post.length)
 
-        if (!Number.isInteger(customLength)) {
-          if (Config.strict) {
-            fs.unlink(ctx.state.filepath, () => null)
-            ctx.body = 'randomString length is not an integer.'
-            ctx.status = 403
-            return
+          if (!Number.isInteger(customLength)) {
+            if (Config.strict) {
+              fs.unlink(ctx.state.filepath, () => null)
+              ctx.body = 'randomString length is not an integer.'
+              ctx.status = 403
+              return
+            }
           }
-        }
-        else if (customLength < Config.randomString.minLength || customLength > Config.randomString.maxLength) {
-          if (Config.strict) {
-            fs.unlink(ctx.state.filepath, () => null)
-            ctx.body = `randomString length needs to be between ${Config.randomString.minLength} and ${Config.randomString.maxLength}.`
-            ctx.status = 403
-            return
+          else if (customLength < Config.randomString.minLength || customLength > Config.randomString.maxLength) {
+            if (Config.strict) {
+              fs.unlink(ctx.state.filepath, () => null)
+              ctx.body = `randomString length needs to be between ${Config.randomString.minLength} and ${Config.randomString.maxLength}.`
+              ctx.status = 403
+              return
+            }
           }
-        }
-        else {
-          ctx.state.postLength = customLength
+          else {
+            ctx.state.postLength = customLength
+          }
         }
       }
 
-      if (!Config.filename.forceAppendFilename && post.appendFilename !== undefined) {
-        if (!(post.appendFilename === 'true' || post.appendFilename === 'false')) {
-          if (Config.strict) {
-            fs.unlink(ctx.state.filepath, () => null)
-            ctx.body = 'appendFilename can only be set to "true" or "false".'
-            ctx.status = 403
-            return
-          }
+      if (post.appendFilename !== undefined) {
+        if (Config.filename.forceAppendFilename && Config.strict) {
+          fs.unlink(ctx.state.filepath, () => null)
+          ctx.body = `Custom appendFilename denied, server is set to ${Config.filename.appendFilename ? 'always' : 'never'} append filename.`
+          ctx.status = 403
+          return
         }
-        else {
-          ctx.state.postAppendFilename = post.appendFilename === 'true'
+        else if (!Config.filename.forceAppendFilename) {
+          if (!(post.appendFilename === 'true' || post.appendFilename === 'false')) {
+            if (Config.strict) {
+              fs.unlink(ctx.state.filepath, () => null)
+              ctx.body = 'appendFilename can only be set to "true" or "false".'
+              ctx.status = 403
+              return
+            }
+          }
+          else {
+            ctx.state.postAppendFilename = post.appendFilename === 'true'
+          }
         }
       }
 
