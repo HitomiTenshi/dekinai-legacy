@@ -100,7 +100,7 @@ class Configuration {
     this.randomString.maxLength = config.randomString.maxLength
     this.randomString.minLength = config.randomString.minLength
     this.randomString.defaultLength = config.randomString.defaultLength
-    this.extensionBlacklist = config.extensionBlacklist
+    this.extensionBlacklist = config.extensionBlacklist.map(value => !value.startsWith('.') ? `.${value}` : value)
   }
 }
 

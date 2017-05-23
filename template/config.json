@@ -19,8 +19,8 @@
   },
 
   "extensionBlacklist": [
-    ".html",
-    ".htm",
-    ".php"
+    "html",
+    "htm",
+    "php"
   ]
 }
