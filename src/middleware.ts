@@ -113,7 +113,7 @@ export module Middleware {
 
       if (!Util.isExtensionAllowed(extension)) {
         fs.unlink(ctx.state.filepath, () => null)
-        ctx.body = 'File type not allowed.'
+        ctx.body = `File type "${extension}" not allowed.`
         ctx.status = 403
         return
       }
