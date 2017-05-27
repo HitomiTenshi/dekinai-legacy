@@ -1,14 +1,20 @@
+import { injectable, inject } from 'inversify'
 import * as fs from 'fs'
 import * as path from 'path'
 import * as url from 'url'
 import * as koa from 'koa'
 
-import { Config } from './config'
-import { Util } from './util'
-import { POST } from './interfaces/post'
+import { IConfig, IDatabase, IUtil, IMiddleware, IPOST } from './interfaces'
+import { File } from './backend'
 
-export module Middleware {
-  export function onlyAllowPOST(): koa.Middleware {
+@injectable()
+export class Middleware implements IMiddleware {
+  constructor(
+    @inject('Config') private config: IConfig,
+    @inject('Database') private database: IDatabase,
+    @inject('Util') private util: IUtil) { }
+
+  onlyAllowPOST(): koa.Middleware {
     return async (ctx: koa.Context, next: () => Promise<any>) => {
       if (ctx.method !== 'POST') {
         ctx.status = 404
@@ -19,7 +25,7 @@ export module Middleware {
     }
   }
 
-  export function processFiles(): koa.Middleware {
+  processFiles(): koa.Middleware {
     return async (ctx: koa.Context, next: () => Promise<any>) => {
       const files: fs.ReadStream[] = (ctx.request as any).files
 
@@ -45,32 +51,95 @@ export module Middleware {
     }
   }
 
-  export function validatePOST(): koa.Middleware {
+  validatePOST(): koa.Middleware {
     return async (ctx: koa.Context, next: () => Promise<any>) => {
-      const post: POST = (ctx.request as any).body
+      const post: IPOST = (ctx.request as any).body
 
-      if (post.length !== undefined) {
-        if (Config.randomString.forceDefaultLength && Config.strict) {
+      if (post.temporary !== undefined) {
+        if (this.config.temporaryStorage.forceDefaultEnabled && this.config.strict) {
           fs.unlink(ctx.state.filepath, () => null)
-          ctx.body = `Custom length denied, server is set to a randomString length of ${Config.randomString.defaultLength} for all files.`
+          ctx.body = `Custom temporary setting denied, server is set to save all files ${this.config.temporaryStorage.defaultEnabled ? 'temporarily' : 'forever'}.`
           ctx.status = 403
           return
         }
-        else if (!Config.randomString.forceDefaultLength) {
-          const customLength = Number(post.length)
-
-          if (!Number.isInteger(customLength)) {
-            if (Config.strict) {
+        else if (!this.config.temporaryStorage.forceDefaultEnabled) {
+          if (!(post.temporary === 'true' || post.temporary === 'false')) {
+            if (this.config.strict) {
               fs.unlink(ctx.state.filepath, () => null)
-              ctx.body = 'randomString length is not an integer.'
+              ctx.body = 'Custom temporary setting can only be set to "true" or "false".'
               ctx.status = 403
               return
             }
           }
-          else if (customLength < Config.randomString.minLength || customLength > Config.randomString.maxLength) {
-            if (Config.strict) {
+          else {
+            ctx.state.postTemporary = post.temporary === 'true'
+          }
+        }
+      }
+
+      if (post.TTL !== undefined) {
+        if (this.config.temporaryStorage.forceDefaultTTL && this.config.strict) {
+          fs.unlink(ctx.state.filepath, () => null)
+          ctx.body = `Custom TTL denied, server is set to a TTL duration of ${this.config.temporaryStorage.defaultTTL} seconds for all files.`
+          ctx.status = 403
+          return
+        }
+        else if (!this.config.temporaryStorage.forceDefaultTTL) {
+          const customTTL = Number(post.TTL)
+
+          if (!Number.isInteger(customTTL)) {
+            if (this.config.strict) {
               fs.unlink(ctx.state.filepath, () => null)
-              ctx.body = `randomString length needs to be between ${Config.randomString.minLength} and ${Config.randomString.maxLength}.`
+              ctx.body = 'Custom TTL is not an integer.'
+              ctx.status = 403
+              return
+            }
+          }
+          else if (customTTL < this.config.temporaryStorage.minTTL || customTTL > this.config.temporaryStorage.maxTTL) {
+            if (this.config.strict) {
+              fs.unlink(ctx.state.filepath, () => null)
+              ctx.body = `Custom TTL needs to be between ${this.config.temporaryStorage.minTTL} and ${this.config.temporaryStorage.maxTTL} seconds.`
+              ctx.status = 403
+              return
+            }
+          }
+          else if (ctx.state.postTemporary === false) {
+            if (this.config.strict) {
+              fs.unlink(ctx.state.filepath, () => null)
+              ctx.body = 'Custom temporary setting must be "true" when custom TTL is defined.'
+              ctx.status = 403
+              return
+            }
+          }
+          else {
+            ctx.state.postTemporary = true
+            ctx.state.postTTL = customTTL
+          }
+        }
+      }
+
+      if (post.length !== undefined) {
+        if (this.config.randomString.forceDefaultLength && this.config.strict) {
+          fs.unlink(ctx.state.filepath, () => null)
+          ctx.body = `Custom length denied, server is set to a randomString length of ${this.config.randomString.defaultLength} for all files.`
+          ctx.status = 403
+          return
+        }
+        else if (!this.config.randomString.forceDefaultLength) {
+          const customLength = Number(post.length)
+
+          if (!Number.isInteger(customLength)) {
+            if (this.config.strict) {
+              fs.unlink(ctx.state.filepath, () => null)
+              ctx.body = 'Custom length is not an integer.'
+              ctx.status = 403
+              return
+            }
+          }
+          else if (customLength < this.config.randomString.minLength || customLength > this.config.randomString.maxLength) {
+            if (this.config.strict) {
+              fs.unlink(ctx.state.filepath, () => null)
+              ctx.body = `Custom length needs to be between ${this.config.randomString.minLength} and ${this.config.randomString.maxLength}.`
               ctx.status = 403
               return
             }
@@ -82,17 +151,17 @@ export module Middleware {
       }
 
       if (post.appendFilename !== undefined) {
-        if (Config.filename.forceAppendFilename && Config.strict) {
+        if (this.config.filename.forceDefaultAppendFilename && this.config.strict) {
           fs.unlink(ctx.state.filepath, () => null)
-          ctx.body = `Custom appendFilename denied, server is set to ${Config.filename.appendFilename ? 'always' : 'never'} append filename.`
+          ctx.body = `Custom appendFilename setting denied, server is set to ${this.config.filename.defaultAppendFilename ? 'always' : 'never'} append filename.`
           ctx.status = 403
           return
         }
-        else if (!Config.filename.forceAppendFilename) {
+        else if (!this.config.filename.forceDefaultAppendFilename) {
           if (!(post.appendFilename === 'true' || post.appendFilename === 'false')) {
-            if (Config.strict) {
+            if (this.config.strict) {
               fs.unlink(ctx.state.filepath, () => null)
-              ctx.body = 'appendFilename can only be set to "true" or "false".'
+              ctx.body = 'Custom appendFilename setting can only be set to "true" or "false".'
               ctx.status = 403
               return
             }
@@ -107,11 +176,11 @@ export module Middleware {
     }
   }
 
-  export function checkExtension(): koa.Middleware {
+  checkExtension(): koa.Middleware {
     return async (ctx: koa.Context, next: () => Promise<any>) => {
       const extension = path.extname(ctx.state.originalFilename)
 
-      if (!Util.isExtensionAllowed(extension)) {
+      if (!this.util.isExtensionAllowed(extension)) {
         fs.unlink(ctx.state.filepath, () => null)
         ctx.body = `File type "${extension}" not allowed.`
         ctx.status = 403
@@ -124,21 +193,21 @@ export module Middleware {
     }
   }
 
-  export function generateFilename(): koa.Middleware {
+  generateFilename(): koa.Middleware {
     return async (ctx: koa.Context, next: () => Promise<any>) => {
-      const appendFilename = ctx.state.postAppendFilename
+      const appendFilename: boolean = ctx.state.postAppendFilename !== undefined
         ? ctx.state.postAppendFilename
-        : Config.filename.appendFilename
+        : this.config.filename.defaultAppendFilename
 
-      const length = ctx.state.postLength
+      const length: number = ctx.state.postLength !== undefined
         ? ctx.state.postLength
-        : Config.randomString.defaultLength
+        : this.config.randomString.defaultLength
 
       const extension: string = appendFilename
-        ? Config.filename.separator + ctx.state.originalFilename
+        ? this.config.filename.separator + ctx.state.originalFilename
         : ctx.state.extension
 
-      ctx.state.filename = await Util.getRandomFilename(length, extension)
+      ctx.state.filename = await this.util.getRandomFilename(length, extension)
 
       if (ctx.state.filename === null) {
         fs.unlink(ctx.state.filepath, () => null)
@@ -151,10 +220,24 @@ export module Middleware {
     }
   }
 
-  export function resolveUrl(): koa.Middleware {
+  resolveUrl(): koa.Middleware {
     return (ctx: koa.Context) => {
-      fs.rename(ctx.state.filepath, path.join(Config.uploadDir, ctx.state.filename), () => null)
-      ctx.body = url.resolve(Config.uploadUrl, ctx.state.filename)
+      fs.rename(ctx.state.filepath, path.join(this.config.uploadDir, ctx.state.filename), () => null)
+
+      const temporary: boolean = ctx.state.postTemporary !== undefined
+        ? ctx.state.postTemporary
+        : this.config.temporaryStorage.defaultEnabled
+
+      if (temporary) {
+        const TTL: number = ctx.state.postTTL !== undefined
+          ? ctx.state.postTTL
+          : this.config.temporaryStorage.defaultTTL
+
+        const now = new Date().getTime()
+        this.database.addFile(new File(new Date(now + TTL * 1000), ctx.state.filename))
+      }
+
+      ctx.body = url.resolve(this.config.uploadUrl, ctx.state.filename)
       ctx.status = 200
     }
   }

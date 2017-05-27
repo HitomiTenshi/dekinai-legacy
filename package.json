@@ -18,13 +18,18 @@
   },
   "license": "MIT",
   "dependencies": {
+    "inversify": "^4.1.0",
     "koa": "^2.2.0",
     "koa-busboy": "^1.0.1",
-    "mz": "^2.6.0"
+    "mz": "^2.6.0",
+    "reflect-metadata": "^0.1.10",
+    "sqlite3": "^3.1.8"
   },
   "devDependencies": {
     "@types/koa": "^2.0.39",
     "@types/mz": "0.0.31",
+    "@types/node": "^7.0.22",
+    "@types/sqlite3": "^2.2.33",
     "shx": "^0.2.2",
     "typescript": "^2.3.3"
   }

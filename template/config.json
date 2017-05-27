@@ -3,11 +3,28 @@
   "uploadUrl": "https://dekinai.moe",
   "uploadDir": "./uploads",
   "tempDir": "./temp",
-  "strict": false,
+  "strict": true,
+
+  "temporaryStorage": {
+    "forceDefaultEnabled": false,
+    "forceDefaultTTL": false,
+    "defaultEnabled": true,
+    "maxTTL": 2592000,
+    "minTTL": 0,
+    "defaultTTL": 604800
+  },
+
+  "backend": {
+    "adapter": "sqlite"
+  },
+
+  "watchdog": {
+    "scanInterval": 900
+  },
 
   "filename": {
-    "forceAppendFilename": false,
-    "appendFilename": false,
+    "forceDefaultAppendFilename": false,
+    "defaultAppendFilename": false,
     "separator": "_"
   },
 

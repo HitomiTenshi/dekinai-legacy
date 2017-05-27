@@ -1,24 +1,27 @@
+import { injectable, inject } from 'inversify'
 import * as koa from 'koa'
 const uploader = require('koa-busboy')
 
-import { Middleware } from './middleware'
-import { Config } from './config'
+import { IConfig, IMiddleware, IServer } from './interfaces'
 
-export class Server {
+@injectable()
+export class Server implements IServer {
   private readonly app = new koa()
 
-  constructor() {
-    this.app.use(Middleware.onlyAllowPOST())
-    this.app.use(uploader({ dest: Config.tempDir }))
-    this.app.use(Middleware.processFiles())
-    this.app.use(Middleware.validatePOST())
-    this.app.use(Middleware.checkExtension())
-    this.app.use(Middleware.generateFilename())
-    this.app.use(Middleware.resolveUrl())
+  constructor(
+    @inject('Config') private config: IConfig,
+    @inject('Middleware') middleware: IMiddleware) {
+      this.app.use(middleware.onlyAllowPOST())
+      this.app.use(uploader({ dest: config.tempDir }))
+      this.app.use(middleware.processFiles())
+      this.app.use(middleware.validatePOST())
+      this.app.use(middleware.checkExtension())
+      this.app.use(middleware.generateFilename())
+      this.app.use(middleware.resolveUrl())
   }
 
   start(): void {
-    this.app.listen(Config.port)
-    console.log(`Listening on port ${Config.port}`)
+    this.app.listen(this.config.port)
+    console.log(`Listening on port ${this.config.port}`)
   }
 }

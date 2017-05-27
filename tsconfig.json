@@ -10,8 +10,11 @@
     "noFallthroughCasesInSwitch": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "downlevelIteration": true,
     "sourceMap": false,
+
+    "types": [
+      "node"
+    ],
 
     "lib": [
       "dom",
