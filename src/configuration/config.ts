@@ -12,33 +12,33 @@ export class Config implements IConfig {
   readonly strict: boolean
 
   readonly temporaryStorage: {
-    forceDefaultEnabled: boolean
-    forceDefaultTTL: boolean
-    defaultEnabled: boolean
-    maxTTL: number
-    minTTL: number
-    defaultTTL: number
+    readonly forceDefaultEnabled: boolean
+    readonly forceDefaultTTL: boolean
+    readonly defaultEnabled: boolean
+    readonly maxTTL: number
+    readonly minTTL: number
+    readonly defaultTTL: number
   }
 
   readonly backend: {
-    adapter: 'sqlite'
+    readonly adapter: 'sqlite'
   }
 
   readonly watchdog: {
-    scanInterval: number
+    readonly scanInterval: number
   }
 
   readonly filename: {
-    forceDefaultAppendFilename: boolean
-    defaultAppendFilename: boolean
-    separator: string
+    readonly forceDefaultAppendFilename: boolean
+    readonly defaultAppendFilename: boolean
+    readonly separator: string
   }
 
   readonly randomString: {
-    forceDefaultLength: boolean
-    maxLength: number
-    minLength: number
-    defaultLength: number
+    readonly forceDefaultLength: boolean
+    readonly maxLength: number
+    readonly minLength: number
+    readonly defaultLength: number
   }
 
   readonly extensionBlacklist: string[]
