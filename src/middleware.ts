@@ -1,5 +1,5 @@
 import { injectable, inject } from 'inversify'
-import * as fs from 'fs'
+import * as fs from 'mz/fs'
 import * as path from 'path'
 import * as url from 'url'
 import * as koa from 'koa'
@@ -221,8 +221,8 @@ export class Middleware implements IMiddleware {
   }
 
   resolveUrl(): koa.Middleware {
-    return (ctx: koa.Context) => {
-      fs.rename(ctx.state.filepath, path.join(this.config.uploadDir, ctx.state.filename), () => null)
+    return async (ctx: koa.Context) => {
+      await fs.rename(ctx.state.filepath, path.join(this.config.uploadDir, ctx.state.filename))
 
       const temporary: boolean = ctx.state.postTemporary !== undefined
         ? ctx.state.postTemporary
