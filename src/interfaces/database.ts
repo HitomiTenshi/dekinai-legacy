@@ -6,5 +6,5 @@ export interface IDatabaseAdapter {
 }
 
 export interface IDatabase extends IDatabaseAdapter {
-  adapter: IDatabaseAdapter
+  adapter?: IDatabaseAdapter
 }
