@@ -17,39 +17,60 @@ class SQLiteFile {
 
 @injectable()
 export class SQLiteAdapter implements IDatabaseAdapter {
-  private readonly database: Database
+  readonly database: Database
 
   constructor(@inject('Config') private config: IConfig) {
     this.database = new Database('database.sqlite', error => {
-      if (error) throw Error(`Unable to create SQLite Database. ${error.message}`)
+      if (error) {
+        throw Error(`Unable to create SQLite Database. ${error.message}`)
+      }
     })
 
     this.database.run('CREATE TABLE IF NOT EXISTS files (terminationTime INTEGER, filename TEXT)')
   }
 
-  addFile(file: IFile): void {
+  addFile(file: IFile): Promise<void> {
     const sqliteFile = new SQLiteFile(file)
-    this.database.run(`INSERT INTO files VALUES(${sqliteFile.terminationTime}, ?)`, sqliteFile.filename)
-  }
 
-  terminateFiles(): void {
-    const now = new Date().getTime()
-
-    this.database.all(`SELECT * FROM files WHERE terminationTime < ${now}`, (error, files: SQLiteFile[]) => {
-      if (error) {
-        if (error.message !== 'SQLITE_ERROR: no such table: files') {
+    return new Promise<void>(resolve => {
+      this.database.run(`INSERT INTO files VALUES(${sqliteFile.terminationTime}, ?)`, sqliteFile.filename, error => {
+        if (error) {
           console.log(error.message)
         }
-      }
-      else {
-        for (const file of files) {
-          fs.unlink(path.join(this.config.uploadDir, file.filename), () => null)
+
+        resolve()
+      })
+    })
+  }
+
+  terminateFiles(): Promise<void> {
+    const now = new Date().getTime()
+
+    return new Promise<void>(resolve => {
+      this.database.all(`SELECT * FROM files WHERE terminationTime < ${now}`, async (error, files: SQLiteFile[]) => {
+        if (error) {
+          if (error.message !== 'SQLITE_ERROR: no such table: files') {
+            console.log(error.message)
+          }
+        }
+        else {
+          for (const file of files) {
+            fs.unlink(path.join(this.config.uploadDir, file.filename), () => null)
+          }
+
+          await new Promise<void>(resolve => {
+            this.database.run(`DELETE FROM files WHERE terminationTime < ${now}`, error => {
+              if (error) {
+                console.log(error.message)
+              }
+
+              resolve()
+            })
+          })
         }
 
-        this.database.run(`DELETE FROM files WHERE terminationTime < ${now}`, error => {
-          if (error) console.log(error.message)
-        })
-      }
+        resolve()
+      })
     })
   }
 }

@@ -18,11 +18,11 @@ export class Database implements IDatabase {
       }
   }
 
-  addFile(file: IFile): void {
-    this.adapter.addFile(file)
+  async addFile(file: IFile): Promise<void> {
+    await this.adapter.addFile(file)
   }
 
-  terminateFiles(): void {
-    this.adapter.terminateFiles()
+  async terminateFiles(): Promise<void> {
+    await this.adapter.terminateFiles()
   }
 }
