@@ -16,7 +16,7 @@ export class Util implements IUtil {
   }
 
   async getRandomFilename(length: number, extension: string, tryCount: number = 0): Promise<string | null> {
-    if (tryCount === 10) return null
+    if (tryCount >= 10) return null
 
     let filename = ''
     const bytes = crypto.randomBytes(length)
