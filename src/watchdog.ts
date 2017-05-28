@@ -8,8 +8,8 @@ export class Watchdog implements IWatchdog {
     @inject('Config') private config: IConfig,
     @inject('Database') private database: IDatabase) { }
 
-  start(): void {
-    this.database.terminateFiles()
-    setTimeout(() => this.start(), this.config.watchdog.scanInterval * 1000)
+  async start(): Promise<void> {
+    await this.database.terminateFiles()
+    setTimeout(async () => await this.start(), this.config.watchdog.scanInterval * 1000)
   }
 }

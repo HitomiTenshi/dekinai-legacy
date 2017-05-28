@@ -1,3 +1,3 @@
 export interface IWatchdog {
-  start(): void
+  start(): Promise<void>
 }
