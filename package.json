@@ -1,7 +1,7 @@
 {
   "name": "dekinai.moe",
   "version": "1.0.0",
-  "description": "Self Hosted File Storage Server",
+  "description": "A highly configurable self hosted file storage server",
   "main": "index.js",
   "scripts": {
     "postinstall": "shx cp -n template/config.json . && shx mkdir -p uploads temp",
@@ -13,11 +13,12 @@
   ],
   "author": {
     "name": "Johann Rekowski",
-    "email": "johann.rekowski@googlemail.com",
+    "email": "johann.rekowski@gmail.com",
     "url": "https://www.dekinai.moe"
   },
   "license": "MIT",
   "dependencies": {
+    "http-shutdown": "^1.2.0",
     "inversify": "^4.1.0",
     "koa": "^2.2.0",
     "koa-busboy": "^1.0.1",

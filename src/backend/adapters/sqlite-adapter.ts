@@ -73,4 +73,16 @@ export class SQLiteAdapter implements IDatabaseAdapter {
       })
     })
   }
+
+  close(): Promise<void> {
+    return new Promise<void>(resolve => {
+      this.database.close(error => {
+        if (error) {
+          console.log(error.message)
+        }
+
+        resolve()
+      })
+    })
+  }
 }

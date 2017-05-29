@@ -33,4 +33,12 @@ export class Database implements IDatabase {
 
     await this.adapter.terminateFiles()
   }
+
+  async close(): Promise<void> {
+    if (this.adapter === undefined) {
+      throw new Error('close cannot be executed when the database is force-disabled by the config')
+    }
+
+    await this.adapter.close()
+  }
 }

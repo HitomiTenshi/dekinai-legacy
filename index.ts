@@ -12,3 +12,11 @@ server.start()
 if (!(config.temporaryStorage.forceDefaultEnabled && !config.temporaryStorage.defaultEnabled)) {
   watchdog.start()
 }
+
+process.on('SIGINT', async () => {
+  await server.stop()
+
+  if (watchdog.isRunning) {
+    await watchdog.stop()
+  }
+})

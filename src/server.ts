@@ -1,5 +1,7 @@
 import { injectable, inject } from 'inversify'
+import * as http from 'http'
 import * as koa from 'koa'
+const httpShutdown = require('http-shutdown')
 const uploader = require('koa-busboy')
 
 import { IConfig, IMiddleware, IServer } from './interfaces'
@@ -7,6 +9,7 @@ import { IConfig, IMiddleware, IServer } from './interfaces'
 @injectable()
 export class Server implements IServer {
   private readonly app = new koa()
+  private server?: http.Server
 
   constructor(
     @inject('Config') private config: IConfig,
@@ -21,7 +24,18 @@ export class Server implements IServer {
   }
 
   start(): void {
-    this.app.listen(this.config.port)
+    this.server = httpShutdown(http.createServer(this.app.callback()))
+    this.server!.listen(this.config.port)
     console.log(`Listening on port ${this.config.port}`)
+  }
+
+  stop(): Promise<void> {
+    if (this.server === undefined) {
+      throw new Error('Cannot stop server. Server is not running.')
+    }
+
+    return new Promise<void>(resolve => {
+      (this.server as any).shutdown(resolve)
+    })
   }
 }
