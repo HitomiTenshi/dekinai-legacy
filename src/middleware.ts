@@ -56,13 +56,15 @@ export class Middleware implements IMiddleware {
       const post: IPOST = (ctx.request as any).body
 
       if (post.temporary !== undefined) {
-        if (this.config.temporaryStorage.forceDefaultEnabled && this.config.strict) {
-          fs.unlink(ctx.state.filepath, () => null)
-          ctx.body = `Custom temporary setting denied, server is set to save all files ${this.config.temporaryStorage.defaultEnabled ? 'temporarily' : 'forever'}.`
-          ctx.status = 403
-          return
+        if (this.config.temporaryStorage.forceDefaultEnabled) {
+          if (this.config.strict) {
+            fs.unlink(ctx.state.filepath, () => null)
+            ctx.body = `Custom temporary setting denied, server is set to save all files ${this.config.temporaryStorage.defaultEnabled ? 'temporarily' : 'forever'}.`
+            ctx.status = 403
+            return
+          }
         }
-        else if (!this.config.temporaryStorage.forceDefaultEnabled) {
+        else {
           if (!(post.temporary === 'true' || post.temporary === 'false')) {
             if (this.config.strict) {
               fs.unlink(ctx.state.filepath, () => null)
@@ -78,13 +80,23 @@ export class Middleware implements IMiddleware {
       }
 
       if (post.TTL !== undefined) {
-        if (this.config.temporaryStorage.forceDefaultTTL && this.config.strict) {
-          fs.unlink(ctx.state.filepath, () => null)
-          ctx.body = `Custom TTL denied, server is set to a TTL duration of ${this.config.temporaryStorage.defaultTTL} seconds for all files.`
-          ctx.status = 403
-          return
+        if (this.config.temporaryStorage.forceDefaultEnabled && !this.config.temporaryStorage.defaultEnabled) {
+          if (this.config.strict) {
+            fs.unlink(ctx.state.filepath, () => null)
+            ctx.body = 'Custom TTL setting denied, temporary storage is disabled on this server.'
+            ctx.status = 403
+            return
+          }
         }
-        else if (!this.config.temporaryStorage.forceDefaultTTL) {
+        else if (this.config.temporaryStorage.forceDefaultTTL) {
+          if (this.config.strict) {
+            fs.unlink(ctx.state.filepath, () => null)
+            ctx.body = `Custom TTL denied, server is set to a TTL duration of ${this.config.temporaryStorage.defaultTTL} seconds for all files.`
+            ctx.status = 403
+            return
+          }
+        }
+        else {
           const customTTL = Number(post.TTL)
 
           if (!Number.isInteger(customTTL)) {
@@ -103,15 +115,16 @@ export class Middleware implements IMiddleware {
               return
             }
           }
-          else if (ctx.state.postTemporary === false) {
-            if (this.config.strict) {
-              fs.unlink(ctx.state.filepath, () => null)
-              ctx.body = 'Custom temporary setting must be "true" when custom TTL is defined.'
-              ctx.status = 403
-              return
-            }
-          }
           else {
+            if (ctx.state.postTemporary === false) {
+              if (this.config.strict) {
+                fs.unlink(ctx.state.filepath, () => null)
+                ctx.body = 'Custom temporary setting must be "true" when custom TTL is defined.'
+                ctx.status = 403
+                return
+              }
+            }
+
             ctx.state.postTemporary = true
             ctx.state.postTTL = customTTL
           }
@@ -119,13 +132,15 @@ export class Middleware implements IMiddleware {
       }
 
       if (post.length !== undefined) {
-        if (this.config.randomString.forceDefaultLength && this.config.strict) {
-          fs.unlink(ctx.state.filepath, () => null)
-          ctx.body = `Custom length denied, server is set to a randomString length of ${this.config.randomString.defaultLength} for all files.`
-          ctx.status = 403
-          return
+        if (this.config.randomString.forceDefaultLength) {
+          if (this.config.strict) {
+            fs.unlink(ctx.state.filepath, () => null)
+            ctx.body = `Custom length denied, server is set to a randomString length of ${this.config.randomString.defaultLength} for all files.`
+            ctx.status = 403
+            return
+          }
         }
-        else if (!this.config.randomString.forceDefaultLength) {
+        else {
           const customLength = Number(post.length)
 
           if (!Number.isInteger(customLength)) {
@@ -151,13 +166,15 @@ export class Middleware implements IMiddleware {
       }
 
       if (post.appendFilename !== undefined) {
-        if (this.config.filename.forceDefaultAppendFilename && this.config.strict) {
-          fs.unlink(ctx.state.filepath, () => null)
-          ctx.body = `Custom appendFilename setting denied, server is set to ${this.config.filename.defaultAppendFilename ? 'always' : 'never'} append filename.`
-          ctx.status = 403
-          return
+        if (this.config.filename.forceDefaultAppendFilename) {
+          if (this.config.strict) {
+            fs.unlink(ctx.state.filepath, () => null)
+            ctx.body = `Custom appendFilename setting denied, server is set to ${this.config.filename.defaultAppendFilename ? 'always' : 'never'} append filename.`
+            ctx.status = 403
+            return
+          }
         }
-        else if (!this.config.filename.forceDefaultAppendFilename) {
+        else {
           if (!(post.appendFilename === 'true' || post.appendFilename === 'false')) {
             if (this.config.strict) {
               fs.unlink(ctx.state.filepath, () => null)
