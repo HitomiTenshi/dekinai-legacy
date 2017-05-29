@@ -5,7 +5,7 @@ import * as path from 'path'
 
 import { IConfig, IFile, IDatabaseAdapter } from '../../interfaces'
 
-class SQLiteFile {
+export class SQLiteFile {
   terminationTime: number
   filename: string
 

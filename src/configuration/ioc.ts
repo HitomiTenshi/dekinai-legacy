@@ -5,14 +5,24 @@ import { Database } from '../backend'
 import { SQLiteAdapter } from '../backend/adapters'
 import { IConfig, IUtil, IDatabase, IDatabaseAdapter, IMiddleware, IServer, IWatchdog } from '../interfaces'
 
-const _container = new Container()
+export function createContainer(testConfig?: IConfig): Container {
+  const container = new Container()
 
-_container.bind<IConfig>('Config').to(Config).inSingletonScope()
-_container.bind<IDatabase>('Database').to(Database).inSingletonScope()
-_container.bind<IDatabaseAdapter>('SQLiteAdapter').to(SQLiteAdapter)
-_container.bind<IUtil>('Util').to(Util)
-_container.bind<IMiddleware>('Middleware').to(Middleware)
-_container.bind<IServer>('Server').to(Server)
-_container.bind<IWatchdog>('Watchdog').to(Watchdog)
+  if (testConfig !== undefined) {
+    container.bind<IConfig>('Config').toConstantValue(testConfig)
+  }
+  else {
+    container.bind<IConfig>('Config').to(Config).inSingletonScope()
+  }
 
-export const container = _container
+  container.bind<IDatabase>('Database').to(Database).inSingletonScope()
+  container.bind<IDatabaseAdapter>('SQLiteAdapter').to(SQLiteAdapter)
+  container.bind<IUtil>('Util').to(Util)
+  container.bind<IMiddleware>('Middleware').to(Middleware)
+  container.bind<IServer>('Server').to(Server)
+  container.bind<IWatchdog>('Watchdog').to(Watchdog)
+
+  return container
+}
+
+export const container = createContainer()

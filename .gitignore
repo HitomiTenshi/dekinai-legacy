@@ -3,5 +3,6 @@ node_modules/
 uploads/
 temp/
 /config.json
-/database.sqlite
-/database.sqlite-journal
+/test/config.json
+database.sqlite
+database.sqlite-journal
