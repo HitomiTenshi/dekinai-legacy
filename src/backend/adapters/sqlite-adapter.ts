@@ -54,14 +54,12 @@ export class SQLiteAdapter implements IDatabaseAdapter {
           }
         }
         else {
-          const filenames = files.map(value => value.filename)
-
-          for (const filename of filenames) {
-            fs.unlink(path.join(this.config.uploadDir, filename), () => null)
+          for (const file of files) {
+            fs.unlink(path.join(this.config.uploadDir, file.filename), () => null)
           }
 
           await new Promise(resolve => {
-            this.database.run(`DELETE FROM files WHERE filename IN (?)`, filenames, error => {
+            this.database.run(`DELETE FROM files WHERE terminationTime < ${now}`, error => {
               if (error) {
                 console.log(error.message)
               }
