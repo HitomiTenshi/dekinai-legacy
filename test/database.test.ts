@@ -50,6 +50,7 @@ describe('Database', () => {
 
       const container = createContainer(testConfig)
       const database = container.get<IDatabase>('Database')
+      const adapter = database.adapter as SQLiteAdapter
       const testFile = new File(new Date(), 'test.txt')
 
       // Give SQLite 10ms to initialize the database file before continuing
@@ -59,9 +60,12 @@ describe('Database', () => {
         assert.strictEqual(database.adapter instanceof SQLiteAdapter, true)
       })
 
+      it('should automatically have an opened database', async () => {
+        assert.strictEqual((adapter.database as any).open, true)
+      })
+
       describe('addFile', () => {
         it('should add the testFile', async () => {
-          const adapter = database.adapter as SQLiteAdapter
           await database.addFile(testFile)
 
           await new Promise(resolve => {
@@ -82,7 +86,6 @@ describe('Database', () => {
           // Wait 10ms to exceed the testFile's TTL
           await new Promise(resolve => setTimeout(resolve, 10))
 
-          const adapter = database.adapter as SQLiteAdapter
           await database.terminateFiles()
 
           await new Promise(resolve => {
@@ -99,7 +102,6 @@ describe('Database', () => {
 
       describe('close', () => {
         it('should close the database', async () => {
-          const adapter = database.adapter as SQLiteAdapter
           await database.close()
           assert.strictEqual((adapter.database as any).open, false)
         })
