@@ -44,100 +44,14 @@ export class Config implements IConfig {
   readonly extensionBlacklist: string[]
 
   constructor() {
-    if (!fs.existsSync('config.json')) {
-      throw Error('Configuration file "config.json" not found. Please check the template folder for an example configuration file.')
-    }
+    const config = this.loadConfigFile()
 
-    const config: IConfig = JSON.parse(fs.readFileSync('config.json').toString())
+    // Validate configuration file
+    this.ensureParameters(config)
+    this.typeCheckParameters(config)
+    this.validateParameters(config)
 
-    if (config.port === undefined) throw Error('"port" is not defined in the configuration file.')
-    if (config.uploadUrl === undefined) throw Error('"uploadUrl" is not defined in the configuration file.')
-    if (config.uploadDir === undefined) throw Error('"uploadDir" is not defined in the configuration file.')
-    if (config.tempDir === undefined) throw Error('"tempDir" is not defined in the configuration file.')
-    if (config.strict === undefined) throw Error('"strict" is not defined in the configuration file.')
-    if (config.temporaryStorage === undefined) throw Error('"temporaryStorage" is not defined in the configuration file.')
-    if (config.temporaryStorage.forceDefaultEnabled === undefined) throw Error('"temporaryStorage.forceDefaultEnabled" is not defined in the configuration file.')
-    if (config.temporaryStorage.forceDefaultTTL === undefined) throw Error('"temporaryStorage.forceDefaultTTL" is not defined in the configuration file.')
-    if (config.temporaryStorage.defaultEnabled === undefined) throw Error('"temporaryStorage.defaultEnabled" is not defined in the configuration file.')
-    if (config.temporaryStorage.maxTTL === undefined) throw Error('"temporaryStorage.maxTTL" is not defined in the configuration file.')
-    if (config.temporaryStorage.minTTL === undefined) throw Error('"temporaryStorage.minTTL" is not defined in the configuration file.')
-    if (config.temporaryStorage.defaultTTL === undefined) throw Error('"temporaryStorage.defaultTTL" is not defined in the configuration file.')
-    if (config.backend === undefined) throw Error('"backend" is not defined in the configuration file.')
-    if (config.backend.adapter === undefined) throw Error('"backend.adapter" is not defined in the configuration file.')
-    if (config.watchdog === undefined) throw Error('"watchdog" is not defined in the configuration file.')
-    if (config.watchdog.scanInterval === undefined) throw Error('"watchdog.scanInterval" is not defined in the configuration file.')
-    if (config.filename === undefined) throw Error('"filename" is not defined in the configuration file.')
-    if (config.filename.forceDefaultAppendFilename === undefined) throw Error('"filename.forceDefaultAppendFilename" is not defined in the configuration file.')
-    if (config.filename.defaultAppendFilename === undefined) throw Error('"filename.defaultAppendFilename" is not defined in the configuration file.')
-    if (config.filename.separator === undefined) throw Error('"filename.separator" is not defined in the configuration file.')
-    if (config.randomString === undefined) throw Error('"randomString" is not defined in the configuration file.')
-    if (config.randomString.forceDefaultLength === undefined) throw Error('"randomString.forceDefaultLength" is not defined in the configuration file.')
-    if (config.randomString.maxLength === undefined) throw Error('"randomString.maxLength" is not defined in the configuration file.')
-    if (config.randomString.minLength === undefined) throw Error('"randomString.minLength" is not defined in the configuration file.')
-    if (config.randomString.defaultLength === undefined) throw Error('"randomString.defaultLength" is not defined in the configuration file.')
-    if (config.extensionBlacklist === undefined) throw Error('"extensionBlacklist" is not defined in the configuration file.')
-
-    if (typeof config.uploadUrl !== 'string') throw Error('"uploadUrl" is not a string.')
-    if (typeof config.uploadDir !== 'string') throw Error('"uploadDir" is not a string.')
-    if (typeof config.filename.separator !== 'string') throw Error('"filename.separator" is not a string.')
-
-    if (typeof config.strict !== 'boolean') throw Error('"strict" is not a boolean.')
-    if (typeof config.temporaryStorage.forceDefaultEnabled !== 'boolean') throw Error('"temporaryStorage.forceDefaultEnabled" is not a boolean.')
-    if (typeof config.temporaryStorage.forceDefaultTTL !== 'boolean') throw Error('"temporaryStorage.forceDefaultTTL" is not a boolean.')
-    if (typeof config.temporaryStorage.defaultEnabled !== 'boolean') throw Error('"temporaryStorage.defaultEnabled" is not a boolean.')
-    if (typeof config.filename.forceDefaultAppendFilename !== 'boolean') throw Error('"filename.forceDefaultAppendFilename" is not a boolean.')
-    if (typeof config.filename.defaultAppendFilename !== 'boolean') throw Error('"filename.defaultAppendFilename" is not a boolean.')
-    if (typeof config.randomString.forceDefaultLength !== 'boolean') throw Error('"randomString.forceDefaultLength" is not a boolean.')
-
-    if (!Array.isArray(config.extensionBlacklist)) throw Error('"extensionBlacklist" is not an array.')
-
-    for (const item of config.extensionBlacklist) {
-      if (typeof item !== 'string') throw Error('"extensionBlacklist" contains values that are not strings.')
-    }
-
-    if (!Number.isInteger(config.port)) throw Error('"port" is not an integer.')
-    if (!Number.isInteger(config.temporaryStorage.maxTTL)) throw Error('"temporaryStorage.maxTTL" is not an integer.')
-    if (!Number.isInteger(config.temporaryStorage.minTTL)) throw Error('"temporaryStorage.minTTL" is not an integer.')
-    if (!Number.isInteger(config.temporaryStorage.defaultTTL)) throw Error('"temporaryStorage.defaultTTL" is not an integer.')
-    if (!Number.isInteger(config.watchdog.scanInterval)) throw Error('"watchdog.scanInterval" is not an integer.')
-    if (!Number.isInteger(config.randomString.maxLength)) throw Error('"randomString.maxLength" is not an integer.')
-    if (!Number.isInteger(config.randomString.minLength)) throw Error('"randomString.minLength" is not an integer.')
-    if (!Number.isInteger(config.randomString.defaultLength)) throw Error('"randomString.defaultLength" is not an integer.')
-
-    if (config.backend.adapter !== 'sqlite') throw Error('"backend.adapter" can only be "sqlite".')
-
-    if (config.temporaryStorage.maxTTL < 0) throw Error('"temporaryStorage.maxTTL" must be equal or greater than 0.')
-    if (config.temporaryStorage.minTTL < 0) throw Error('"temporaryStorage.minTTL" must be equal or greater than 0.')
-    if (config.temporaryStorage.defaultTTL < 0) throw Error('"temporaryStorage.defaultTTL" must be equal or greater than 0.')
-    if (config.watchdog.scanInterval < 0) throw Error('"watchdog.scanInterval" must be equal or greater than 0.')
-    if (config.randomString.maxLength < 1) throw Error('"randomString.maxLength" must be equal or greater than 1.')
-    if (config.randomString.minLength < 1) throw Error('"randomString.minLength" must be equal or greater than 1.')
-    if (config.randomString.defaultLength < 1) throw Error('"randomString.defaultLength" must be equal or greater than 1.')
-
-    if (!config.temporaryStorage.forceDefaultTTL) {
-      if (config.temporaryStorage.maxTTL < config.temporaryStorage.minTTL) throw Error('"temporaryStorage.maxTTL" cannot be smaller than "config.temporaryStorage.minTTL".')
-      if (config.temporaryStorage.minTTL > config.temporaryStorage.maxTTL) throw Error('"temporaryStorage.minTTL" cannot be greater than "config.temporaryStorage.maxTTL".')
-      if (config.temporaryStorage.defaultTTL < config.temporaryStorage.minTTL) throw Error('"temporaryStorage.defaultTTL" cannot be smaller than "config.temporaryStorage.minTTL".')
-      if (config.temporaryStorage.defaultTTL > config.temporaryStorage.maxTTL) throw Error('"temporaryStorage.defaultTTL" cannot be greater than "config.temporaryStorage.maxTTL".')
-    }
-
-    if (!config.randomString.forceDefaultLength) {
-      if (config.randomString.maxLength < config.randomString.minLength) throw Error('"randomString.maxLength" cannot be smaller than "config.randomString.minLength".')
-      if (config.randomString.minLength > config.randomString.maxLength) throw Error('"randomString.minLength" cannot be greater than "config.randomString.maxLength".')
-      if (config.randomString.defaultLength < config.randomString.minLength) throw Error('"randomString.defaultLength" cannot be smaller than "config.randomString.minLength".')
-      if (config.randomString.defaultLength > config.randomString.maxLength) throw Error('"randomString.defaultLength" cannot be greater than "config.randomString.maxLength".')
-    }
-
-    try { fs.accessSync(config.uploadDir, fs.constants.W_OK) }
-    catch (error) { throw Error(`The path defined in "uploadDir" does not exist or does not have write permissions. ${error}`) }
-
-    if (config.tempDir !== null) {
-      if (typeof config.tempDir !== 'string') throw Error('"tempDir" is not a string.')
-
-      try { fs.accessSync(config.tempDir as string, fs.constants.W_OK) }
-      catch (error) { throw Error(`The path defined in "tempDir" does not exist or does not have write permissions. ${error}`) }
-    }
-
+    // Assign values
     this.port = config.port
     this.uploadUrl = config.uploadUrl
     this.uploadDir = config.uploadDir
@@ -148,6 +62,196 @@ export class Config implements IConfig {
     this.watchdog = config.watchdog
     this.filename = config.filename
     this.randomString = config.randomString
+
+    // Ensure that extensions start with a dot
     this.extensionBlacklist = config.extensionBlacklist.map(value => !value.startsWith('.') ? `.${value}` : value)
+  }
+
+  private loadConfigFile(): IConfig {
+    // Ensure that the configuration file exists
+    if (!fs.existsSync('config.json')) {
+      throw Error('Configuration file "config.json" not found. Please check the template folder for an example configuration file.')
+    }
+
+    // Parse the configuration file
+    try {
+      return JSON.parse(fs.readFileSync('config.json').toString())
+    }
+    catch (error) {
+      throw Error(`Configuration file "config.json" contains invalid JSON. ${error}`)
+    }
+  }
+
+  private ensureParameters(config: IConfig): void {
+    const errors: string[] = []
+
+    if (config.port === undefined) errors.push('"port" is not defined in the configuration file.')
+    if (config.uploadUrl === undefined) errors.push('"uploadUrl" is not defined in the configuration file.')
+    if (config.uploadDir === undefined) errors.push('"uploadDir" is not defined in the configuration file.')
+    if (config.tempDir === undefined) errors.push('"tempDir" is not defined in the configuration file.')
+    if (config.strict === undefined) errors.push('"strict" is not defined in the configuration file.')
+    if (config.extensionBlacklist === undefined) errors.push('"extensionBlacklist" is not defined in the configuration file.')
+
+    if (config.temporaryStorage === undefined) {
+      errors.push('"temporaryStorage" is not defined in the configuration file.')
+    }
+    else if (config.temporaryStorage === null || typeof config.temporaryStorage !== 'object') {
+      errors.push('"temporaryStorage" is not an object.')
+    }
+    else {
+      if (config.temporaryStorage.forceDefaultEnabled === undefined) errors.push('"temporaryStorage.forceDefaultEnabled" is not defined in the configuration file.')
+      if (config.temporaryStorage.forceDefaultTTL === undefined) errors.push('"temporaryStorage.forceDefaultTTL" is not defined in the configuration file.')
+      if (config.temporaryStorage.defaultEnabled === undefined) errors.push('"temporaryStorage.defaultEnabled" is not defined in the configuration file.')
+      if (config.temporaryStorage.maxTTL === undefined) errors.push('"temporaryStorage.maxTTL" is not defined in the configuration file.')
+      if (config.temporaryStorage.minTTL === undefined) errors.push('"temporaryStorage.minTTL" is not defined in the configuration file.')
+      if (config.temporaryStorage.defaultTTL === undefined) errors.push('"temporaryStorage.defaultTTL" is not defined in the configuration file.')
+    }
+
+    if (config.backend === undefined) {
+      errors.push('"backend" is not defined in the configuration file.')
+    }
+    else if (config.backend === null || typeof config.backend !== 'object') {
+      errors.push('"backend" is not an object.')
+    }
+    else {
+      if (config.backend.adapter === undefined) errors.push('"backend.adapter" is not defined in the configuration file.')
+    }
+
+    if (config.watchdog === undefined) {
+      errors.push('"watchdog" is not defined in the configuration file.')
+    }
+    else if (config.watchdog === null || typeof config.watchdog !== 'object') {
+      errors.push('"watchdog" is not an object.')
+    }
+    else {
+      if (config.watchdog.scanInterval === undefined) errors.push('"watchdog.scanInterval" is not defined in the configuration file.')
+    }
+
+    if (config.filename === undefined) {
+      errors.push('"filename" is not defined in the configuration file.')
+    }
+    else if (config.filename === null || typeof config.filename !== 'object') {
+      errors.push('"filename" is not an object.')
+    }
+    else {
+      if (config.filename.forceDefaultAppendFilename === undefined) errors.push('"filename.forceDefaultAppendFilename" is not defined in the configuration file.')
+      if (config.filename.defaultAppendFilename === undefined) errors.push('"filename.defaultAppendFilename" is not defined in the configuration file.')
+      if (config.filename.separator === undefined) errors.push('"filename.separator" is not defined in the configuration file.')
+    }
+
+    if (config.randomString === undefined) {
+      errors.push('"randomString" is not defined in the configuration file.')
+    }
+    else if (config.randomString === null || typeof config.randomString !== 'object') {
+      errors.push('"randomString" is not an object.')
+    }
+    else {
+      if (config.randomString.forceDefaultLength === undefined) errors.push('"randomString.forceDefaultLength" is not defined in the configuration file.')
+      if (config.randomString.maxLength === undefined) errors.push('"randomString.maxLength" is not defined in the configuration file.')
+      if (config.randomString.minLength === undefined) errors.push('"randomString.minLength" is not defined in the configuration file.')
+      if (config.randomString.defaultLength === undefined) errors.push('"randomString.defaultLength" is not defined in the configuration file.')
+    }
+
+    // Throw if parameters are missing
+    this.throwErrors(errors)
+  }
+
+  private typeCheckParameters(config: IConfig) {
+    const errors: string[] = []
+
+    // String type checks
+    if (typeof config.uploadUrl !== 'string') errors.push('"uploadUrl" is not a string.')
+    if (typeof config.uploadDir !== 'string') errors.push('"uploadDir" is not a string.')
+    if (typeof config.backend.adapter !== 'string') errors.push('"backend.adapter" is not a string.')
+    if (typeof config.filename.separator !== 'string') errors.push('"filename.separator" is not a string.')
+
+    if (config.tempDir !== null) {
+      if (typeof config.tempDir !== 'string') errors.push('"tempDir" is not a string.')
+    }
+
+    for (const item of config.extensionBlacklist) {
+      if (typeof item !== 'string') {
+        errors.push('"extensionBlacklist" contains values that are not strings.')
+        break
+      }
+    }
+
+    // Boolean type checks
+    if (typeof config.strict !== 'boolean') errors.push('"strict" is not a boolean.')
+    if (typeof config.temporaryStorage.forceDefaultEnabled !== 'boolean') errors.push('"temporaryStorage.forceDefaultEnabled" is not a boolean.')
+    if (typeof config.temporaryStorage.forceDefaultTTL !== 'boolean') errors.push('"temporaryStorage.forceDefaultTTL" is not a boolean.')
+    if (typeof config.temporaryStorage.defaultEnabled !== 'boolean') errors.push('"temporaryStorage.defaultEnabled" is not a boolean.')
+    if (typeof config.filename.forceDefaultAppendFilename !== 'boolean') errors.push('"filename.forceDefaultAppendFilename" is not a boolean.')
+    if (typeof config.filename.defaultAppendFilename !== 'boolean') errors.push('"filename.defaultAppendFilename" is not a boolean.')
+    if (typeof config.randomString.forceDefaultLength !== 'boolean') errors.push('"randomString.forceDefaultLength" is not a boolean.')
+
+    // Array type checks
+    if (!Array.isArray(config.extensionBlacklist)) errors.push('"extensionBlacklist" is not an array.')
+
+    // Number type checks
+    if (!Number.isInteger(config.port)) errors.push('"port" is not an integer.')
+    if (!Number.isInteger(config.temporaryStorage.maxTTL)) errors.push('"temporaryStorage.maxTTL" is not an integer.')
+    if (!Number.isInteger(config.temporaryStorage.minTTL)) errors.push('"temporaryStorage.minTTL" is not an integer.')
+    if (!Number.isInteger(config.temporaryStorage.defaultTTL)) errors.push('"temporaryStorage.defaultTTL" is not an integer.')
+    if (!Number.isInteger(config.watchdog.scanInterval)) errors.push('"watchdog.scanInterval" is not an integer.')
+    if (!Number.isInteger(config.randomString.maxLength)) errors.push('"randomString.maxLength" is not an integer.')
+    if (!Number.isInteger(config.randomString.minLength)) errors.push('"randomString.minLength" is not an integer.')
+    if (!Number.isInteger(config.randomString.defaultLength)) errors.push('"randomString.defaultLength" is not an integer.')
+
+    // Throw if parameters have the wrong types
+    this.throwErrors(errors)
+  }
+
+  private validateParameters(config: IConfig) {
+    const errors: string[] = []
+
+    if (config.backend.adapter !== 'sqlite') errors.push('"backend.adapter" can only be "sqlite".')
+
+    if (config.temporaryStorage.maxTTL < 0) errors.push('"temporaryStorage.maxTTL" must be equal or greater than 0.')
+    if (config.temporaryStorage.minTTL < 0) errors.push('"temporaryStorage.minTTL" must be equal or greater than 0.')
+    if (config.temporaryStorage.defaultTTL < 0) errors.push('"temporaryStorage.defaultTTL" must be equal or greater than 0.')
+    if (config.watchdog.scanInterval < 0) errors.push('"watchdog.scanInterval" must be equal or greater than 0.')
+    if (config.randomString.maxLength < 1) errors.push('"randomString.maxLength" must be equal or greater than 1.')
+    if (config.randomString.minLength < 1) errors.push('"randomString.minLength" must be equal or greater than 1.')
+    if (config.randomString.defaultLength < 1) errors.push('"randomString.defaultLength" must be equal or greater than 1.')
+
+    if (!config.temporaryStorage.forceDefaultTTL) {
+      if (config.temporaryStorage.maxTTL < config.temporaryStorage.minTTL) errors.push('"temporaryStorage.maxTTL" cannot be smaller than "config.temporaryStorage.minTTL".')
+      if (config.temporaryStorage.minTTL > config.temporaryStorage.maxTTL) errors.push('"temporaryStorage.minTTL" cannot be greater than "config.temporaryStorage.maxTTL".')
+      if (config.temporaryStorage.defaultTTL < config.temporaryStorage.minTTL) errors.push('"temporaryStorage.defaultTTL" cannot be smaller than "config.temporaryStorage.minTTL".')
+      if (config.temporaryStorage.defaultTTL > config.temporaryStorage.maxTTL) errors.push('"temporaryStorage.defaultTTL" cannot be greater than "config.temporaryStorage.maxTTL".')
+    }
+
+    if (!config.randomString.forceDefaultLength) {
+      if (config.randomString.maxLength < config.randomString.minLength) errors.push('"randomString.maxLength" cannot be smaller than "config.randomString.minLength".')
+      if (config.randomString.minLength > config.randomString.maxLength) errors.push('"randomString.minLength" cannot be greater than "config.randomString.maxLength".')
+      if (config.randomString.defaultLength < config.randomString.minLength) errors.push('"randomString.defaultLength" cannot be smaller than "config.randomString.minLength".')
+      if (config.randomString.defaultLength > config.randomString.maxLength) errors.push('"randomString.defaultLength" cannot be greater than "config.randomString.maxLength".')
+    }
+
+    try {
+      fs.accessSync(config.uploadDir, fs.constants.W_OK)
+    }
+    catch (error) {
+      errors.push(`The path defined in "uploadDir" does not exist or does not have write permissions. ${error}`)
+    }
+
+    if (config.tempDir !== null) {
+      try {
+        fs.accessSync(config.tempDir as string, fs.constants.W_OK)
+      }
+      catch (error) {
+        errors.push(`The path defined in "tempDir" does not exist or does not have write permissions. ${error}`)
+      }
+    }
+
+    // Throw if parameters have invalid values
+    this.throwErrors(errors)
+  }
+
+  private throwErrors(errors: string[]): void {
+    if (errors.length > 0) {
+      throw new Error(errors.join('\n'))
+    }
   }
 }
