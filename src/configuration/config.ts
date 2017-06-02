@@ -41,7 +41,7 @@ export class Config implements IConfig {
     readonly defaultLength: number
   }
 
-  readonly extensionBlacklist: string[]
+  readonly extensionBlacklist: string[] | null
 
   constructor() {
     const config = this.loadConfigFile()
@@ -64,7 +64,9 @@ export class Config implements IConfig {
     this.randomString = config.randomString
 
     // Ensure that extensions start with a dot
-    this.extensionBlacklist = config.extensionBlacklist.map(value => !value.startsWith('.') ? `.${value}` : value)
+    this.extensionBlacklist = config.extensionBlacklist !== null
+      ? config.extensionBlacklist.map(value => !value.startsWith('.') ? `.${value}` : value)
+      : config.extensionBlacklist
   }
 
   private loadConfigFile(): IConfig {
@@ -169,13 +171,6 @@ export class Config implements IConfig {
       if (typeof config.tempDir !== 'string') errors.push('"tempDir" is not a string.')
     }
 
-    for (const item of config.extensionBlacklist) {
-      if (typeof item !== 'string') {
-        errors.push('"extensionBlacklist" contains values that are not strings.')
-        break
-      }
-    }
-
     // Boolean type checks
     if (typeof config.strict !== 'boolean') errors.push('"strict" is not a boolean.')
     if (typeof config.temporaryStorage.forceDefaultEnabled !== 'boolean') errors.push('"temporaryStorage.forceDefaultEnabled" is not a boolean.')
@@ -186,7 +181,20 @@ export class Config implements IConfig {
     if (typeof config.randomString.forceDefaultLength !== 'boolean') errors.push('"randomString.forceDefaultLength" is not a boolean.')
 
     // Array type checks
-    if (!Array.isArray(config.extensionBlacklist)) errors.push('"extensionBlacklist" is not an array.')
+    if (config.extensionBlacklist !== null) {
+      if (!Array.isArray(config.extensionBlacklist)) {
+        errors.push('"extensionBlacklist" is not an array.')
+      }
+      else {
+        // Ensure extensionBlacklist's items are of type string
+        for (const item of config.extensionBlacklist) {
+          if (typeof item !== 'string') {
+            errors.push('"extensionBlacklist" contains values that are not strings.')
+            break
+          }
+        }
+      }
+    }
 
     // Number type checks
     if (!Number.isInteger(config.port)) errors.push('"port" is not an integer.')

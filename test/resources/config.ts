@@ -35,5 +35,5 @@ export interface ITestConfig {
     defaultLength: number
   }
 
-  extensionBlacklist: string[]
+  extensionBlacklist: string[] | null
 }

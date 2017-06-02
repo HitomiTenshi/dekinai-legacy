@@ -12,7 +12,9 @@ export class Util implements IUtil {
   constructor(@inject('Config') private config: IConfig) { }
 
   isExtensionAllowed(extension: string): boolean {
-    return this.config.extensionBlacklist.includes(extension) ? false : true
+    return this.config.extensionBlacklist !== null
+      ? !this.config.extensionBlacklist.includes(extension)
+      : true
   }
 
   async getRandomFilename(length: number, extension: string, tryCount: number = 0): Promise<string | null> {

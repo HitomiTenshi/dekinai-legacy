@@ -35,5 +35,5 @@ export interface IConfig {
     readonly defaultLength: number
   }
 
-  readonly extensionBlacklist: string[]
+  readonly extensionBlacklist: string[] | null
 }
