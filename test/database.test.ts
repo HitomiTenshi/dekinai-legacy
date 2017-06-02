@@ -5,9 +5,9 @@ import { File } from '../src/backend'
 import { SQLiteAdapter, SQLiteFile } from '../src/backend/adapters'
 import { Config, createContainer } from '../src/configuration'
 import { IDatabase } from '../src/interfaces'
-import { ITestConfig } from './resources'
+import { TestConfig } from './resources'
 
-const testConfig: ITestConfig = new Config()
+const testConfig = new Config() as TestConfig
 
 describe('Database', () => {
   describe('Instance', () => {

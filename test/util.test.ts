@@ -3,9 +3,9 @@ import * as assert from 'assert'
 
 import { Config, createContainer } from '../src/configuration'
 import { IUtil } from '../src/interfaces'
-import { ITestConfig } from './resources'
+import { TestConfig } from './resources'
 
-const testConfig: ITestConfig = new Config()
+const testConfig = new Config() as TestConfig
 
 describe('Util', () => {
   testConfig.extensionBlacklist = ['.html']

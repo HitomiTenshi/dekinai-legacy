@@ -1,4 +1,6 @@
-export interface ITestConfig {
+import { IConfig } from '../../src/interfaces'
+
+export class TestConfig implements IConfig {
   port: number
   uploadUrl: string
   uploadDir: string
