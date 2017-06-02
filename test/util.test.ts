@@ -1,5 +1,4 @@
 import 'reflect-metadata'
-import 'mocha'
 import * as assert from 'assert'
 
 import { Config, createContainer } from '../src/configuration'

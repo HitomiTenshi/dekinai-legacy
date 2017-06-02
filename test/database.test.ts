@@ -1,5 +1,4 @@
 import 'reflect-metadata'
-import 'mocha'
 import * as assert from 'assert'
 
 import { File } from '../src/backend'
@@ -44,6 +43,8 @@ describe('Database', () => {
   })
 
   describe('Adapter', () => {
+    const testFile = new File(new Date(), 'test.txt')
+
     describe('SQLite', () => {
       testConfig.temporaryStorage.forceDefaultEnabled = false
       testConfig.backend.adapter = 'sqlite'
@@ -51,7 +52,6 @@ describe('Database', () => {
       const container = createContainer(testConfig)
       const database = container.get<IDatabase>('Database')
       const adapter = database.adapter as SQLiteAdapter
-      const testFile = new File(new Date(), 'test.txt')
 
       // Give SQLite 10ms to initialize the database file before continuing
       before(done => setTimeout(done, 10))
@@ -82,10 +82,10 @@ describe('Database', () => {
       })
 
       describe('terminateFiles', () => {
-        it('should terminate the testFile after 10ms', async () => {
-          // Wait 10ms to exceed the testFile's TTL
-          await new Promise(resolve => setTimeout(resolve, 10))
+        // Wait 10ms to exceed the testFile's TTL
+        before(done => setTimeout(done, 10))
 
+        it('should terminate the testFile after 10ms', async () => {
           await database.terminateFiles()
 
           await new Promise(resolve => {
