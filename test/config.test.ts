@@ -1,6 +1,6 @@
 import 'reflect-metadata'
-import { strictEqual, notStrictEqual } from 'assert'
-import { cp, rm } from 'shelljs'
+import * as assert from 'assert'
+import * as shell from 'shelljs'
 
 import { Config } from '../src/configuration'
 
@@ -10,7 +10,7 @@ describe('Config', () => {
       let error: Error | undefined
 
       // Delete the configuration file
-      rm('config.json')
+      shell.rm('config.json')
 
       try {
         new Config()
@@ -19,14 +19,14 @@ describe('Config', () => {
         error = err
       }
 
-      notStrictEqual(error, undefined)
+      assert.notStrictEqual(error, undefined)
     })
 
     it('should load the config file if it is available in the current path', () => {
       let error: Error | undefined
 
       // Get a new configuration file from the template folder
-      cp('../template/config.json', '.')
+      shell.cp('../template/config.json', '.')
 
       try {
         new Config()
@@ -35,7 +35,7 @@ describe('Config', () => {
         error = err
       }
 
-      strictEqual(error, undefined)
+      assert.strictEqual(error, undefined)
     })
   })
 })
