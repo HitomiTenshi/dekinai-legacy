@@ -26,9 +26,9 @@ export class Util implements IUtil {
     }
 
     filename += extension
-    const exists = await fs.exists(path.join(this.config.uploadDir, filename))
+    const fileExists = await fs.exists(path.join(this.config.uploadDir, filename))
 
-    if (!exists) {
+    if (!fileExists) {
       return filename
     }
     else {
