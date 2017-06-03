@@ -1,7 +1,7 @@
 {
   "name": "dekinai.moe",
   "version": "1.0.0",
-  "description": "A highly configurable self hosted file storage server",
+  "description": "A highly configurable self-hosted file storage server",
   "main": "index.js",
   "scripts": {
     "postinstall": "shx cp -n template/config.json . && shx cp template/config.json test/ && shx mkdir -p uploads temp test/uploads test/temp",

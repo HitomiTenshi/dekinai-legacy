@@ -1,4 +1,8 @@
+import * as shell from 'shelljs'
+
+import { createContainer } from '../../src/configuration'
 import { IConfig } from '../../src/interfaces'
+import { Config } from '../../src/configuration'
 
 export class TestConfig implements IConfig {
   port: number
@@ -38,4 +42,37 @@ export class TestConfig implements IConfig {
   }
 
   extensionBlacklist: string[] | null
+
+  constructor() {
+    this.reset()
+  }
+
+  reset(): void {
+    // Restore the default config file
+    shell.cp('../template/config.json', '.')
+
+    // Create a new temporary config instance
+    const config = new Config()
+
+    // Assign values
+    this.port = config.port
+    this.uploadUrl = config.uploadUrl
+    this.uploadDir = config.uploadDir
+    this.tempDir = config.tempDir
+    this.strict = config.strict
+    this.temporaryStorage = config.temporaryStorage
+    this.backend = config.backend
+    this.watchdog = config.watchdog
+    this.filename = config.filename
+    this.randomString = config.randomString
+
+    // Ensure that extensions start with a dot
+    this.extensionBlacklist = config.extensionBlacklist !== null
+      ? config.extensionBlacklist.map(value => !value.startsWith('.') ? `.${value}` : value)
+      : config.extensionBlacklist
+  }
+
+  getContainerType<T>(identifier: string): T {
+    return createContainer(this).get<T>(identifier)
+  }
 }

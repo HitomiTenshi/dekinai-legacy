@@ -4,8 +4,17 @@ import * as shell from 'shelljs'
 import * as fs from 'fs'
 
 import { Config } from '../src/configuration'
+import { TestConfig } from './resources'
+
+const config = new TestConfig()
 
 describe('Config', () => {
+  // Reset config to the default state before each "it"
+  beforeEach(() => config.reset())
+
+  // Restore the default config file after running all tests
+  after(() => shell.cp('../template/config.json', '.'))
+
   describe('loadConfigFile', () => {
     it('should throw an error if the config file cannot be loaded', () => {
       let error: Error | undefined
@@ -61,9 +70,6 @@ describe('Config', () => {
     it('should load the config file if it is available in the current path and contains valid JSON', () => {
       let error: Error | undefined
 
-      // Restore default config file
-      shell.cp('../template/config.json', '.')
-
       try {
         new Config()
       }
@@ -79,7 +85,7 @@ describe('Config', () => {
     it('should throw an error if the config file defines no parameters', () => {
       let error: Error | undefined
 
-      // Create a valid config file that defines no parameters
+      // Create a config file that defines no parameters
       fs.writeFileSync('config.json', '{}')
 
       try {
@@ -91,7 +97,8 @@ describe('Config', () => {
 
       assert.notStrictEqual(error, undefined)
 
-      assert.strictEqual(error!.message.replace(/\s+/g, ''),
+      assert.strictEqual(
+        error!.message,
         `"port" is not defined in the configuration file.
         "uploadUrl" is not defined in the configuration file.
         "uploadDir" is not defined in the configuration file.
@@ -103,29 +110,23 @@ describe('Config', () => {
         "watchdog" is not defined in the configuration file.
         "filename" is not defined in the configuration file.
         "randomString" is not defined in the configuration file.`
-        .replace(/\s+/g, ''))
+        .replace(/^\s+/gm, '')
+      )
     })
 
     it('should throw an error if the config file defines objects as null', () => {
       let error: Error | undefined
 
-      // Create a valid config file that defines objects as null
-      fs.writeFileSync('config.json',
-        `{
-          "port": 3100,
-          "uploadUrl": "https://dekinai.moe",
-          "uploadDir": "./uploads",
-          "tempDir": "./temp",
-          "strict": true,
-          "extensionBlacklist": [],
+      // Set invalid values
+      const testConfig = config as any
+      testConfig.temporaryStorage = null
+      testConfig.backend = null
+      testConfig.watchdog = null
+      testConfig.filename = null
+      testConfig.randomString = null
 
-          "temporaryStorage": null,
-          "backend": null,
-          "watchdog": null,
-          "filename": null,
-          "randomString": null
-        }`
-      )
+      // Create the config file
+      fs.writeFileSync('config.json', JSON.stringify(testConfig))
 
       try {
         new Config()
@@ -136,35 +137,30 @@ describe('Config', () => {
 
       assert.notStrictEqual(error, undefined)
 
-      assert.strictEqual(error!.message.replace(/\s+/g, ''),
+      assert.strictEqual(
+        error!.message,
         `"temporaryStorage" is not an object.
         "backend" is not an object.
         "watchdog" is not an object.
         "filename" is not an object.
         "randomString" is not an object.`
-        .replace(/\s+/g, ''))
+        .replace(/^\s+/gm, '')
+      )
     })
 
     it('should throw an error if the config file defines objects as strings', () => {
       let error: Error | undefined
 
-      // Create a valid config file that defines objects as strings
-      fs.writeFileSync('config.json',
-        `{
-          "port": 3100,
-          "uploadUrl": "https://dekinai.moe",
-          "uploadDir": "./uploads",
-          "tempDir": "./temp",
-          "strict": true,
-          "extensionBlacklist": [],
+      // Set invalid values
+      const testConfig = config as any
+      testConfig.temporaryStorage = 'test'
+      testConfig.backend = 'test'
+      testConfig.watchdog = 'test'
+      testConfig.filename = 'test'
+      testConfig.randomString = 'test'
 
-          "temporaryStorage": "test",
-          "backend": "test",
-          "watchdog": "test",
-          "filename": "test",
-          "randomString": "test"
-        }`
-      )
+      // Create the config file
+      fs.writeFileSync('config.json', JSON.stringify(testConfig))
 
       try {
         new Config()
@@ -175,35 +171,30 @@ describe('Config', () => {
 
       assert.notStrictEqual(error, undefined)
 
-      assert.strictEqual(error!.message.replace(/\s+/g, ''),
+      assert.strictEqual(
+        error!.message,
         `"temporaryStorage" is not an object.
         "backend" is not an object.
         "watchdog" is not an object.
         "filename" is not an object.
         "randomString" is not an object.`
-        .replace(/\s+/g, ''))
+        .replace(/^\s+/gm, '')
+      )
     })
 
     it('should throw an error if the config file defines no parameters inside objects', () => {
       let error: Error | undefined
 
-      // Create a valid config file that defines no parameters inside objects
-      fs.writeFileSync('config.json',
-        `{
-          "port": 3100,
-          "uploadUrl": "https://dekinai.moe",
-          "uploadDir": "./uploads",
-          "tempDir": "./temp",
-          "strict": true,
-          "extensionBlacklist": [],
+      // Set invalid values
+      const testConfig = config as any
+      testConfig.temporaryStorage = {}
+      testConfig.backend = {}
+      testConfig.watchdog = {}
+      testConfig.filename = {}
+      testConfig.randomString = {}
 
-          "temporaryStorage": {},
-          "backend": {},
-          "watchdog": {},
-          "filename": {},
-          "randomString": {}
-        }`
-      )
+      // Create the config file
+      fs.writeFileSync('config.json', JSON.stringify(testConfig))
 
       try {
         new Config()
@@ -214,7 +205,8 @@ describe('Config', () => {
 
       assert.notStrictEqual(error, undefined)
 
-      assert.strictEqual(error!.message.replace(/\s+/g, ''),
+      assert.strictEqual(
+        error!.message,
         `"temporaryStorage.forceDefaultEnabled" is not defined in the configuration file.
         "temporaryStorage.forceDefaultTTL" is not defined in the configuration file.
         "temporaryStorage.defaultEnabled" is not defined in the configuration file.
@@ -230,7 +222,8 @@ describe('Config', () => {
         "randomString.maxLength" is not defined in the configuration file.
         "randomString.minLength" is not defined in the configuration file.
         "randomString.defaultLength" is not defined in the configuration file.`
-        .replace(/\s+/g, ''))
+        .replace(/^\s+/gm, '')
+      )
     })
   })
 
@@ -238,7 +231,7 @@ describe('Config', () => {
     it('should throw an error if the config file defines parameters with wrong types', () => {
       let error: Error | undefined
 
-      // Create a valid config file that defines parameters with wrong types
+      // Create a config file that defines parameters with wrong types
       fs.writeFileSync('config.json',
         `{
           "port": {},
@@ -289,7 +282,8 @@ describe('Config', () => {
 
       assert.notStrictEqual(error, undefined)
 
-      assert.strictEqual(error!.message.replace(/\s+/g, ''),
+      assert.strictEqual(
+        error!.message,
         `"uploadUrl" is not a string.
         "uploadDir" is not a string.
         "backend.adapter" is not a string.
@@ -311,53 +305,18 @@ describe('Config', () => {
         "randomString.maxLength" is not an integer.
         "randomString.minLength" is not an integer.
         "randomString.defaultLength" is not an integer.`
-        .replace(/\s+/g, ''))
+        .replace(/^\s+/gm, '')
+      )
     })
 
     it('should throw an error if the config file defines array items with wrong types', () => {
       let error: Error | undefined
 
-      // Create a valid config file that defines array items with wrong types
-      fs.writeFileSync('config.json',
-        `{
-          "port": 3100,
-          "uploadUrl": "https://dekinai.moe",
-          "uploadDir": "./uploads",
-          "tempDir": "./temp",
-          "strict": true,
-          "extensionBlacklist": [{}],
+      // Set invalid value
+      (config as any).extensionBlacklist = [null]
 
-          "temporaryStorage": {
-            "forceDefaultEnabled": false,
-            "forceDefaultTTL": false,
-            "defaultEnabled": true,
-            "maxTTL": 2592000,
-            "minTTL": 0,
-            "defaultTTL": 604800
-          },
-
-          "backend": {
-            "adapter": "sqlite"
-          },
-
-          "watchdog": {
-            "scanInterval": 900
-          },
-
-          "filename": {
-            "forceDefaultAppendFilename": false,
-            "defaultAppendFilename": false,
-            "separator": "_"
-          },
-
-          "randomString": {
-            "forceDefaultLength": false,
-            "maxLength": 10,
-            "minLength": 5,
-            "defaultLength": 5
-          }
-        }`
-      )
+      // Create the config file
+      fs.writeFileSync('config.json', JSON.stringify(config))
 
       try {
         new Config()
@@ -373,47 +332,12 @@ describe('Config', () => {
     it('should allow certain parameters to define null as their value', () => {
       let error: Error | undefined
 
-      // Create a valid config file that defines null for parameters that allow it
-      fs.writeFileSync('config.json',
-        `{
-          "port": 3100,
-          "uploadUrl": "https://dekinai.moe",
-          "uploadDir": "./uploads",
-          "tempDir": null,
-          "strict": true,
-          "extensionBlacklist": null,
+      // Set invalid values
+      config.tempDir = null
+      config.extensionBlacklist = null
 
-          "temporaryStorage": {
-            "forceDefaultEnabled": false,
-            "forceDefaultTTL": false,
-            "defaultEnabled": true,
-            "maxTTL": 2592000,
-            "minTTL": 0,
-            "defaultTTL": 604800
-          },
-
-          "backend": {
-            "adapter": "sqlite"
-          },
-
-          "watchdog": {
-            "scanInterval": 900
-          },
-
-          "filename": {
-            "forceDefaultAppendFilename": false,
-            "defaultAppendFilename": false,
-            "separator": "_"
-          },
-
-          "randomString": {
-            "forceDefaultLength": false,
-            "maxLength": 10,
-            "minLength": 5,
-            "defaultLength": 5
-          }
-        }`
-      )
+      // Create the config file
+      fs.writeFileSync('config.json', JSON.stringify(config))
 
       try {
         new Config()
@@ -427,54 +351,15 @@ describe('Config', () => {
   })
 
   describe('validateParameters', () => {
-    // Restore default config file after running all tests
-    after(() => shell.cp('../template/config.json', '.'))
-
     describe('backend.adapter', () => {
       it('should throw an error if the value is not "sqlite"', () => {
         let error: Error | undefined
 
-        // Create a valid config file that defines backend.adapter with an invalid value
-        fs.writeFileSync('config.json',
-          `{
-            "port": 3100,
-            "uploadUrl": "https://dekinai.moe",
-            "uploadDir": "./uploads",
-            "tempDir": "./temp",
-            "strict": true,
-            "extensionBlacklist": [],
+        // Set invalid value
+        (config.backend as any).adapter = 'invalid'
 
-            "temporaryStorage": {
-              "forceDefaultEnabled": false,
-              "forceDefaultTTL": false,
-              "defaultEnabled": true,
-              "maxTTL": 2592000,
-              "minTTL": 0,
-              "defaultTTL": 604800
-            },
-
-            "backend": {
-              "adapter": "invalid"
-            },
-
-            "watchdog": {
-              "scanInterval": 900
-            },
-
-            "filename": {
-              "forceDefaultAppendFilename": false,
-              "defaultAppendFilename": false,
-              "separator": "_"
-            },
-
-            "randomString": {
-              "forceDefaultLength": false,
-              "maxLength": 10,
-              "minLength": 5,
-              "defaultLength": 5
-            }
-          }`
-        )
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
 
         try {
           new Config()
@@ -492,47 +377,15 @@ describe('Config', () => {
       it('should throw an error if the value is below 0', () => {
         let error: Error | undefined
 
-        // Create a valid config file that defines temporaryStorage.maxTTL with a value below 0
-        fs.writeFileSync('config.json',
-          `{
-            "port": 3100,
-            "uploadUrl": "https://dekinai.moe",
-            "uploadDir": "./uploads",
-            "tempDir": "./temp",
-            "strict": true,
-            "extensionBlacklist": [],
+        // Set invalid value
+        config.temporaryStorage.maxTTL = -1
 
-            "temporaryStorage": {
-              "forceDefaultEnabled": false,
-              "forceDefaultTTL": false,
-              "defaultEnabled": true,
-              "maxTTL": -1,
-              "minTTL": -1,
-              "defaultTTL": -1
-            },
+        // Adjust dependent values
+        config.temporaryStorage.minTTL = 0
+        config.temporaryStorage.defaultTTL = 0
 
-            "backend": {
-              "adapter": "sqlite"
-            },
-
-            "watchdog": {
-              "scanInterval": 900
-            },
-
-            "filename": {
-              "forceDefaultAppendFilename": false,
-              "defaultAppendFilename": false,
-              "separator": "_"
-            },
-
-            "randomString": {
-              "forceDefaultLength": false,
-              "maxLength": 10,
-              "minLength": 5,
-              "defaultLength": 5
-            }
-          }`
-        )
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
 
         try {
           new Config()
@@ -543,57 +396,28 @@ describe('Config', () => {
 
         assert.notStrictEqual(error, undefined)
 
-        assert.strictEqual(error!.message.replace(/\s+/g, ''),
+        assert.strictEqual(
+          error!.message,
           `"temporaryStorage.maxTTL" must be equal or greater than 0.
-          "temporaryStorage.minTTL" must be equal or greater than 0.
-          "temporaryStorage.defaultTTL" must be equal or greater than 0.`
-          .replace(/\s+/g, ''))
+          "temporaryStorage.maxTTL" cannot be smaller than "config.temporaryStorage.minTTL".
+          "temporaryStorage.minTTL" cannot be greater than "config.temporaryStorage.maxTTL".
+          "temporaryStorage.defaultTTL" cannot be greater than "config.temporaryStorage.maxTTL".`
+          .replace(/^\s+/gm, '')
+        )
       })
 
       it('should throw an error if the value is below temporaryStorage.minTTL', () => {
         let error: Error | undefined
 
-        // Create a valid config file that defines temporaryStorage.maxTTL with a value below temporaryStorage.minTTL
-        fs.writeFileSync('config.json',
-          `{
-            "port": 3100,
-            "uploadUrl": "https://dekinai.moe",
-            "uploadDir": "./uploads",
-            "tempDir": "./temp",
-            "strict": true,
-            "extensionBlacklist": [],
+        // Set invalid value
+        config.temporaryStorage.maxTTL = 0
 
-            "temporaryStorage": {
-              "forceDefaultEnabled": false,
-              "forceDefaultTTL": false,
-              "defaultEnabled": true,
-              "maxTTL": 604799,
-              "minTTL": 604800,
-              "defaultTTL": 604800
-            },
+        // Adjust dependent values
+        config.temporaryStorage.minTTL = 1
+        config.temporaryStorage.defaultTTL = 1
 
-            "backend": {
-              "adapter": "sqlite"
-            },
-
-            "watchdog": {
-              "scanInterval": 900
-            },
-
-            "filename": {
-              "forceDefaultAppendFilename": false,
-              "defaultAppendFilename": false,
-              "separator": "_"
-            },
-
-            "randomString": {
-              "forceDefaultLength": false,
-              "maxLength": 10,
-              "minLength": 5,
-              "defaultLength": 5
-            }
-          }`
-        )
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
 
         try {
           new Config()
@@ -604,11 +428,13 @@ describe('Config', () => {
 
         assert.notStrictEqual(error, undefined)
 
-        assert.strictEqual(error!.message.replace(/\s+/g, ''),
+        assert.strictEqual(
+          error!.message,
           `"temporaryStorage.maxTTL" cannot be smaller than "config.temporaryStorage.minTTL".
           "temporaryStorage.minTTL" cannot be greater than "config.temporaryStorage.maxTTL".
           "temporaryStorage.defaultTTL" cannot be greater than "config.temporaryStorage.maxTTL".`
-          .replace(/\s+/g, ''))
+          .replace(/^\s+/gm, '')
+        )
       })
     })
 
@@ -616,47 +442,15 @@ describe('Config', () => {
       it('should throw an error if the value is below 0', () => {
         let error: Error | undefined
 
-        // Create a valid config file that defines temporaryStorage.minTTL with a value below 0
-        fs.writeFileSync('config.json',
-          `{
-            "port": 3100,
-            "uploadUrl": "https://dekinai.moe",
-            "uploadDir": "./uploads",
-            "tempDir": "./temp",
-            "strict": true,
-            "extensionBlacklist": [],
+        // Set invalid value
+        config.temporaryStorage.minTTL = -1
 
-            "temporaryStorage": {
-              "forceDefaultEnabled": false,
-              "forceDefaultTTL": false,
-              "defaultEnabled": true,
-              "maxTTL": 2592000,
-              "minTTL": -1,
-              "defaultTTL": 604800
-            },
+        // Adjust dependent values
+        config.temporaryStorage.maxTTL = 0
+        config.temporaryStorage.defaultTTL = 0
 
-            "backend": {
-              "adapter": "sqlite"
-            },
-
-            "watchdog": {
-              "scanInterval": 900
-            },
-
-            "filename": {
-              "forceDefaultAppendFilename": false,
-              "defaultAppendFilename": false,
-              "separator": "_"
-            },
-
-            "randomString": {
-              "forceDefaultLength": false,
-              "maxLength": 10,
-              "minLength": 5,
-              "defaultLength": 5
-            }
-          }`
-        )
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
 
         try {
           new Config()
@@ -672,47 +466,15 @@ describe('Config', () => {
       it('should throw an error if the value is above temporaryStorage.maxTTL', () => {
         let error: Error | undefined
 
-        // Create a valid config file that defines temporaryStorage.minTTL with a value above temporaryStorage.maxTTL
-        fs.writeFileSync('config.json',
-          `{
-            "port": 3100,
-            "uploadUrl": "https://dekinai.moe",
-            "uploadDir": "./uploads",
-            "tempDir": "./temp",
-            "strict": true,
-            "extensionBlacklist": [],
+        // Set invalid value
+        config.temporaryStorage.minTTL = 1
 
-            "temporaryStorage": {
-              "forceDefaultEnabled": false,
-              "forceDefaultTTL": false,
-              "defaultEnabled": true,
-              "maxTTL": 604799,
-              "minTTL": 604800,
-              "defaultTTL": 604800
-            },
+        // Adjust dependent values
+        config.temporaryStorage.maxTTL = 0
+        config.temporaryStorage.defaultTTL = 1
 
-            "backend": {
-              "adapter": "sqlite"
-            },
-
-            "watchdog": {
-              "scanInterval": 900
-            },
-
-            "filename": {
-              "forceDefaultAppendFilename": false,
-              "defaultAppendFilename": false,
-              "separator": "_"
-            },
-
-            "randomString": {
-              "forceDefaultLength": false,
-              "maxLength": 10,
-              "minLength": 5,
-              "defaultLength": 5
-            }
-          }`
-        )
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
 
         try {
           new Config()
@@ -723,11 +485,13 @@ describe('Config', () => {
 
         assert.notStrictEqual(error, undefined)
 
-        assert.strictEqual(error!.message.replace(/\s+/g, ''),
+        assert.strictEqual(
+          error!.message,
           `"temporaryStorage.maxTTL" cannot be smaller than "config.temporaryStorage.minTTL".
           "temporaryStorage.minTTL" cannot be greater than "config.temporaryStorage.maxTTL".
           "temporaryStorage.defaultTTL" cannot be greater than "config.temporaryStorage.maxTTL".`
-          .replace(/\s+/g, ''))
+          .replace(/^\s+/gm, '')
+        )
       })
     })
 
@@ -735,47 +499,15 @@ describe('Config', () => {
       it('should throw an error if the value is below 0', () => {
         let error: Error | undefined
 
-        // Create a valid config file that defines temporaryStorage.defaultTTL with a value below 0
-        fs.writeFileSync('config.json',
-          `{
-            "port": 3100,
-            "uploadUrl": "https://dekinai.moe",
-            "uploadDir": "./uploads",
-            "tempDir": "./temp",
-            "strict": true,
-            "extensionBlacklist": [],
+        // Set invalid value
+        config.temporaryStorage.defaultTTL = -1
 
-            "temporaryStorage": {
-              "forceDefaultEnabled": false,
-              "forceDefaultTTL": false,
-              "defaultEnabled": true,
-              "maxTTL": 2592000,
-              "minTTL": -1,
-              "defaultTTL": -1
-            },
+        // Adjust dependent values
+        config.temporaryStorage.maxTTL = 0
+        config.temporaryStorage.minTTL = 0
 
-            "backend": {
-              "adapter": "sqlite"
-            },
-
-            "watchdog": {
-              "scanInterval": 900
-            },
-
-            "filename": {
-              "forceDefaultAppendFilename": false,
-              "defaultAppendFilename": false,
-              "separator": "_"
-            },
-
-            "randomString": {
-              "forceDefaultLength": false,
-              "maxLength": 10,
-              "minLength": 5,
-              "defaultLength": 5
-            }
-          }`
-        )
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
 
         try {
           new Config()
@@ -786,56 +518,26 @@ describe('Config', () => {
 
         assert.notStrictEqual(error, undefined)
 
-        assert.strictEqual(error!.message.replace(/\s+/g, ''),
-          `"temporaryStorage.minTTL" must be equal or greater than 0.
-          "temporaryStorage.defaultTTL" must be equal or greater than 0.`
-          .replace(/\s+/g, ''))
+        assert.strictEqual(
+          error!.message,
+          `"temporaryStorage.defaultTTL" must be equal or greater than 0.
+          "temporaryStorage.defaultTTL" cannot be smaller than "config.temporaryStorage.minTTL".`
+          .replace(/^\s+/gm, '')
+        )
       })
 
       it('should throw an error if the value is below temporaryStorage.minTTL', () => {
         let error: Error | undefined
 
-        // Create a valid config file that defines temporaryStorage.defaultTTL with a value below temporaryStorage.minTTL
-        fs.writeFileSync('config.json',
-          `{
-            "port": 3100,
-            "uploadUrl": "https://dekinai.moe",
-            "uploadDir": "./uploads",
-            "tempDir": "./temp",
-            "strict": true,
-            "extensionBlacklist": [],
+        // Set invalid value
+        config.temporaryStorage.defaultTTL = 0
 
-            "temporaryStorage": {
-              "forceDefaultEnabled": false,
-              "forceDefaultTTL": false,
-              "defaultEnabled": true,
-              "maxTTL": 2592000,
-              "minTTL": 604800,
-              "defaultTTL": 604799
-            },
+        // Adjust dependent values
+        config.temporaryStorage.maxTTL = 1
+        config.temporaryStorage.minTTL = 1
 
-            "backend": {
-              "adapter": "sqlite"
-            },
-
-            "watchdog": {
-              "scanInterval": 900
-            },
-
-            "filename": {
-              "forceDefaultAppendFilename": false,
-              "defaultAppendFilename": false,
-              "separator": "_"
-            },
-
-            "randomString": {
-              "forceDefaultLength": false,
-              "maxLength": 10,
-              "minLength": 5,
-              "defaultLength": 5
-            }
-          }`
-        )
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
 
         try {
           new Config()
@@ -851,47 +553,15 @@ describe('Config', () => {
       it('should throw an error if the value is above temporaryStorage.maxTTL', () => {
         let error: Error | undefined
 
-        // Create a valid config file that defines temporaryStorage.defaultTTL with a value above temporaryStorage.maxTTL
-        fs.writeFileSync('config.json',
-          `{
-            "port": 3100,
-            "uploadUrl": "https://dekinai.moe",
-            "uploadDir": "./uploads",
-            "tempDir": "./temp",
-            "strict": true,
-            "extensionBlacklist": [],
+        // Set invalid value
+        config.temporaryStorage.defaultTTL = 1
 
-            "temporaryStorage": {
-              "forceDefaultEnabled": false,
-              "forceDefaultTTL": false,
-              "defaultEnabled": true,
-              "maxTTL": 2592000,
-              "minTTL": 0,
-              "defaultTTL": 2592001
-            },
+        // Adjust dependent values
+        config.temporaryStorage.maxTTL = 0
+        config.temporaryStorage.minTTL = 0
 
-            "backend": {
-              "adapter": "sqlite"
-            },
-
-            "watchdog": {
-              "scanInterval": 900
-            },
-
-            "filename": {
-              "forceDefaultAppendFilename": false,
-              "defaultAppendFilename": false,
-              "separator": "_"
-            },
-
-            "randomString": {
-              "forceDefaultLength": false,
-              "maxLength": 10,
-              "minLength": 5,
-              "defaultLength": 5
-            }
-          }`
-        )
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
 
         try {
           new Config()

@@ -1,19 +1,18 @@
 import 'reflect-metadata'
 import * as assert from 'assert'
 
-import { Config, createContainer } from '../src/configuration'
 import { IUtil } from '../src/interfaces'
 import { TestConfig } from './resources'
 
-const testConfig = new Config() as TestConfig
+const config = new TestConfig()
 
 describe('Util', () => {
-  testConfig.extensionBlacklist = ['.html']
-
-  const container = createContainer(testConfig)
-  const util = container.get<IUtil>('Util')
+  const util = config.getContainerType<IUtil>('Util')
 
   describe('isExtensionAllowed', () => {
+    // Set extensionBlacklist to disallow ".html"
+    before(() => config.extensionBlacklist = ['.html'])
+
     it('should return true for ".png"', () => {
       assert.strictEqual(util.isExtensionAllowed('.png'), true)
     })
