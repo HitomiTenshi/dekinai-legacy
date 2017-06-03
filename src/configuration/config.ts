@@ -46,7 +46,7 @@ export class Config implements IConfig {
   constructor() {
     const config = this.loadConfigFile()
 
-    // Validate configuration file
+    // Validate the config file
     this.ensureParameters(config)
     this.typeCheckParameters(config)
     this.validateParameters(config)
@@ -70,12 +70,12 @@ export class Config implements IConfig {
   }
 
   private loadConfigFile(): IConfig {
-    // Ensure that the configuration file exists
+    // Ensure that the config file exists
     if (!fs.existsSync('config.json')) {
       throw Error('Configuration file "config.json" not found. Please check the template folder for an example configuration file.')
     }
 
-    // Parse the configuration file
+    // Parse the config file
     try {
       return JSON.parse(fs.readFileSync('config.json').toString())
     }
