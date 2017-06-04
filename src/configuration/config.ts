@@ -215,15 +215,13 @@ export class Config implements IConfig {
 
     if (config.backend.adapter !== 'sqlite') errors.push('"backend.adapter" can only be "sqlite".')
 
-    if (config.temporaryStorage.maxTTL < 0) errors.push('"temporaryStorage.maxTTL" must be equal or greater than 0.')
-    if (config.temporaryStorage.minTTL < 0) errors.push('"temporaryStorage.minTTL" must be equal or greater than 0.')
     if (config.temporaryStorage.defaultTTL < 0) errors.push('"temporaryStorage.defaultTTL" must be equal or greater than 0.')
     if (config.watchdog.scanInterval < 0) errors.push('"watchdog.scanInterval" must be equal or greater than 0.')
-    if (config.randomString.maxLength < 1) errors.push('"randomString.maxLength" must be equal or greater than 1.')
-    if (config.randomString.minLength < 1) errors.push('"randomString.minLength" must be equal or greater than 1.')
     if (config.randomString.defaultLength < 1) errors.push('"randomString.defaultLength" must be equal or greater than 1.')
 
     if (!config.temporaryStorage.forceDefaultTTL) {
+      if (config.temporaryStorage.maxTTL < 0) errors.push('"temporaryStorage.maxTTL" must be equal or greater than 0.')
+      if (config.temporaryStorage.minTTL < 0) errors.push('"temporaryStorage.minTTL" must be equal or greater than 0.')
       if (config.temporaryStorage.maxTTL < config.temporaryStorage.minTTL) errors.push('"temporaryStorage.maxTTL" cannot be smaller than "temporaryStorage.minTTL".')
       if (config.temporaryStorage.minTTL > config.temporaryStorage.maxTTL) errors.push('"temporaryStorage.minTTL" cannot be greater than "temporaryStorage.maxTTL".')
       if (config.temporaryStorage.defaultTTL < config.temporaryStorage.minTTL) errors.push('"temporaryStorage.defaultTTL" cannot be smaller than "temporaryStorage.minTTL".')
@@ -231,6 +229,8 @@ export class Config implements IConfig {
     }
 
     if (!config.randomString.forceDefaultLength) {
+      if (config.randomString.maxLength < 1) errors.push('"randomString.maxLength" must be equal or greater than 1.')
+      if (config.randomString.minLength < 1) errors.push('"randomString.minLength" must be equal or greater than 1.')
       if (config.randomString.maxLength < config.randomString.minLength) errors.push('"randomString.maxLength" cannot be smaller than "randomString.minLength".')
       if (config.randomString.minLength > config.randomString.maxLength) errors.push('"randomString.minLength" cannot be greater than "randomString.maxLength".')
       if (config.randomString.defaultLength < config.randomString.minLength) errors.push('"randomString.defaultLength" cannot be smaller than "randomString.minLength".')
