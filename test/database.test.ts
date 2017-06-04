@@ -86,7 +86,8 @@ describe('Database', () => {
                 assert.strictEqual(testFile.terminationDate.getTime(), file.terminationTime)
                 assert.strictEqual(file.filename, testFile.filename)
                 resolve()
-            })
+              }
+            )
           })
         })
       })
@@ -105,7 +106,8 @@ describe('Database', () => {
                 assert.strictEqual(Boolean(error), false)
                 assert.strictEqual(file, undefined)
                 resolve()
-            })
+              }
+            )
           })
         })
       })

@@ -7,7 +7,10 @@ import { TestConfig } from './resources'
 const config = new TestConfig()
 
 describe('Util', () => {
-  const util = config.getContainerType<IUtil>('Util')
+  let util: IUtil
+
+  // Get Util from the IoC container
+  before(() => util = config.getContainerType<IUtil>('Util'))
 
   describe('isExtensionAllowed', () => {
     // Set extensionBlacklist to disallow ".html"

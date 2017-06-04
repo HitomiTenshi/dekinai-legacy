@@ -224,17 +224,17 @@ export class Config implements IConfig {
     if (config.randomString.defaultLength < 1) errors.push('"randomString.defaultLength" must be equal or greater than 1.')
 
     if (!config.temporaryStorage.forceDefaultTTL) {
-      if (config.temporaryStorage.maxTTL < config.temporaryStorage.minTTL) errors.push('"temporaryStorage.maxTTL" cannot be smaller than "config.temporaryStorage.minTTL".')
-      if (config.temporaryStorage.minTTL > config.temporaryStorage.maxTTL) errors.push('"temporaryStorage.minTTL" cannot be greater than "config.temporaryStorage.maxTTL".')
-      if (config.temporaryStorage.defaultTTL < config.temporaryStorage.minTTL) errors.push('"temporaryStorage.defaultTTL" cannot be smaller than "config.temporaryStorage.minTTL".')
-      if (config.temporaryStorage.defaultTTL > config.temporaryStorage.maxTTL) errors.push('"temporaryStorage.defaultTTL" cannot be greater than "config.temporaryStorage.maxTTL".')
+      if (config.temporaryStorage.maxTTL < config.temporaryStorage.minTTL) errors.push('"temporaryStorage.maxTTL" cannot be smaller than "temporaryStorage.minTTL".')
+      if (config.temporaryStorage.minTTL > config.temporaryStorage.maxTTL) errors.push('"temporaryStorage.minTTL" cannot be greater than "temporaryStorage.maxTTL".')
+      if (config.temporaryStorage.defaultTTL < config.temporaryStorage.minTTL) errors.push('"temporaryStorage.defaultTTL" cannot be smaller than "temporaryStorage.minTTL".')
+      if (config.temporaryStorage.defaultTTL > config.temporaryStorage.maxTTL) errors.push('"temporaryStorage.defaultTTL" cannot be greater than "temporaryStorage.maxTTL".')
     }
 
     if (!config.randomString.forceDefaultLength) {
-      if (config.randomString.maxLength < config.randomString.minLength) errors.push('"randomString.maxLength" cannot be smaller than "config.randomString.minLength".')
-      if (config.randomString.minLength > config.randomString.maxLength) errors.push('"randomString.minLength" cannot be greater than "config.randomString.maxLength".')
-      if (config.randomString.defaultLength < config.randomString.minLength) errors.push('"randomString.defaultLength" cannot be smaller than "config.randomString.minLength".')
-      if (config.randomString.defaultLength > config.randomString.maxLength) errors.push('"randomString.defaultLength" cannot be greater than "config.randomString.maxLength".')
+      if (config.randomString.maxLength < config.randomString.minLength) errors.push('"randomString.maxLength" cannot be smaller than "randomString.minLength".')
+      if (config.randomString.minLength > config.randomString.maxLength) errors.push('"randomString.minLength" cannot be greater than "randomString.maxLength".')
+      if (config.randomString.defaultLength < config.randomString.minLength) errors.push('"randomString.defaultLength" cannot be smaller than "randomString.minLength".')
+      if (config.randomString.defaultLength > config.randomString.maxLength) errors.push('"randomString.defaultLength" cannot be greater than "randomString.maxLength".')
     }
 
     try {

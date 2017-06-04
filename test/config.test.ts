@@ -399,9 +399,9 @@ describe('Config', () => {
         assert.strictEqual(
           error!.message,
           `"temporaryStorage.maxTTL" must be equal or greater than 0.
-          "temporaryStorage.maxTTL" cannot be smaller than "config.temporaryStorage.minTTL".
-          "temporaryStorage.minTTL" cannot be greater than "config.temporaryStorage.maxTTL".
-          "temporaryStorage.defaultTTL" cannot be greater than "config.temporaryStorage.maxTTL".`
+          "temporaryStorage.maxTTL" cannot be smaller than "temporaryStorage.minTTL".
+          "temporaryStorage.minTTL" cannot be greater than "temporaryStorage.maxTTL".
+          "temporaryStorage.defaultTTL" cannot be greater than "temporaryStorage.maxTTL".`
           .replace(/^\s+/gm, '')
         )
       })
@@ -430,9 +430,9 @@ describe('Config', () => {
 
         assert.strictEqual(
           error!.message,
-          `"temporaryStorage.maxTTL" cannot be smaller than "config.temporaryStorage.minTTL".
-          "temporaryStorage.minTTL" cannot be greater than "config.temporaryStorage.maxTTL".
-          "temporaryStorage.defaultTTL" cannot be greater than "config.temporaryStorage.maxTTL".`
+          `"temporaryStorage.maxTTL" cannot be smaller than "temporaryStorage.minTTL".
+          "temporaryStorage.minTTL" cannot be greater than "temporaryStorage.maxTTL".
+          "temporaryStorage.defaultTTL" cannot be greater than "temporaryStorage.maxTTL".`
           .replace(/^\s+/gm, '')
         )
       })
@@ -487,9 +487,9 @@ describe('Config', () => {
 
         assert.strictEqual(
           error!.message,
-          `"temporaryStorage.maxTTL" cannot be smaller than "config.temporaryStorage.minTTL".
-          "temporaryStorage.minTTL" cannot be greater than "config.temporaryStorage.maxTTL".
-          "temporaryStorage.defaultTTL" cannot be greater than "config.temporaryStorage.maxTTL".`
+          `"temporaryStorage.maxTTL" cannot be smaller than "temporaryStorage.minTTL".
+          "temporaryStorage.minTTL" cannot be greater than "temporaryStorage.maxTTL".
+          "temporaryStorage.defaultTTL" cannot be greater than "temporaryStorage.maxTTL".`
           .replace(/^\s+/gm, '')
         )
       })
@@ -521,7 +521,7 @@ describe('Config', () => {
         assert.strictEqual(
           error!.message,
           `"temporaryStorage.defaultTTL" must be equal or greater than 0.
-          "temporaryStorage.defaultTTL" cannot be smaller than "config.temporaryStorage.minTTL".`
+          "temporaryStorage.defaultTTL" cannot be smaller than "temporaryStorage.minTTL".`
           .replace(/^\s+/gm, '')
         )
       })
@@ -547,7 +547,7 @@ describe('Config', () => {
         }
 
         assert.notStrictEqual(error, undefined)
-        assert.strictEqual(error!.message, '"temporaryStorage.defaultTTL" cannot be smaller than "config.temporaryStorage.minTTL".')
+        assert.strictEqual(error!.message, '"temporaryStorage.defaultTTL" cannot be smaller than "temporaryStorage.minTTL".')
       })
 
       it('should throw an error if the value is above temporaryStorage.maxTTL', () => {
@@ -571,7 +571,275 @@ describe('Config', () => {
         }
 
         assert.notStrictEqual(error, undefined)
-        assert.strictEqual(error!.message, '"temporaryStorage.defaultTTL" cannot be greater than "config.temporaryStorage.maxTTL".')
+        assert.strictEqual(error!.message, '"temporaryStorage.defaultTTL" cannot be greater than "temporaryStorage.maxTTL".')
+      })
+    })
+
+    describe('watchdog.scanInterval', () => {
+      it('should throw an error if the value is below 0', () => {
+        let error: Error | undefined
+
+        // Set invalid value
+        config.watchdog.scanInterval = -1
+
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
+
+        try {
+          new Config()
+        }
+        catch (err) {
+          error = err
+        }
+
+        assert.notStrictEqual(error, undefined)
+        assert.strictEqual(error!.message, '"watchdog.scanInterval" must be equal or greater than 0.')
+      })
+    })
+
+    describe('randomString.maxLength', () => {
+      it('should throw an error if the value is below 1', () => {
+        let error: Error | undefined
+
+        // Set invalid value
+        config.randomString.maxLength = 0
+
+        // Adjust dependent values
+        config.randomString.minLength = 1
+        config.randomString.defaultLength = 1
+
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
+
+        try {
+          new Config()
+        }
+        catch (err) {
+          error = err
+        }
+
+        assert.notStrictEqual(error, undefined)
+
+        assert.strictEqual(
+          error!.message,
+          `"randomString.maxLength" must be equal or greater than 1.
+          "randomString.maxLength" cannot be smaller than "randomString.minLength".
+          "randomString.minLength" cannot be greater than "randomString.maxLength".
+          "randomString.defaultLength" cannot be greater than "randomString.maxLength".`
+          .replace(/^\s+/gm, '')
+        )
+      })
+
+      it('should throw an error if the value is below randomString.minLength', () => {
+        let error: Error | undefined
+
+        // Set invalid value
+        config.randomString.maxLength = 1
+
+        // Adjust dependent values
+        config.randomString.minLength = 2
+        config.randomString.defaultLength = 2
+
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
+
+        try {
+          new Config()
+        }
+        catch (err) {
+          error = err
+        }
+
+        assert.notStrictEqual(error, undefined)
+
+        assert.strictEqual(
+          error!.message,
+          `"randomString.maxLength" cannot be smaller than "randomString.minLength".
+          "randomString.minLength" cannot be greater than "randomString.maxLength".
+          "randomString.defaultLength" cannot be greater than "randomString.maxLength".`
+          .replace(/^\s+/gm, '')
+        )
+      })
+    })
+
+    describe('randomString.minLength', () => {
+      it('should throw an error if the value is below 1', () => {
+        let error: Error | undefined
+
+        // Set invalid value
+        config.randomString.minLength = 0
+
+        // Adjust dependent values
+        config.randomString.maxLength = 1
+        config.randomString.defaultLength = 1
+
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
+
+        try {
+          new Config()
+        }
+        catch (err) {
+          error = err
+        }
+
+        assert.notStrictEqual(error, undefined)
+        assert.strictEqual(error!.message, '"randomString.minLength" must be equal or greater than 1.')
+      })
+
+      it('should throw an error if the value is above randomString.maxLength', () => {
+        let error: Error | undefined
+
+        // Set invalid value
+        config.randomString.minLength = 2
+
+        // Adjust dependent values
+        config.randomString.maxLength = 1
+        config.randomString.defaultLength = 2
+
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
+
+        try {
+          new Config()
+        }
+        catch (err) {
+          error = err
+        }
+
+        assert.notStrictEqual(error, undefined)
+
+        assert.strictEqual(
+          error!.message,
+          `"randomString.maxLength" cannot be smaller than "randomString.minLength".
+          "randomString.minLength" cannot be greater than "randomString.maxLength".
+          "randomString.defaultLength" cannot be greater than "randomString.maxLength".`
+          .replace(/^\s+/gm, '')
+        )
+      })
+    })
+
+    describe('randomString.defaultLength', () => {
+      it('should throw an error if the value is below 1', () => {
+        let error: Error | undefined
+
+        // Set invalid value
+        config.randomString.defaultLength = 0
+
+        // Adjust dependent values
+        config.randomString.maxLength = 1
+        config.randomString.minLength = 1
+
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
+
+        try {
+          new Config()
+        }
+        catch (err) {
+          error = err
+        }
+
+        assert.notStrictEqual(error, undefined)
+
+        assert.strictEqual(
+          error!.message,
+          `"randomString.defaultLength" must be equal or greater than 1.
+          "randomString.defaultLength" cannot be smaller than "randomString.minLength".`
+          .replace(/^\s+/gm, '')
+        )
+      })
+
+      it('should throw an error if the value is below randomString.minLength', () => {
+        let error: Error | undefined
+
+        // Set invalid value
+        config.randomString.defaultLength = 1
+
+        // Adjust dependent values
+        config.randomString.maxLength = 2
+        config.randomString.minLength = 2
+
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
+
+        try {
+          new Config()
+        }
+        catch (err) {
+          error = err
+        }
+
+        assert.notStrictEqual(error, undefined)
+        assert.strictEqual(error!.message, '"randomString.defaultLength" cannot be smaller than "randomString.minLength".')
+      })
+
+      it('should throw an error if the value is above randomString.maxLength', () => {
+        let error: Error | undefined
+
+        // Set invalid value
+        config.randomString.defaultLength = 2
+
+        // Adjust dependent values
+        config.randomString.maxLength = 1
+        config.randomString.minLength = 1
+
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
+
+        try {
+          new Config()
+        }
+        catch (err) {
+          error = err
+        }
+
+        assert.notStrictEqual(error, undefined)
+        assert.strictEqual(error!.message, '"randomString.defaultLength" cannot be greater than "randomString.maxLength".')
+      })
+    })
+
+    describe('uploadDir', () => {
+      it('should throw an error if the value points to a path that does not exist', () => {
+        let error: Error | undefined
+
+        // Set invalid value
+        config.uploadDir = './invalid_path'
+
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
+
+        try {
+          new Config()
+        }
+        catch (err) {
+          error = err
+        }
+
+        assert.notStrictEqual(error, undefined)
+        assert.strictEqual(error!.message.startsWith('The path defined in "uploadDir" does not exist or does not have write permissions.'), true)
+      })
+    })
+
+    describe('tempDir', () => {
+      it('should throw an error if the value points to a path that does not exist', () => {
+        let error: Error | undefined
+
+        // Set invalid value
+        config.tempDir = './invalid_path'
+
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
+
+        try {
+          new Config()
+        }
+        catch (err) {
+          error = err
+        }
+
+        assert.notStrictEqual(error, undefined)
+        assert.strictEqual(error!.message.startsWith('The path defined in "tempDir" does not exist or does not have write permissions.'), true)
       })
     })
   })
