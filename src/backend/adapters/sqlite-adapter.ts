@@ -49,9 +49,7 @@ export class SQLiteAdapter implements IDatabaseAdapter {
     return new Promise<void>(resolve => {
       this.database.all(`SELECT * FROM files WHERE terminationTime < ${now}`, async (error, files: SQLiteFile[]) => {
         if (error) {
-          if (error.message !== 'SQLITE_ERROR: no such table: files') {
-            console.log(error.message)
-          }
+          console.log(error.message)
         }
         else {
           for (const file of files) {

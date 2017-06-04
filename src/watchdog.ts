@@ -19,6 +19,9 @@ export class Watchdog implements IWatchdog {
   }
 
   async start(): Promise<void> {
+    // Wait 10 ms before starting to give the database enough time to initialize
+    await new Promise(resolve => setTimeout(resolve, 10))
+
     this.isRunning = true
     await this.run()
   }

@@ -62,7 +62,7 @@ describe('Database', () => {
         database = config.getContainerType<IDatabase>('Database')
         adapter = database.adapter as SQLiteAdapter
 
-        // Give SQLite 10ms to initialize the database file before continuing
+        // Give SQLite 10 ms to initialize the database file before continuing
         setTimeout(done, 10)
       })
 
@@ -93,10 +93,10 @@ describe('Database', () => {
       })
 
       describe('terminateFiles', () => {
-        // Wait 10ms to exceed the testFile's TTL
+        // Wait 10 ms to exceed the testFile's TTL
         before(done => setTimeout(done, 10))
 
-        it('should terminate the testFile after 10ms', async () => {
+        it('should terminate the testFile after 10 ms', async () => {
           await database.terminateFiles()
 
           await new Promise(resolve => {
