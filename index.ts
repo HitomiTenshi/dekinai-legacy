@@ -15,8 +15,5 @@ if (!(config.temporaryStorage.forceDefaultEnabled && !config.temporaryStorage.de
 
 process.on('SIGINT', async () => {
   await server.stop()
-
-  if (watchdog.isRunning) {
-    await watchdog.stop()
-  }
+  await watchdog.stop()
 })

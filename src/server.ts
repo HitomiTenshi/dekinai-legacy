@@ -30,12 +30,13 @@ export class Server implements IServer {
   }
 
   stop(): Promise<void> {
-    if (this.server === undefined) {
-      throw new Error('Cannot stop server. Server is not running.')
-    }
-
     return new Promise<void>(resolve => {
-      (this.server as any).shutdown(resolve)
+      if (this.server !== undefined) {
+        (this.server as any).shutdown(resolve)
+      }
+      else {
+        resolve()
+      }
     })
   }
 }

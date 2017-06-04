@@ -4,17 +4,17 @@ import { IConfig, IDatabase, IWatchdog } from './interfaces'
 
 @injectable()
 export class Watchdog implements IWatchdog {
-  private timer: NodeJS.Timer
+  private timer?: NodeJS.Timer
   private preventStart = false
-  isRunning = false
 
   constructor(
     @inject('Config') private config: IConfig,
     @inject('Database') private database: IDatabase) { }
 
   private async run(): Promise<void> {
-    if (this.isRunning) {
-      await this.database.terminateFiles()
+    await this.database.terminateFiles()
+
+    if (!this.preventStart) {
       this.timer = setTimeout(async () => await this.run(), this.config.watchdog.scanInterval * 1000)
     }
   }
@@ -24,19 +24,17 @@ export class Watchdog implements IWatchdog {
     await new Promise(resolve => setTimeout(resolve, 100))
 
     if (!this.preventStart) {
-      this.isRunning = true
       await this.run()
     }
   }
 
   async stop(): Promise<void> {
-    if (!this.isRunning) {
-      throw new Error('Cannot stop watchdog. Watchdog is not running.')
+    this.preventStart = true
+
+    if (this.timer !== undefined) {
+      clearTimeout(this.timer)
     }
 
-    this.preventStart = true
-    this.isRunning = false
-    clearTimeout(this.timer)
     await this.database.close()
   }
 }
