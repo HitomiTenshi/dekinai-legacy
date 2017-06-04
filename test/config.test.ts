@@ -436,6 +436,26 @@ describe('Config', () => {
           .replace(/^\s+/gm, '')
         )
       })
+
+      it('should not be validated when temporaryStorage.forceDefaultTTL is enabled', () => {
+        let error: Error | undefined
+
+        // Set values
+        config.temporaryStorage.maxTTL = -1
+        config.temporaryStorage.forceDefaultTTL = true
+
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
+
+        try {
+          new Config()
+        }
+        catch (err) {
+          error = err
+        }
+
+        assert.strictEqual(error, undefined)
+      })
     })
 
     describe('temporaryStorage.minTTL', () => {
@@ -492,6 +512,26 @@ describe('Config', () => {
           "temporaryStorage.defaultTTL" cannot be greater than "temporaryStorage.maxTTL".`
           .replace(/^\s+/gm, '')
         )
+      })
+
+      it('should not be validated when temporaryStorage.forceDefaultTTL is enabled', () => {
+        let error: Error | undefined
+
+        // Set values
+        config.temporaryStorage.minTTL = -1
+        config.temporaryStorage.forceDefaultTTL = true
+
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
+
+        try {
+          new Config()
+        }
+        catch (err) {
+          error = err
+        }
+
+        assert.strictEqual(error, undefined)
       })
     })
 
@@ -660,6 +700,26 @@ describe('Config', () => {
           .replace(/^\s+/gm, '')
         )
       })
+
+      it('should not be validated when randomString.forceDefaultLength is enabled', () => {
+        let error: Error | undefined
+
+        // Set values
+        config.randomString.maxLength = 0
+        config.randomString.forceDefaultLength = true
+
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
+
+        try {
+          new Config()
+        }
+        catch (err) {
+          error = err
+        }
+
+        assert.strictEqual(error, undefined)
+      })
     })
 
     describe('randomString.minLength', () => {
@@ -716,6 +776,26 @@ describe('Config', () => {
           "randomString.defaultLength" cannot be greater than "randomString.maxLength".`
           .replace(/^\s+/gm, '')
         )
+      })
+
+      it('should not be validated when randomString.forceDefaultLength is enabled', () => {
+        let error: Error | undefined
+
+        // Set values
+        config.randomString.minLength = 0
+        config.randomString.forceDefaultLength = true
+
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(config))
+
+        try {
+          new Config()
+        }
+        catch (err) {
+          error = err
+        }
+
+        assert.strictEqual(error, undefined)
       })
     })
 
