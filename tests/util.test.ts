@@ -48,7 +48,10 @@ describe('Util', () => {
       assert.strictEqual(filename!.endsWith('.png'), true)
     })
 
-    it('should return null when the maximum tryCount has been reached', async() => {
+    it('should return null when the maximum tryCount has been reached', async function () {
+      // This test might be slow due to fs operations
+      this.slow(100)
+
       // Create all possible 1 character long files from Util's charset
       Helper.simulateMaxTryCount((util as Util).charset, '.png')
 

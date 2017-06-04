@@ -5,7 +5,8 @@ import { IConfig, IDatabase, IWatchdog } from './interfaces'
 @injectable()
 export class Watchdog implements IWatchdog {
   private timer: NodeJS.Timer
-  isRunning: boolean
+  private preventStart = false
+  isRunning = false
 
   constructor(
     @inject('Config') private config: IConfig,
@@ -19,11 +20,13 @@ export class Watchdog implements IWatchdog {
   }
 
   async start(): Promise<void> {
-    // Wait 10 ms before starting to give the database enough time to initialize
-    await new Promise(resolve => setTimeout(resolve, 10))
+    // Wait 100 ms before starting to give the database enough time to initialize
+    await new Promise(resolve => setTimeout(resolve, 100))
 
-    this.isRunning = true
-    await this.run()
+    if (!this.preventStart) {
+      this.isRunning = true
+      await this.run()
+    }
   }
 
   async stop(): Promise<void> {
@@ -31,6 +34,7 @@ export class Watchdog implements IWatchdog {
       throw new Error('Cannot stop watchdog. Watchdog is not running.')
     }
 
+    this.preventStart = true
     this.isRunning = false
     clearTimeout(this.timer)
     await this.database.close()

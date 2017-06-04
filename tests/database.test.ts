@@ -62,8 +62,8 @@ describe('Database', () => {
         database = config.getContainerType<IDatabase>('Database')
         adapter = database.adapter as SQLiteAdapter
 
-        // Give SQLite 10 ms to initialize the database file before continuing
-        setTimeout(done, 10)
+        // Give SQLite 100 ms to initialize the database file before continuing
+        setTimeout(done, 100)
       })
 
       it('should have an SQLite adapter when the backend is set to "sqlite"', () => {
