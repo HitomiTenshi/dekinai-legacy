@@ -4,9 +4,9 @@
   "description": "A highly configurable self-hosted file storage server",
   "main": "index.js",
   "scripts": {
-    "postinstall": "shx cp -n template/config.json . && shx cp template/config.json test/ && shx mkdir -p uploads temp test/uploads test/temp",
+    "postinstall": "shx cp -n template/config.json . && shx cp template/config.json tests/ && shx mkdir -p uploads temp tests/uploads tests/temp",
     "start": "tsc && node index.js",
-    "test": "tsc && cd test && mocha ."
+    "test": "tsc && cd tests && mocha ."
   },
   "keywords": [
     "dekinai",
