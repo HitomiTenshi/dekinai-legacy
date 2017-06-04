@@ -7,7 +7,7 @@ import { IConfig, IUtil } from './interfaces'
 
 @injectable()
 export class Util implements IUtil {
-  private charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+  charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
   constructor(@inject('Config') private config: IConfig) { }
 

@@ -1,8 +1,9 @@
 import 'reflect-metadata'
 import * as assert from 'assert'
 
+import { Util } from '../src'
 import { IUtil } from '../src/interfaces'
-import { TestConfig } from './resources'
+import { TestConfig, Helper } from './resources'
 
 const config = new TestConfig()
 
@@ -13,19 +14,29 @@ describe('Util', () => {
   before(() => util = config.getContainerType<IUtil>('Util'))
 
   describe('isExtensionAllowed', () => {
-    // Set extensionBlacklist to disallow ".html"
-    before(() => config.extensionBlacklist = ['.html'])
-
     it('should return true for ".png"', () => {
       assert.strictEqual(util.isExtensionAllowed('.png'), true)
     })
 
     it('should return false for ".html"', () => {
+      // Set extensionBlacklist to disallow ".html"
+      config.extensionBlacklist = ['.html']
+
       assert.strictEqual(util.isExtensionAllowed('.html'), false)
+    })
+
+    it('should return true for ".html" when extensionBlacklist is set to null', () => {
+      // Set extensionBlacklist to allow all values
+      config.extensionBlacklist = null
+
+      assert.strictEqual(util.isExtensionAllowed('.html'), true)
     })
   })
 
   describe('getRandomFilename', () => {
+    // Clean the uploads folder after running all tests
+    after(() => Helper.cleanUploads())
+
     it('should return a filename that is 5 characters long', async () => {
       const filename = await util.getRandomFilename(5, '')
       assert.strictEqual(filename!.length, 5)
@@ -38,7 +49,10 @@ describe('Util', () => {
     })
 
     it('should return null when the maximum tryCount has been reached', async() => {
-      const filename = await util.getRandomFilename(5, '', 10)
+      // Create all possible 1 character long files from Util's charset
+      Helper.simulateMaxTryCount((util as Util).charset, '.png')
+
+      const filename = await util.getRandomFilename(1, '.png')
       assert.strictEqual(filename, null)
     })
   })
