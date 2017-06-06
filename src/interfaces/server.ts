@@ -1,4 +1,4 @@
 export interface IServer {
-  start(): void
+  start(): Promise<void>
   stop(): Promise<void>
 }

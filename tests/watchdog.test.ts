@@ -14,10 +14,7 @@ describe('Watchdog', () => {
   before(() => watchdog = config.getContainerType<IWatchdog>('Watchdog') as Watchdog)
 
   describe('start', () => {
-    it('should start the watchdog', async function() {
-      // This test might be slow due to database startup
-      this.slow(500)
-
+    it('should start the watchdog', async () => {
       await watchdog.start()
       assert.notStrictEqual(watchdog.timer, undefined)
     })

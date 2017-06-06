@@ -5,7 +5,7 @@ import { container } from '../configuration'
 
 @injectable()
 export class Database implements IDatabase {
-  adapter?: IDatabaseAdapter
+  readonly adapter?: IDatabaseAdapter
 
   constructor(
     @inject('Config') config: IConfig) {
@@ -18,27 +18,35 @@ export class Database implements IDatabase {
       }
   }
 
-  async addFile(file: IFile): Promise<void> {
-    if (this.adapter === undefined) {
-      throw new Error('addFile cannot be executed when the database is force-disabled by the config')
-    }
-
-    await this.adapter.addFile(file)
-  }
-
-  async terminateFiles(): Promise<void> {
-    if (this.adapter === undefined) {
-      throw new Error('terminateFiles cannot be executed when the database is force-disabled by the config')
-    }
-
-    await this.adapter.terminateFiles()
-  }
-
-  async close(): Promise<void> {
+  open(): Promise<void> {
     if (this.adapter === undefined) {
       throw new Error('close cannot be executed when the database is force-disabled by the config')
     }
 
-    await this.adapter.close()
+    return this.adapter.open()
+  }
+
+  close(): Promise<void> {
+    if (this.adapter === undefined) {
+      throw new Error('close cannot be executed when the database is force-disabled by the config')
+    }
+
+    return this.adapter.close()
+  }
+
+  addFile(file: IFile): Promise<void> {
+    if (this.adapter === undefined) {
+      throw new Error('addFile cannot be executed when the database is force-disabled by the config')
+    }
+
+    return this.adapter.addFile(file)
+  }
+
+  terminateFiles(): Promise<void> {
+    if (this.adapter === undefined) {
+      throw new Error('terminateFiles cannot be executed when the database is force-disabled by the config')
+    }
+
+    return this.adapter.terminateFiles()
   }
 }

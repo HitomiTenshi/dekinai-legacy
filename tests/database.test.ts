@@ -54,32 +54,32 @@ describe('Database', () => {
     before(() => config.temporaryStorage.forceDefaultEnabled = false)
 
     describe('SQLite', () => {
-      before(done => {
+      before(() => {
         // Use the SQLite adapter
         config.backend.adapter = 'sqlite'
 
         // Get the SQLite database from the IoC container
         database = config.getContainerType<IDatabase>('Database')
         adapter = database.adapter as SQLiteAdapter
-
-        // Give SQLite 100 ms to initialize the database file before continuing
-        setTimeout(done, 100)
       })
 
       it('should have an SQLite adapter when the backend is set to "sqlite"', () => {
         assert.strictEqual(adapter instanceof SQLiteAdapter, true)
       })
 
-      it('should automatically have an opened database', () => {
-        assert.strictEqual((adapter.database as any).open, true)
+      describe('open', () => {
+        it('should open the database', async () => {
+          await database.open()
+          assert.strictEqual((adapter.database as any).open, true)
+        })
       })
 
       describe('addFile', () => {
         it('should add the testFile', async () => {
           await database.addFile(testFile)
 
-          await new Promise(resolve => {
-            adapter.database.get(
+          return new Promise(resolve => {
+            adapter.database!.get(
               `SELECT * FROM files WHERE filename = '${testFile.filename}' LIMIT 1`,
               (error, file: SQLiteFile) => {
                 assert.strictEqual(Boolean(error), false)
@@ -93,14 +93,14 @@ describe('Database', () => {
       })
 
       describe('terminateFiles', () => {
-        // Wait 10 ms to exceed the testFile's TTL
-        before(done => setTimeout(done, 10))
+        // Wait 5 ms to exceed the testFile's TTL
+        before(done => setTimeout(done, 5))
 
-        it('should terminate the testFile after 10 ms', async () => {
+        it('should terminate the testFile after 5 ms', async () => {
           await database.terminateFiles()
 
-          await new Promise(resolve => {
-            adapter.database.get(
+          return new Promise(resolve => {
+            adapter.database!.get(
               `SELECT * FROM files WHERE filename = '${testFile.filename}' LIMIT 1`,
               (error, file: SQLiteFile) => {
                 assert.strictEqual(Boolean(error), false)

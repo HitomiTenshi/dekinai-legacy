@@ -1,11 +1,12 @@
 import { IFile } from '.'
 
 export interface IDatabaseAdapter {
+  open(): Promise<void>
+  close(): Promise<void>
   addFile(file: IFile): Promise<void>
   terminateFiles(): Promise<void>
-  close(): Promise<void>
 }
 
 export interface IDatabase extends IDatabaseAdapter {
-  adapter?: IDatabaseAdapter
+  readonly adapter?: IDatabaseAdapter
 }
