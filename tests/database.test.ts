@@ -50,7 +50,7 @@ describe('Database', () => {
   describe('Adapter', () => {
     let adapter: SQLiteAdapter
 
-    // Make sure that adapters are being used
+    // Make sure that the database is being initialized
     before(() => config.temporaryStorage.forceDefaultEnabled = false)
 
     describe('SQLite', () => {

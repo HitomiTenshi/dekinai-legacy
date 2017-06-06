@@ -4,8 +4,8 @@ import { IConfig, IDatabase, IWatchdog } from './interfaces'
 
 @injectable()
 export class Watchdog implements IWatchdog {
-  private timer?: NodeJS.Timer
   private preventStart = false
+  timer?: NodeJS.Timer
 
   constructor(
     @inject('Config') private config: IConfig,
@@ -33,6 +33,7 @@ export class Watchdog implements IWatchdog {
 
     if (this.timer !== undefined) {
       clearTimeout(this.timer)
+      this.timer = undefined
     }
 
     await this.database.close()
