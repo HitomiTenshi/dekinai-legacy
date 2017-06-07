@@ -65,11 +65,7 @@ export class TestConfig implements IConfig {
     this.watchdog = config.watchdog
     this.filename = config.filename
     this.randomString = config.randomString
-
-    // Ensure that extensions start with a dot
-    this.extensionBlacklist = config.extensionBlacklist !== null
-      ? config.extensionBlacklist.map(value => !value.startsWith('.') ? `.${value}` : value)
-      : config.extensionBlacklist
+    this.extensionBlacklist = config.extensionBlacklist
   }
 
   getContainerType<T>(identifier: string): T {
