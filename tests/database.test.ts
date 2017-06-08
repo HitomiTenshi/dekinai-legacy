@@ -47,21 +47,113 @@ describe('Database', () => {
     })
   })
 
-  describe('Adapter', () => {
-    let adapter: SQLiteAdapter
+  describe('open', () => {
+    it('should throw an error if the database is force-disabled', async () => {
+      let error: Error | undefined
 
-    // Make sure that the database is being initialized
+      // Set invalid values
+      config.temporaryStorage.forceDefaultEnabled = true
+      config.temporaryStorage.defaultEnabled = false
+
+      // Get the database from the IoC container
+      database = config.getContainerType<IDatabase>('Database')
+
+      try {
+        await database.open()
+      }
+      catch (err) {
+        error = err
+      }
+
+      assert.notStrictEqual(error, undefined)
+      assert.strictEqual(error!.message, 'open cannot be executed when the database is force-disabled by the config.')
+    })
+  })
+
+  describe('close', () => {
+    it('should throw an error if the database is force-disabled', async () => {
+      let error: Error | undefined
+
+      // Set invalid values
+      config.temporaryStorage.forceDefaultEnabled = true
+      config.temporaryStorage.defaultEnabled = false
+
+      // Get the database from the IoC container
+      database = config.getContainerType<IDatabase>('Database')
+
+      try {
+        await database.close()
+      }
+      catch (err) {
+        error = err
+      }
+
+      assert.notStrictEqual(error, undefined)
+      assert.strictEqual(error!.message, 'close cannot be executed when the database is force-disabled by the config.')
+    })
+  })
+
+  describe('addFile', () => {
+    it('should throw an error if the database is force-disabled', async () => {
+      let error: Error | undefined
+
+      // Set invalid values
+      config.temporaryStorage.forceDefaultEnabled = true
+      config.temporaryStorage.defaultEnabled = false
+
+      // Get the database from the IoC container
+      database = config.getContainerType<IDatabase>('Database')
+
+      try {
+        await database.addFile(testFile)
+      }
+      catch (err) {
+        error = err
+      }
+
+      assert.notStrictEqual(error, undefined)
+      assert.strictEqual(error!.message, 'addFile cannot be executed when the database is force-disabled by the config.')
+    })
+  })
+
+  describe('terminateFiles', () => {
+    it('should throw an error if the database is force-disabled', async () => {
+      let error: Error | undefined
+
+      // Set invalid values
+      config.temporaryStorage.forceDefaultEnabled = true
+      config.temporaryStorage.defaultEnabled = false
+
+      // Get the database from the IoC container
+      database = config.getContainerType<IDatabase>('Database')
+
+      try {
+        await database.terminateFiles()
+      }
+      catch (err) {
+        error = err
+      }
+
+      assert.notStrictEqual(error, undefined)
+      assert.strictEqual(error!.message, 'terminateFiles cannot be executed when the database is force-disabled by the config.')
+    })
+  })
+
+  describe('Adapter', () => {
+    // Make sure that the database gets initialized
     before(() => config.temporaryStorage.forceDefaultEnabled = false)
 
-    describe('SQLite', () => {
-      before(() => {
-        // Use the SQLite adapter
-        config.backend.adapter = 'sqlite'
+    // Get the database from the IoC container before each "it"
+    beforeEach(() => database = config.getContainerType<IDatabase>('Database'))
 
-        // Get the SQLite database from the IoC container
-        database = config.getContainerType<IDatabase>('Database')
-        adapter = database.adapter as SQLiteAdapter
-      })
+    describe('SQLite', () => {
+      let adapter: SQLiteAdapter
+
+      // Use the SQLite adapter
+      before(() => config.backend.adapter = 'sqlite')
+
+      // Assign the SQLite adapter before each "it"
+      beforeEach(() => adapter = database.adapter as SQLiteAdapter)
 
       it('should have an SQLite adapter when the backend is set to "sqlite"', () => {
         assert.strictEqual(adapter instanceof SQLiteAdapter, true)
@@ -70,25 +162,53 @@ describe('Database', () => {
       describe('open', () => {
         it('should open the database', async () => {
           await database.open()
-          assert.strictEqual((adapter.database as any).open, true)
+          assert.strictEqual((adapter.database as any).driver.open, true)
+        })
+      })
+
+      describe('close', () => {
+        it('should throw an error if the database has not been opened before executing this function', async () => {
+          let error: Error | undefined
+
+          try {
+            await database.close()
+          }
+          catch (err) {
+            error = err
+          }
+
+          assert.notStrictEqual(error, undefined)
+          assert.strictEqual(error!.message, 'Database has not been opened.')
+        })
+
+        it('should close the database', async () => {
+          await database.open()
+          await database.close()
+          assert.strictEqual((adapter.database as any).driver.open, false)
         })
       })
 
       describe('addFile', () => {
-        it('should add the testFile', async () => {
-          await database.addFile(testFile)
+        it('should throw an error if the database has not been opened before executing this function', async () => {
+          let error: Error | undefined
 
-          return new Promise(resolve => {
-            adapter.database!.get(
-              `SELECT * FROM files WHERE filename = '${testFile.filename}' LIMIT 1`,
-              (error, file: IFile) => {
-                assert.strictEqual(Boolean(error), false)
-                assert.strictEqual(testFile.terminationTime, file.terminationTime)
-                assert.strictEqual(file.filename, testFile.filename)
-                resolve()
-              }
-            )
-          })
+          try {
+            await database.addFile(testFile)
+          }
+          catch (err) {
+            error = err
+          }
+
+          assert.notStrictEqual(error, undefined)
+          assert.strictEqual(error!.message, 'Database has not been opened.')
+        })
+
+        it('should add the testFile', async () => {
+          await database.open()
+          await database.addFile(testFile)
+          const file = await adapter.database!.get(`SELECT * FROM files WHERE filename = '${testFile.filename}' LIMIT 1`) as IFile
+          assert.strictEqual(file.terminationTime, testFile.terminationTime)
+          assert.strictEqual(file.filename, testFile.filename)
         })
       })
 
@@ -96,26 +216,25 @@ describe('Database', () => {
         // Wait 5 ms to exceed the testFile's TTL
         before(done => setTimeout(done, 5))
 
-        it('should terminate the testFile after 5 ms', async () => {
-          await database.terminateFiles()
+        it('should throw an error if the database has not been opened before executing this function', async () => {
+          let error: Error | undefined
 
-          return new Promise(resolve => {
-            adapter.database!.get(
-              `SELECT * FROM files WHERE filename = '${testFile.filename}' LIMIT 1`,
-              (error, file: IFile) => {
-                assert.strictEqual(Boolean(error), false)
-                assert.strictEqual(file, undefined)
-                resolve()
-              }
-            )
-          })
+          try {
+            await database.terminateFiles()
+          }
+          catch (err) {
+            error = err
+          }
+
+          assert.notStrictEqual(error, undefined)
+          assert.strictEqual(error!.message, 'Database has not been opened.')
         })
-      })
 
-      describe('close', () => {
-        it('should close the database', async () => {
-          await database.close()
-          assert.strictEqual((adapter.database as any).open, false)
+        it('should terminate the testFile after 5 ms', async () => {
+          await database.open()
+          await database.terminateFiles()
+          const file = await adapter.database!.get(`SELECT * FROM files WHERE filename = '${testFile.filename}' LIMIT 1`) as IFile
+          assert.strictEqual(file, undefined)
         })
       })
     })

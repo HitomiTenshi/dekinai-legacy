@@ -20,7 +20,7 @@ export class Database implements IDatabase {
 
   open(): Promise<void> {
     if (this.adapter === undefined) {
-      throw new Error('close cannot be executed when the database is force-disabled by the config')
+      throw new Error('open cannot be executed when the database is force-disabled by the config.')
     }
 
     return this.adapter.open()
@@ -28,7 +28,7 @@ export class Database implements IDatabase {
 
   close(): Promise<void> {
     if (this.adapter === undefined) {
-      throw new Error('close cannot be executed when the database is force-disabled by the config')
+      throw new Error('close cannot be executed when the database is force-disabled by the config.')
     }
 
     return this.adapter.close()
@@ -36,7 +36,7 @@ export class Database implements IDatabase {
 
   addFile(file: IFile): Promise<void> {
     if (this.adapter === undefined) {
-      throw new Error('addFile cannot be executed when the database is force-disabled by the config')
+      throw new Error('addFile cannot be executed when the database is force-disabled by the config.')
     }
 
     return this.adapter.addFile(file)
@@ -44,7 +44,7 @@ export class Database implements IDatabase {
 
   terminateFiles(): Promise<void> {
     if (this.adapter === undefined) {
-      throw new Error('terminateFiles cannot be executed when the database is force-disabled by the config')
+      throw new Error('terminateFiles cannot be executed when the database is force-disabled by the config.')
     }
 
     return this.adapter.terminateFiles()
