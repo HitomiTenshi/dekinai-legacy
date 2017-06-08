@@ -1,4 +1,4 @@
 export interface IFile {
-  terminationDate: Date
+  terminationTime: number
   filename: string
 }

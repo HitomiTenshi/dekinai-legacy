@@ -5,6 +5,12 @@
   "tempDir": "./temp",
   "strict": true,
 
+  "extensionBlacklist": [
+    "html",
+    "htm",
+    "php"
+  ],
+
   "temporaryStorage": {
     "forceDefaultEnabled": false,
     "forceDefaultTTL": false,
@@ -33,11 +39,5 @@
     "maxLength": 10,
     "minLength": 5,
     "defaultLength": 5
-  },
-
-  "extensionBlacklist": [
-    "html",
-    "htm",
-    "php"
-  ]
+  }
 }

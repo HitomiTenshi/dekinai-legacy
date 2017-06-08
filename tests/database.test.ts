@@ -2,12 +2,12 @@ import 'reflect-metadata'
 import * as assert from 'assert'
 
 import { File } from '../src/backend'
-import { SQLiteAdapter, SQLiteFile } from '../src/backend/adapters'
-import { IDatabase } from '../src/interfaces'
+import { SQLiteAdapter } from '../src/backend/adapters'
+import { IDatabase, IFile } from '../src/interfaces'
 import { TestConfig } from './resources'
 
 const config = new TestConfig()
-const testFile = new File(new Date(), 'test.txt')
+const testFile = new File(Date.now(), 'test.txt')
 
 describe('Database', () => {
   let database: IDatabase
@@ -81,9 +81,9 @@ describe('Database', () => {
           return new Promise(resolve => {
             adapter.database!.get(
               `SELECT * FROM files WHERE filename = '${testFile.filename}' LIMIT 1`,
-              (error, file: SQLiteFile) => {
+              (error, file: IFile) => {
                 assert.strictEqual(Boolean(error), false)
-                assert.strictEqual(testFile.terminationDate.getTime(), file.terminationTime)
+                assert.strictEqual(testFile.terminationTime, file.terminationTime)
                 assert.strictEqual(file.filename, testFile.filename)
                 resolve()
               }
@@ -102,7 +102,7 @@ describe('Database', () => {
           return new Promise(resolve => {
             adapter.database!.get(
               `SELECT * FROM files WHERE filename = '${testFile.filename}' LIMIT 1`,
-              (error, file: SQLiteFile) => {
+              (error, file: IFile) => {
                 assert.strictEqual(Boolean(error), false)
                 assert.strictEqual(file, undefined)
                 resolve()

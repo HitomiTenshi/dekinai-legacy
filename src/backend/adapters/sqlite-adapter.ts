@@ -5,16 +5,6 @@ import * as path from 'path'
 
 import { IConfig, IFile, IDatabaseAdapter } from '../../interfaces'
 
-export class SQLiteFile {
-  terminationTime: number
-  filename: string
-
-  constructor(file: IFile) {
-    this.terminationTime = file.terminationDate.getTime()
-    this.filename = file.filename
-  }
-}
-
 @injectable()
 export class SQLiteAdapter implements IDatabaseAdapter {
   database?: Database
@@ -62,11 +52,9 @@ export class SQLiteAdapter implements IDatabaseAdapter {
   }
 
   addFile(file: IFile): Promise<void> {
-    const sqliteFile = new SQLiteFile(file)
-
     return new Promise<void>(resolve => {
       if (this.database !== undefined) {
-        this.database.run(`INSERT INTO files VALUES(${sqliteFile.terminationTime}, ?)`, sqliteFile.filename, error => {
+        this.database.run(`INSERT INTO files VALUES(${file.terminationTime}, ?)`, file.filename, error => {
           if (error) {
             console.log(error.message)
           }
@@ -81,11 +69,11 @@ export class SQLiteAdapter implements IDatabaseAdapter {
   }
 
   terminateFiles(): Promise<void> {
-    const now = new Date().getTime()
+    const now = Date.now()
 
     return new Promise<void>(resolve => {
       if (this.database !== undefined) {
-        this.database.all(`SELECT * FROM files WHERE terminationTime < ${now}`, async (error, files: SQLiteFile[]) => {
+        this.database.all(`SELECT * FROM files WHERE terminationTime < ${now}`, async (error, files: IFile[]) => {
           if (error) {
             console.log(error.message)
           }

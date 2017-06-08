@@ -250,8 +250,7 @@ export class Middleware implements IMiddleware {
           ? ctx.state.postTTL
           : this.config.temporaryStorage.defaultTTL
 
-        const now = new Date().getTime()
-        this.database.addFile(new File(new Date(now + TTL * 1000), ctx.state.filename))
+        this.database.addFile(new File(Date.now() + TTL * 1000, ctx.state.filename))
       }
 
       ctx.body = url.resolve(this.config.uploadUrl, ctx.state.filename)
