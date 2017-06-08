@@ -12,6 +12,7 @@ export class Watchdog implements IWatchdog {
 
   async start(): Promise<void> {
     await this.database.open()
+    await this.database.terminateFiles()
 
     this.timer = setInterval(
       async () => await this.database.terminateFiles(),
