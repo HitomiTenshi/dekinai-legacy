@@ -26,5 +26,8 @@ export class Watchdog implements IWatchdog {
       this.timer = undefined
       await this.database.close()
     }
+    else {
+      throw Error('Watchdog has not been started.')
+    }
   }
 }
