@@ -1,3 +1,4 @@
+import { Container } from 'inversify'
 import * as shell from 'shelljs'
 
 import { createContainer } from '../../src/configuration'
@@ -5,6 +6,8 @@ import { IConfig } from '../../src/interfaces'
 import { Config } from '../../src/configuration'
 
 export class TestConfig implements IConfig {
+  private container?: Container
+
   port: number
   uploadUrl: string
   uploadDir: string
@@ -66,9 +69,14 @@ export class TestConfig implements IConfig {
     this.filename = config.filename
     this.randomString = config.randomString
     this.extensionBlacklist = config.extensionBlacklist
+    this.container = undefined
   }
 
-  getContainerType<T>(identifier: string): T {
-    return createContainer(this).get<T>(identifier)
+  getContainerType<T>(identifier: string, fromNewContainer = false): T {
+    if (this.container === undefined || fromNewContainer) {
+      this.container = createContainer(this)
+    }
+
+    return this.container.get<T>(identifier)
   }
 }

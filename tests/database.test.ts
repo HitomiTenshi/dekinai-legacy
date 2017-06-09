@@ -19,7 +19,7 @@ describe('Database', () => {
       config.temporaryStorage.defaultEnabled = true
 
       // Get the database from the IoC container
-      database = config.getContainerType<IDatabase>('Database')
+      database = config.getContainerType<IDatabase>('Database', true)
 
       assert.notStrictEqual(database.adapter, undefined)
     })
@@ -30,7 +30,7 @@ describe('Database', () => {
       config.temporaryStorage.defaultEnabled = false
 
       // Get the database from the IoC container
-      database = config.getContainerType<IDatabase>('Database')
+      database = config.getContainerType<IDatabase>('Database', true)
 
       assert.strictEqual(database.adapter, undefined)
     })
@@ -41,7 +41,7 @@ describe('Database', () => {
       config.temporaryStorage.defaultEnabled = false
 
       // Get the database from the IoC container
-      database = config.getContainerType<IDatabase>('Database')
+      database = config.getContainerType<IDatabase>('Database', true)
 
       assert.notStrictEqual(database.adapter, undefined)
     })
@@ -56,7 +56,7 @@ describe('Database', () => {
       config.temporaryStorage.defaultEnabled = false
 
       // Get the database from the IoC container
-      database = config.getContainerType<IDatabase>('Database')
+      database = config.getContainerType<IDatabase>('Database', true)
 
       try {
         await database.open()
@@ -79,7 +79,7 @@ describe('Database', () => {
       config.temporaryStorage.defaultEnabled = false
 
       // Get the database from the IoC container
-      database = config.getContainerType<IDatabase>('Database')
+      database = config.getContainerType<IDatabase>('Database', true)
 
       try {
         await database.close()
@@ -102,7 +102,7 @@ describe('Database', () => {
       config.temporaryStorage.defaultEnabled = false
 
       // Get the database from the IoC container
-      database = config.getContainerType<IDatabase>('Database')
+      database = config.getContainerType<IDatabase>('Database', true)
 
       try {
         await database.addFile(testFile)
@@ -125,7 +125,7 @@ describe('Database', () => {
       config.temporaryStorage.defaultEnabled = false
 
       // Get the database from the IoC container
-      database = config.getContainerType<IDatabase>('Database')
+      database = config.getContainerType<IDatabase>('Database', true)
 
       try {
         await database.terminateFiles()
@@ -140,11 +140,11 @@ describe('Database', () => {
   })
 
   describe('Adapter', () => {
-    // Make sure that the database gets initialized
-    before(() => config.temporaryStorage.forceDefaultEnabled = false)
+    // Reset config to the default state
+    before(() => config.reset())
 
     // Get the database from the IoC container before each "it"
-    beforeEach(() => database = config.getContainerType<IDatabase>('Database'))
+    beforeEach(() => database = config.getContainerType<IDatabase>('Database', true))
 
     describe('SQLite', () => {
       let adapter: SQLiteAdapter
