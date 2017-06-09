@@ -9,7 +9,7 @@ import { TestConfig } from './resources'
 const config = new TestConfig()
 
 describe('Config', () => {
-  // Reset config to the default state before each "it"
+  // Reset the config to the default state before each "it"
   beforeEach(() => config.reset())
 
   // Restore the default config file after running all tests

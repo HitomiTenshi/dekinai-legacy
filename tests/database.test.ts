@@ -140,7 +140,7 @@ describe('Database', () => {
   })
 
   describe('Adapter', () => {
-    // Reset config to the default state
+    // Reset the config to the default state
     before(() => config.reset())
 
     // Get the database from the IoC container before each "it"
