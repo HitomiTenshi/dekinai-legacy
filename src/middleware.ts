@@ -42,6 +42,16 @@ export class Middleware implements IMiddleware {
       }
 
       if (files.length > 1) {
+        if (this.config.strict) {
+          for (const file of files) {
+            fs.unlink(file.path, () => null)
+          }
+
+          ctx.body = 'Uploading multiple files is not supported, please upload only one file.'
+          ctx.status = 403
+          return
+        }
+
         for (let i = 1; i < files.length; i++) {
           fs.unlink(files[i].path, () => null)
         }
