@@ -14,6 +14,6 @@ process.on('SIGINT', async () => {
   if (!isShuttingDown) {
     isShuttingDown = true
     await server.stop()
-    container.unbindAll()
+    process.exit()
   }
 })

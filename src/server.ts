@@ -36,7 +36,7 @@ export class Server implements IServer {
   async stop(): Promise<void> {
     if (this.server !== undefined) {
       // Stop server
-      await new Promise(resolve => this.server!.close(resolve))
+      this.server.close()
       this.server = undefined
 
       // Stop watchdog when temporary storage is not force-disabled
