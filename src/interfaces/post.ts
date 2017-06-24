@@ -1,6 +1,6 @@
 export interface IPOST {
   temporary?: 'true' | 'false'
-  appendFilename?: 'true' | 'false'
+  append?: 'true' | 'false'
   TTL?: string
   length?: string
 }

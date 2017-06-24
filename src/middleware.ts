@@ -178,26 +178,26 @@ export class Middleware implements IMiddleware {
         }
       }
 
-      if (post.appendFilename !== undefined) {
+      if (post.append !== undefined) {
         if (this.config.filename.forceDefaultAppendFilename) {
           if (this.config.strict) {
             fs.unlink(ctx.state.filepath, () => null)
-            ctx.body = `Custom appendFilename setting denied, server is set to ${this.config.filename.defaultAppendFilename ? 'always' : 'never'} append filename.`
+            ctx.body = `Custom append setting denied, server is set to ${this.config.filename.defaultAppendFilename ? 'always' : 'never'} append filenames.`
             ctx.status = 403
             return
           }
         }
         else {
-          if (!(post.appendFilename === 'true' || post.appendFilename === 'false')) {
+          if (!(post.append === 'true' || post.append === 'false')) {
             if (this.config.strict) {
               fs.unlink(ctx.state.filepath, () => null)
-              ctx.body = 'Custom appendFilename setting can only be set to "true" or "false".'
+              ctx.body = 'Custom append setting can only be set to "true" or "false".'
               ctx.status = 403
               return
             }
           }
           else {
-            ctx.state.postAppendFilename = post.appendFilename === 'true'
+            ctx.state.postAppend = post.append === 'true'
           }
         }
       }
@@ -225,8 +225,8 @@ export class Middleware implements IMiddleware {
 
   generateFilename(): koa.Middleware {
     return async (ctx: koa.Context, next: () => Promise<any>) => {
-      const appendFilename: boolean = ctx.state.postAppendFilename !== undefined
-        ? ctx.state.postAppendFilename
+      const appendFilename: boolean = ctx.state.postAppend !== undefined
+        ? ctx.state.postAppend
         : this.config.filename.defaultAppendFilename
 
       const length: number = ctx.state.postLength !== undefined
