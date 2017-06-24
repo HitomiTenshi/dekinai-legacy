@@ -8,6 +8,12 @@ const server = container.get<IServer>('Server')
 
 server.start().then(() => console.log(`Listening on port ${config.port}`))
 
+let isShuttingDown = false
+
 process.on('SIGINT', async () => {
-  await server.stop()
+  if (!isShuttingDown) {
+    isShuttingDown = true
+    await server.stop()
+    container.unbindAll()
+  }
 })

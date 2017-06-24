@@ -1,7 +1,6 @@
 import { injectable, inject } from 'inversify'
 import * as http from 'http'
 import * as koa from 'koa'
-const httpShutdown = require('http-shutdown')
 const uploader = require('koa-busboy')
 
 import { IConfig, IMiddleware, IServer, IWatchdog } from './interfaces'
@@ -31,20 +30,19 @@ export class Server implements IServer {
     }
 
     // Start server
-    this.server = httpShutdown(http.createServer(this.app.callback()))
-    this.server!.listen(this.config.port)
+    this.server = this.app.listen(this.config.port)
   }
 
   async stop(): Promise<void> {
     if (this.server !== undefined) {
+      // Stop server
+      await new Promise(resolve => this.server!.close(resolve))
+      this.server = undefined
+
       // Stop watchdog when temporary storage is not force-disabled
       if (!(this.config.temporaryStorage.forceDefaultEnabled && !this.config.temporaryStorage.defaultEnabled)) {
         await this.watchdog.stop()
       }
-
-      // Stop server
-      await new Promise(resolve => (this.server as any).shutdown(resolve))
-      this.server = undefined
     }
     else {
       throw Error('Server has not been started.')
