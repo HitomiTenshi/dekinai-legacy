@@ -4,6 +4,7 @@ export interface IConfig {
   readonly uploadDir: string
   readonly tempDir: string | null
   readonly strict: boolean
+  readonly extensionBlacklist: string[] | null
 
   readonly temporaryStorage: {
     readonly forceDefaultEnabled: boolean
@@ -25,7 +26,7 @@ export interface IConfig {
   readonly filename: {
     readonly forceDefaultAppendFilename: boolean
     readonly defaultAppendFilename: boolean
-    readonly separator: string
+    readonly separator: string | null
   }
 
   readonly randomString: {
@@ -34,6 +35,4 @@ export interface IConfig {
     readonly minLength: number
     readonly defaultLength: number
   }
-
-  readonly extensionBlacklist: string[] | null
 }

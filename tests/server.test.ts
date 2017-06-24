@@ -21,7 +21,14 @@ describe('Server', () => {
     config.reset()
 
     // Get the server from a new container
-    server = config.getContainerType<IServer>('Server') as Server
+    server = config.getContainerType<IServer>('Server', true) as Server
+  })
+
+  // Stop the server if it is running from previous tests
+  after(async () => {
+    if (server.server !== undefined) {
+      await server.stop()
+    }
   })
 
   describe('start', () => {

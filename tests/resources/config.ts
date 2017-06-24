@@ -6,13 +6,14 @@ import { IConfig } from '../../src/interfaces'
 import { Config } from '../../src/configuration'
 
 export class TestConfig implements IConfig {
-  private container?: Container
+  private container: Container
 
   port: number
   uploadUrl: string
   uploadDir: string
   tempDir: string | null
   strict: boolean
+  extensionBlacklist: string[] | null
 
   temporaryStorage: {
     forceDefaultEnabled: boolean
@@ -34,7 +35,7 @@ export class TestConfig implements IConfig {
   filename: {
     forceDefaultAppendFilename: boolean
     defaultAppendFilename: boolean
-    separator: string
+    separator: string | null
   }
 
   randomString: {
@@ -44,10 +45,9 @@ export class TestConfig implements IConfig {
     defaultLength: number
   }
 
-  extensionBlacklist: string[] | null
-
   constructor() {
     this.reset()
+    this.container = createContainer(this)
   }
 
   reset(): void {
@@ -63,17 +63,16 @@ export class TestConfig implements IConfig {
     this.uploadDir = config.uploadDir
     this.tempDir = config.tempDir
     this.strict = config.strict
+    this.extensionBlacklist = config.extensionBlacklist
     this.temporaryStorage = config.temporaryStorage
     this.backend = config.backend
     this.watchdog = config.watchdog
     this.filename = config.filename
     this.randomString = config.randomString
-    this.extensionBlacklist = config.extensionBlacklist
-    this.container = undefined
   }
 
   getContainerType<T>(identifier: string, fromNewContainer = false): T {
-    if (this.container === undefined || fromNewContainer) {
+    if (fromNewContainer) {
       this.container = createContainer(this)
     }
 

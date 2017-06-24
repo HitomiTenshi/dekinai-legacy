@@ -1,5 +1,5 @@
 {
-  "name": "dekinai.moe",
+  "name": "dekinai",
   "version": "1.0.0",
   "description": "A highly configurable self-hosted file storage server",
   "main": "main.js",
@@ -9,31 +9,32 @@
     "test": "tsc && cd tests && mocha ."
   },
   "keywords": [
-    "dekinai",
-    "dekinai.moe"
+    "dekinai"
   ],
   "author": {
     "name": "Johann Rekowski",
-    "email": "johann.rekowski@gmail.com",
-    "url": "https://www.dekinai.moe"
+    "email": "johann.rekowski@gmail.com"
   },
   "license": "MIT",
   "dependencies": {
     "http-shutdown": "^1.2.0",
     "inversify": "^4.1.1",
-    "koa": "^2.2.0",
-    "koa-busboy": "^1.1.0",
+    "koa": "^2.3.0",
+    "koa-busboy": "^1.1.1",
     "reflect-metadata": "^0.1.10",
     "sqlite": "^2.8.0"
   },
   "devDependencies": {
+    "@types/form-data": "0.0.33",
     "@types/koa": "^2.0.39",
     "@types/mocha": "^2.2.41",
-    "@types/node": "^7.0.29",
+    "@types/node": "^8.0.2",
     "@types/shelljs": "^0.7.2",
+    "form-data": "^2.2.0",
+    "got": "^7.0.0",
     "mocha": "^3.4.2",
     "shelljs": "^0.7.8",
     "shx": "^0.2.2",
-    "typescript": "^2.3.4"
+    "typescript": "^2.4.0"
   }
 }

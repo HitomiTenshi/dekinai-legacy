@@ -8,10 +8,10 @@ import { TestConfig, Helper } from './resources'
 const config = new TestConfig()
 
 describe('Util', () => {
-  let util: IUtil
+  let util: Util
 
   // Get Util from the IoC container
-  before(() => util = config.getContainerType<IUtil>('Util'))
+  before(() => util = config.getContainerType<IUtil>('Util') as Util)
 
   describe('isExtensionAllowed', () => {
     it('should return true for ".png"', () => {
@@ -50,10 +50,10 @@ describe('Util', () => {
 
     it('should return null when the maximum tryCount has been reached', async function () {
       // This test might be slow due to fs operations
-      this.slow(100)
+      this.slow(200)
 
       // Create all possible 1 character long files from Util's charset
-      Helper.simulateMaxTryCount((util as Util).charset, '.png')
+      Helper.simulateMaxTryCount(util.charset, '.png')
 
       const filename = await util.getRandomFilename(1, '.png')
       assert.strictEqual(filename, null)

@@ -212,7 +212,7 @@ export class Middleware implements IMiddleware {
 
       if (!this.util.isExtensionAllowed(extension)) {
         fs.unlink(ctx.state.filepath, () => null)
-        ctx.body = `File type "${extension}" not allowed.`
+        ctx.body = `File type "${extension}" is not allowed.`
         ctx.status = 403
         return
       }
@@ -234,7 +234,7 @@ export class Middleware implements IMiddleware {
         : this.config.randomString.defaultLength
 
       const extension: string = appendFilename
-        ? this.config.filename.separator + ctx.state.originalFilename
+        ? [this.config.filename.separator, ctx.state.originalFilename].join()
         : ctx.state.extension
 
       ctx.state.filename = await this.util.getRandomFilename(length, extension)

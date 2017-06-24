@@ -1,6 +1,8 @@
 *.js
 *.map
 node_modules/
+.nyc_output/
+coverage/
 uploads/
 temp/
 /config.json

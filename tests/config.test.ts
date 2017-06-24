@@ -313,10 +313,11 @@ describe('Config', () => {
       let error: Error | undefined
 
       // Set invalid value
-      (config as any).extensionBlacklist = [null]
+      const testConfig = config as any
+      testConfig.extensionBlacklist = [null]
 
       // Create the config file
-      fs.writeFileSync('config.json', JSON.stringify(config))
+      fs.writeFileSync('config.json', JSON.stringify(testConfig))
 
       try {
         new Config()
@@ -335,6 +336,7 @@ describe('Config', () => {
       // Set invalid values
       config.tempDir = null
       config.extensionBlacklist = null
+      config.filename.separator = null
 
       // Create the config file
       fs.writeFileSync('config.json', JSON.stringify(config))
@@ -356,10 +358,11 @@ describe('Config', () => {
         let error: Error | undefined
 
         // Set invalid value
-        (config.backend as any).adapter = 'invalid'
+        const testConfig = config as any
+        testConfig.backend.adapter = 'invalid'
 
         // Create the config file
-        fs.writeFileSync('config.json', JSON.stringify(config))
+        fs.writeFileSync('config.json', JSON.stringify(testConfig))
 
         try {
           new Config()

@@ -1,13 +1,17 @@
 import 'reflect-metadata'
 import * as assert from 'assert'
+import * as FormData from 'form-data'
+import * as fs from 'fs'
+const got = require('got')
 
 import { File } from '../src/backend'
 import { SQLiteAdapter } from '../src/backend/adapters'
-import { IDatabase, IFile } from '../src/interfaces'
-import { TestConfig } from './resources'
+import { IServer, IDatabase, IFile } from '../src/interfaces'
+import { TestConfig, Helper } from './resources'
 
 const config = new TestConfig()
 const testFile = new File(Date.now(), 'test.txt')
+const url = `http://localhost:${config.port}`
 
 describe('Database', () => {
   let database: IDatabase
@@ -51,7 +55,7 @@ describe('Database', () => {
     it('should throw an error if the database is force-disabled', async () => {
       let error: Error | undefined
 
-      // Set invalid values
+      // Set values
       config.temporaryStorage.forceDefaultEnabled = true
       config.temporaryStorage.defaultEnabled = false
 
@@ -74,7 +78,7 @@ describe('Database', () => {
     it('should throw an error if the database is force-disabled', async () => {
       let error: Error | undefined
 
-      // Set invalid values
+      // Set values
       config.temporaryStorage.forceDefaultEnabled = true
       config.temporaryStorage.defaultEnabled = false
 
@@ -97,7 +101,7 @@ describe('Database', () => {
     it('should throw an error if the database is force-disabled', async () => {
       let error: Error | undefined
 
-      // Set invalid values
+      // Set values
       config.temporaryStorage.forceDefaultEnabled = true
       config.temporaryStorage.defaultEnabled = false
 
@@ -120,7 +124,7 @@ describe('Database', () => {
     it('should throw an error if the database is force-disabled', async () => {
       let error: Error | undefined
 
-      // Set invalid values
+      // Set values
       config.temporaryStorage.forceDefaultEnabled = true
       config.temporaryStorage.defaultEnabled = false
 
@@ -136,6 +140,54 @@ describe('Database', () => {
 
       assert.notStrictEqual(error, undefined)
       assert.strictEqual(error!.message, 'terminateFiles cannot be executed when the database is force-disabled by the config.')
+    })
+
+    it('should delete expired files', async function () {
+      // This test might be slow due to fs operations
+      this.slow(200)
+
+      // Set values
+      config.temporaryStorage.forceDefaultEnabled = false
+      config.temporaryStorage.defaultEnabled = true
+      config.watchdog.scanInterval = 0
+      config.temporaryStorage.minTTL = 0
+      config.temporaryStorage.defaultTTL = 0
+
+      // Get the database and the server from the IoC container
+      database = config.getContainerType<IDatabase>('Database', true)
+      const server = config.getContainerType<IServer>('Server')
+
+      // Start the server
+      await server.start()
+
+      // Prepare a test file
+      const formData = new FormData()
+      formData.append('file', fs.createReadStream('resources/test.txt'))
+
+      // Execute a POST request
+      const response = await got.post(url, {
+        body: formData
+      })
+
+      // File should exist
+      const fileShouldExist = await Helper.checkFile(response.body)
+
+      // Wait 5 ms
+      await new Promise(resolve => setTimeout(resolve, 5))
+
+      // File should be deleted after 5 ms
+      const fileShouldNotExist = await Helper.checkFile(response.body)
+
+      // Stop the server
+      await server.stop()
+
+      // Clean the uploads folder
+      Helper.cleanUploads()
+
+      // Assert
+      assert.strictEqual(response.statusCode, 200)
+      assert.strictEqual(fileShouldExist, true)
+      assert.strictEqual(fileShouldNotExist, false)
     })
   })
 

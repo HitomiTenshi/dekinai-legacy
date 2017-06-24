@@ -10,6 +10,7 @@ export class Config implements IConfig {
   readonly uploadDir: string
   readonly tempDir: string | null
   readonly strict: boolean
+  readonly extensionBlacklist: string[] | null
 
   readonly temporaryStorage: {
     readonly forceDefaultEnabled: boolean
@@ -31,7 +32,7 @@ export class Config implements IConfig {
   readonly filename: {
     readonly forceDefaultAppendFilename: boolean
     readonly defaultAppendFilename: boolean
-    readonly separator: string
+    readonly separator: string | null
   }
 
   readonly randomString: {
@@ -40,8 +41,6 @@ export class Config implements IConfig {
     readonly minLength: number
     readonly defaultLength: number
   }
-
-  readonly extensionBlacklist: string[] | null
 
   constructor() {
     const config = this.loadConfigFile()
@@ -165,7 +164,10 @@ export class Config implements IConfig {
     if (typeof config.uploadUrl !== 'string') errors.push('"uploadUrl" is not a string.')
     if (typeof config.uploadDir !== 'string') errors.push('"uploadDir" is not a string.')
     if (typeof config.backend.adapter !== 'string') errors.push('"backend.adapter" is not a string.')
-    if (typeof config.filename.separator !== 'string') errors.push('"filename.separator" is not a string.')
+
+    if (config.filename.separator !== null) {
+      if (typeof config.filename.separator !== 'string') errors.push('"filename.separator" is not a string.')
+    }
 
     if (config.tempDir !== null) {
       if (typeof config.tempDir !== 'string') errors.push('"tempDir" is not a string.')
