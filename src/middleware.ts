@@ -234,7 +234,7 @@ export class Middleware implements IMiddleware {
         : this.config.randomString.defaultLength
 
       const extension: string = appendFilename
-        ? [this.config.filename.separator, ctx.state.originalFilename].join()
+        ? [this.config.filename.separator, ctx.state.originalFilename].join('')
         : ctx.state.extension
 
       ctx.state.filename = await this.util.getRandomFilename(length, extension)

@@ -42,6 +42,6 @@
     "shelljs": "^0.7.8",
     "shx": "^0.2.2",
     "typescript": "^2.4.0",
-    "uglify-es": "^3.0.19"
+    "uglify-es": "^3.0.20"
   }
 }

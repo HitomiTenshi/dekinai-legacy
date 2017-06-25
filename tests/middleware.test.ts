@@ -916,12 +916,16 @@ describe('Middleware', () => {
   })
 
   describe('resolveUrl', () => {
-    it('should reply with 200 to POST requests with a body containing the url to the uploaded file', async () => {
+    it('should reply with 200 to POST requests with a body containing the url to the uploaded file; append set to "false"', async () => {
+      // Prepare FormData
+      formData.append('append', 'false')
+
       // Set values
       config.uploadUrl = 'https://this.is-a-test.url/'
       config.randomString.minLength = 5
       config.randomString.maxLength = 5
       config.randomString.defaultLength = 5
+      config.filename.separator = '_'
 
       const response = await got.post(url, {
         body: formData
@@ -934,6 +938,30 @@ describe('Middleware', () => {
       assert.strictEqual(response.body.startsWith(config.uploadUrl), true)
       assert.strictEqual(response.body.endsWith('.txt'), true)
       assert.strictEqual(response.body.replace(config.uploadUrl, '').replace('.txt', '').length, 5)
+    })
+
+    it('should reply with 200 to POST requests with a body containing the url to the uploaded file; append set to "true"', async () => {
+      // Prepare FormData
+      formData.append('append', 'true')
+
+      // Set values
+      config.uploadUrl = 'https://this.is-a-test.url/'
+      config.randomString.minLength = 5
+      config.randomString.maxLength = 5
+      config.randomString.defaultLength = 5
+      config.filename.separator = '_'
+
+      const response = await got.post(url, {
+        body: formData
+      })
+
+      const fileExists = await Helper.checkFile(response.body)
+
+      assert.strictEqual(response.statusCode, 200)
+      assert.strictEqual(fileExists, true)
+      assert.strictEqual(response.body.startsWith(config.uploadUrl), true)
+      assert.strictEqual(response.body.endsWith('test.txt'), true)
+      assert.strictEqual(response.body.replace(config.uploadUrl, '').replace('test.txt', '').length, 6)
     })
   })
 })
