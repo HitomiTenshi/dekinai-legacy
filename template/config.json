@@ -1,8 +1,8 @@
 {
   "port": 3100,
   "uploadUrl": "https://dekinai.moe",
-  "uploadDir": "./uploads",
-  "tempDir": "./temp",
+  "uploadDir": "uploads",
+  "tempDir": "temp",
   "strict": true,
 
   "extensionBlacklist": [
