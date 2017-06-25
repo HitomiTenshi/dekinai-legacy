@@ -6,10 +6,14 @@
   "scripts": {
     "postinstall": "shx cp -n template/config.json . && shx cp template/config.json tests/ && shx mkdir -p uploads temp tests/uploads tests/temp",
     "start": "tsc && node main.js",
-    "test": "tsc && cd tests && mocha ."
+    "test": "tsc && cd tests && mocha .",
+    "rollup": "tsc -p bundle/tsconfig-rollup.json && rollup -c bundle/rollup.js",
+    "minify": "uglifyjs --compress properties,dead_code,drop_debugger,unsafe,unsafe_comps,unsafe_Func,unsafe_math,unsafe_proto,unsafe_regexp,conditionals,comparisons,evaluate,booleans,loops,unused,toplevel,hoist_funs,if_return,join_vars,cascade,collapse_vars,reduce_vars,negate_iife,pure_getters,passes=2 --mangle toplevel,eval --toplevel --source-map content=dekinai.js.map --output dekinai.min.js dekinai.js",
+    "release": "npm run rollup && npm run minify"
   },
   "keywords": [
-    "dekinai"
+    "dekinai",
+    "dekinai.moe"
   ],
   "author": {
     "name": "Johann Rekowski",
@@ -32,8 +36,12 @@
     "form-data": "^2.2.0",
     "got": "^7.0.0",
     "mocha": "^3.4.2",
+    "rollup": "^0.43.0",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-typescript2": "^0.4.4",
     "shelljs": "^0.7.8",
     "shx": "^0.2.2",
-    "typescript": "^2.4.0"
+    "typescript": "^2.4.0",
+    "uglify-es": "^3.0.19"
   }
 }
