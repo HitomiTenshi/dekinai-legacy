@@ -1,6 +1,8 @@
 # Dekinai
 Dekinai is a highly configurable self-hosted file storage server.
 
+Dekinai will only work with **Node JS 8.1.0** or higher, due to `util.promisify` usage.
+
 ## QuickStart
 ```
 git clone https://github.com/HitomiTenshi/Dekinai.git
