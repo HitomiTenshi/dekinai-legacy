@@ -1,18 +1,12 @@
 import typescript from 'rollup-plugin-typescript2'
 import resolve from 'rollup-plugin-node-resolve'
+import commonjs from 'rollup-plugin-commonjs'
 
 export default {
   entry: 'main.ts',
   dest: 'dekinai.js',
   format: 'cjs',
   sourceMap: true,
-  onwarn: (warning: any) => {
-    // Skip certain warnings
-    if (warning.code === 'THIS_IS_UNDEFINED') return;
-
-    // console.warn everything else
-    console.warn(warning.message);
-  },
   external: [
     'crypto',
     'sqlite',
@@ -32,6 +26,10 @@ export default {
       jsnext: true,
       main: true,
       browser: false
+    }),
+    commonjs({
+      include: 'node_modules/**',
+      sourceMap: true
     })
   ]
 }
