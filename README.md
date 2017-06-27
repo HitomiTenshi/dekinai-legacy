@@ -11,7 +11,7 @@ npm install
 npm start
 ```
 
-You can change the server configuration in the `config.json` file, which is located in the root folder.
+You can change the server configuration in the `config.json` file, which is located in the root folder after running `npm install`.
 
 ## Production Setup (WIP)
 Documentation in progress
