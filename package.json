@@ -6,7 +6,9 @@
   "scripts": {
     "postinstall": "shx cp -n template/config.json . && shx cp template/config.json tests/ && shx mkdir -p uploads temp tests/uploads tests/temp",
     "start": "tsc && node main.js",
-    "test": "tsc && cd tests && mocha .",
+    "test": "nyc --reporter=html npm run mocha",
+    "codacy": "nyc --reporter=text-lcov npm run mocha | codacy-coverage --language typescript",
+    "mocha": "tsc && cd tests && mocha .",
     "rollup": "tsc -p bundle/tsconfig-rollup.json && rollup -c bundle/rollup.js",
     "minify": "uglifyjs --compress properties,dead_code,drop_debugger,unsafe,unsafe_comps,unsafe_Func,unsafe_math,unsafe_proto,unsafe_regexp,conditionals,comparisons,evaluate,booleans,loops,unused,toplevel,hoist_funs,if_return,join_vars,cascade,collapse_vars,reduce_vars,negate_iife,pure_getters,passes=2 --mangle toplevel,eval --toplevel --source-map content=dekinai.js.map --output dekinai.min.js dekinai.js",
     "release": "npm run rollup && npm run minify"
@@ -33,9 +35,11 @@
     "@types/mocha": "^2.2.41",
     "@types/node": "^8.0.4",
     "@types/shelljs": "^0.7.2",
+    "codacy-coverage": "^2.0.2",
     "form-data": "^2.2.0",
     "got": "^7.0.0",
     "mocha": "^3.4.2",
+    "nyc": "^11.0.3",
     "rollup": "^0.43.0",
     "rollup-plugin-commonjs": "^8.0.2",
     "rollup-plugin-node-resolve": "^3.0.0",
