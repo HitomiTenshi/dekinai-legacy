@@ -1,4 +1,4 @@
-# Dekinai [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/eab00b1242e84e65b130e58b082ae1c6)](https://www.codacy.com/app/johann.rekowski/Dekinai?utm_source=github.com&utm_medium=referral&utm_content=HitomiTenshi/Dekinai&utm_campaign=Badge_Coverage) [![Build Status](https://travis-ci.org/HitomiTenshi/Dekinai.svg?branch=master)](https://travis-ci.org/HitomiTenshi/Dekinai)
+# Dekinai [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/eab00b1242e84e65b130e58b082ae1c6)](https://www.codacy.com/app/johann.rekowski/Dekinai?utm_source=github.com&utm_medium=referral&utm_content=HitomiTenshi/Dekinai&utm_campaign=Badge_Coverage) [![Build Status](https://travis-ci.org/HitomiTenshi/Dekinai.svg?branch=master)](https://travis-ci.org/HitomiTenshi/Dekinai) [![Build status](https://ci.appveyor.com/api/projects/status/grse53o3jc48jrhx/branch/master?svg=true)](https://ci.appveyor.com/project/HitomiTenshi/dekinai/branch/master)
 Dekinai is a highly configurable self-hosted file storage server.
 
 Dekinai will only work with **Node JS 8.1.0** or higher, due to `util.promisify` usage.
