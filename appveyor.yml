@@ -1,0 +1,21 @@
+environment:
+  CODACY_PROJECT_TOKEN:
+    secure: 6eKx+VYCDy8aPfSrBCsztPZHSzsPwvtYi5p7dCB9wb0dHoN9paQ3PlEa3CjC0nwi
+
+cache:
+  - node_modules
+
+install:
+  - ps: Install-Product node ''
+  - npm install
+
+test_script:
+  # Output useful info for debugging.
+  - node --version
+  - npm --version
+  # run tests
+  - npm run codacy
+  - npm run release
+
+# Don't actually build.
+build: off

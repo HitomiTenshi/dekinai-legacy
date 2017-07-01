@@ -12,5 +12,5 @@ os:
   - osx
 
 script:
-  - npm run codacy
+  - npm test
   - npm run release
