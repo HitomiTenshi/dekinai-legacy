@@ -221,7 +221,8 @@ describe('Config', () => {
         "randomString.forceDefaultLength" is not defined in the configuration file.
         "randomString.maxLength" is not defined in the configuration file.
         "randomString.minLength" is not defined in the configuration file.
-        "randomString.defaultLength" is not defined in the configuration file.`
+        "randomString.defaultLength" is not defined in the configuration file.
+        "randomString.placement" is not defined in the configuration file.`
         .replace(/^\s+/gm, '')
       )
     })
@@ -268,7 +269,8 @@ describe('Config', () => {
             "forceDefaultLength": {},
             "maxLength": {},
             "minLength": {},
-            "defaultLength": {}
+            "defaultLength": {},
+            "placement": {}
           }
         }`
       )
@@ -287,8 +289,9 @@ describe('Config', () => {
         `"uploadUrl" is not a string.
         "uploadDir" is not a string.
         "backend.adapter" is not a string.
-        "filename.separator" is not a string.
+        "randomString.placement" is not a string.
         "tempDir" is not a string.
+        "filename.separator" is not a string.
         "strict" is not a boolean.
         "temporaryStorage.forceDefaultEnabled" is not a boolean.
         "temporaryStorage.forceDefaultTTL" is not a boolean.
@@ -373,6 +376,29 @@ describe('Config', () => {
 
         assert.notStrictEqual(error, undefined)
         assert.strictEqual(error!.message, '"backend.adapter" can only be "sqlite".')
+      })
+    })
+
+    describe('randomString.placement', () => {
+      it('should throw an error if the value is not "start" or "end"', () => {
+        let error: Error | undefined
+
+        // Set invalid value
+        const testConfig = config as any
+        testConfig.randomString.placement = 'invalid'
+
+        // Create the config file
+        fs.writeFileSync('config.json', JSON.stringify(testConfig))
+
+        try {
+          new Config()
+        }
+        catch (err) {
+          error = err
+        }
+
+        assert.notStrictEqual(error, undefined)
+        assert.strictEqual(error!.message, '"randomString.placement" can only be "start" or "end".')
       })
     })
 

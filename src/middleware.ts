@@ -233,11 +233,12 @@ export class Middleware implements IMiddleware {
         ? ctx.state.postLength
         : this.config.randomString.defaultLength
 
-      const extension: string = appendFilename
-        ? [this.config.filename.separator, ctx.state.originalFilename].join('')
-        : ctx.state.extension
-
-      ctx.state.filename = await this.util.getRandomFilename(length, extension)
+      ctx.state.filename = await this.util.getRandomFilename(
+        length,
+        path.basename(ctx.state.originalFilename, ctx.state.extension),
+        ctx.state.extension,
+        appendFilename
+      )
 
       if (ctx.state.filename === null) {
         fs.unlink(ctx.state.filepath, () => null)

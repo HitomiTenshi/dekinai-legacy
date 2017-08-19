@@ -34,5 +34,6 @@ export interface IConfig {
     readonly maxLength: number
     readonly minLength: number
     readonly defaultLength: number
+    readonly placement: 'start' | 'end'
   }
 }

@@ -40,6 +40,7 @@ export class Config implements IConfig {
     readonly maxLength: number
     readonly minLength: number
     readonly defaultLength: number
+    readonly placement: 'start' | 'end'
   }
 
   constructor() {
@@ -151,6 +152,7 @@ export class Config implements IConfig {
       if (config.randomString.maxLength === undefined) errors.push('"randomString.maxLength" is not defined in the configuration file.')
       if (config.randomString.minLength === undefined) errors.push('"randomString.minLength" is not defined in the configuration file.')
       if (config.randomString.defaultLength === undefined) errors.push('"randomString.defaultLength" is not defined in the configuration file.')
+      if (config.randomString.placement === undefined) errors.push('"randomString.placement" is not defined in the configuration file.')
     }
 
     // Throw if parameters are missing
@@ -164,13 +166,14 @@ export class Config implements IConfig {
     if (typeof config.uploadUrl !== 'string') errors.push('"uploadUrl" is not a string.')
     if (typeof config.uploadDir !== 'string') errors.push('"uploadDir" is not a string.')
     if (typeof config.backend.adapter !== 'string') errors.push('"backend.adapter" is not a string.')
-
-    if (config.filename.separator !== null) {
-      if (typeof config.filename.separator !== 'string') errors.push('"filename.separator" is not a string.')
-    }
+    if (typeof config.randomString.placement !== 'string') errors.push('"randomString.placement" is not a string.')
 
     if (config.tempDir !== null) {
       if (typeof config.tempDir !== 'string') errors.push('"tempDir" is not a string.')
+    }
+
+    if (config.filename.separator !== null) {
+      if (typeof config.filename.separator !== 'string') errors.push('"filename.separator" is not a string.')
     }
 
     // Boolean type checks
@@ -216,6 +219,7 @@ export class Config implements IConfig {
     const errors: string[] = []
 
     if (config.backend.adapter !== 'sqlite') errors.push('"backend.adapter" can only be "sqlite".')
+    if (!(config.randomString.placement === 'start' || config.randomString.placement === 'end')) errors.push('"randomString.placement" can only be "start" or "end".')
 
     if (config.temporaryStorage.defaultTTL < 0) errors.push('"temporaryStorage.defaultTTL" must be equal or greater than 0.')
     if (config.watchdog.scanInterval < 0) errors.push('"watchdog.scanInterval" must be equal or greater than 0.')

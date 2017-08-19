@@ -37,15 +37,35 @@ describe('Util', () => {
     // Clean the uploads folder after running all tests
     after(() => Helper.cleanUploads())
 
-    it('should return a filename that is 5 characters long', async () => {
-      const filename = await util.getRandomFilename(5, '')
+    it('should return a random filename that is 5 characters long', async () => {
+      const filename = await util.getRandomFilename(5, '', '', false)
       assert.strictEqual(filename!.length, 5)
     })
 
-    it('should return a filename that is 9 characters long when it includes the ".png" extension', async () => {
-      const filename = await util.getRandomFilename(5, '.png')
+    it('should return a random filename that is 9 characters long when it includes the ".png" extension', async () => {
+      const filename = await util.getRandomFilename(5, '', '.png', false)
       assert.strictEqual(filename!.length, 9)
       assert.strictEqual(filename!.endsWith('.png'), true)
+    })
+
+    it('should return an appended filename that is 14 characters long when it includes the ".png" extension. Appending random string at start.', async () => {
+      // Set randomString.placement to append at start
+      config.randomString.placement = 'start'
+
+      const filename = await util.getRandomFilename(5, 'test', '.png', true)
+      assert.strictEqual(filename!.length, 14)
+      assert.strictEqual(filename!.endsWith('_test.png'), true)
+    })
+
+    it('should return an appended filename that is 14 characters long when it includes the ".png" extension. Appending random string at end.', async () => {
+      // Set randomString.placement to append at end
+      config.randomString.placement = 'end'
+
+      const filename = await util.getRandomFilename(5, 'test', '.png', true)
+      assert.strictEqual(filename!.length, 14)
+      assert.strictEqual(filename!.startsWith('test'), true)
+      assert.strictEqual(filename!.endsWith('.png'), true)
+      assert.strictEqual(filename!.substr(-10, 1), '_')
     })
 
     it('should return null when the maximum tryCount has been reached', async function () {
@@ -55,7 +75,7 @@ describe('Util', () => {
       // Create all possible 1 character long files from Util's charset
       Helper.simulateMaxTryCount(util.charset, '.png')
 
-      const filename = await util.getRandomFilename(1, '.png')
+      const filename = await util.getRandomFilename(1, '', '.png', false)
       assert.strictEqual(filename, null)
     })
   })

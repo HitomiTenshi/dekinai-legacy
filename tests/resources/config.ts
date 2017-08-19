@@ -43,6 +43,7 @@ export class TestConfig implements IConfig {
     maxLength: number
     minLength: number
     defaultLength: number
+    placement: 'start' | 'end'
   }
 
   constructor() {

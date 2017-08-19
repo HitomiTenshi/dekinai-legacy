@@ -1,4 +1,4 @@
 export interface IUtil {
   isExtensionAllowed(extension: string): boolean
-  getRandomFilename(length: number, extension: string, tryCount?: number): Promise<string | null>
+  getRandomFilename(length: number, filename: string, extension: string, appendFilename: boolean, tryCount?: number): Promise<string | null>
 }

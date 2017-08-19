@@ -23,30 +23,30 @@
   },
   "license": "MIT",
   "dependencies": {
-    "inversify": "^4.1.1",
+    "inversify": "^4.3.0",
     "koa": "^2.3.0",
     "koa-busboy": "^1.1.1",
     "reflect-metadata": "^0.1.10",
     "sqlite": "^2.8.0"
   },
   "devDependencies": {
-    "@types/form-data": "^0.0.33",
+    "@types/form-data": "^2.2.0",
     "@types/koa": "^2.0.39",
     "@types/mocha": "^2.2.41",
-    "@types/node": "^8.0.7",
-    "@types/shelljs": "^0.7.2",
+    "@types/node": "^8.0.24",
+    "@types/shelljs": "^0.7.4",
     "codacy-coverage": "^2.0.2",
     "form-data": "^2.2.0",
     "got": "^7.1.0",
-    "mocha": "^3.4.2",
-    "nyc": "^11.0.3",
-    "rollup": "^0.43.0",
-    "rollup-plugin-commonjs": "^8.0.2",
+    "mocha": "^3.5.0",
+    "nyc": "^11.1.0",
+    "rollup": "^0.47.6",
+    "rollup-plugin-commonjs": "^8.1.0",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-typescript2": "^0.4.5",
+    "rollup-plugin-typescript2": "0.4.6",
     "shelljs": "^0.7.8",
     "shx": "^0.2.2",
-    "typescript": "^2.4.1",
-    "uglify-es": "^3.0.22"
+    "typescript": "^2.4.2",
+    "uglify-es": "^3.0.28"
   }
 }

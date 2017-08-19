@@ -38,6 +38,7 @@
     "forceDefaultLength": false,
     "maxLength": 10,
     "minLength": 5,
-    "defaultLength": 5
+    "defaultLength": 5,
+    "placement": "start"
   }
 }

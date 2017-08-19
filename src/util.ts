@@ -20,24 +20,32 @@ export class Util implements IUtil {
       : true
   }
 
-  async getRandomFilename(length: number, extension: string, tryCount: number = 0): Promise<string | null> {
+  async getRandomFilename(length: number, filename: string, extension: string, appendFilename: boolean, tryCount: number = 0): Promise<string | null> {
     if (tryCount >= 10) return null
 
-    let filename = ''
+    let generatedFilename = ''
     const bytes = crypto.randomBytes(length)
 
     for (let i = 0; i < bytes.length; i++) {
-      filename += this.charset[bytes.readUInt8(i) % this.charset.length]
+      generatedFilename += this.charset[bytes.readUInt8(i) % this.charset.length]
     }
 
-    filename += extension
-    const fileExists = await exists(path.join(this.config.uploadDir, filename))
-
-    if (!fileExists) {
-      return filename
+    if (appendFilename) {
+      generatedFilename = this.config.randomString.placement == 'start'
+        ? generatedFilename + this.config.filename.separator + filename + extension
+        : filename + this.config.filename.separator + generatedFilename + extension
     }
     else {
-      return await this.getRandomFilename(length, extension, ++tryCount)
+      generatedFilename += extension
+    }
+
+    const fileExists = await exists(path.join(this.config.uploadDir, generatedFilename))
+
+    if (!fileExists) {
+      return generatedFilename
+    }
+    else {
+      return await this.getRandomFilename(length, filename, extension, appendFilename, ++tryCount)
     }
   }
 }
