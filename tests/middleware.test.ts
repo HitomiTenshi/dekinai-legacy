@@ -925,6 +925,7 @@ describe('Middleware', () => {
       config.randomString.minLength = 5
       config.randomString.maxLength = 5
       config.randomString.defaultLength = 5
+      config.randomString.placement = 'start'
       config.filename.separator = '_'
 
       const response = await got.post(url, {
@@ -949,6 +950,7 @@ describe('Middleware', () => {
       config.randomString.minLength = 5
       config.randomString.maxLength = 5
       config.randomString.defaultLength = 5
+      config.randomString.placement = 'start'
       config.filename.separator = '_'
 
       const response = await got.post(url, {
