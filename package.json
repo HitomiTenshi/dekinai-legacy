@@ -21,6 +21,10 @@
     "name": "Johann Rekowski",
     "email": "johann.rekowski@gmail.com"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HitomiTenshi/Dekinai.git"
+  },
   "license": "MIT",
   "dependencies": {
     "inversify": "^4.3.0",
