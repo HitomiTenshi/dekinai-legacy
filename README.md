@@ -1,32 +1,24 @@
 # Dekinai [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/eab00b1242e84e65b130e58b082ae1c6)](https://www.codacy.com/app/johann.rekowski/Dekinai?utm_source=github.com&utm_medium=referral&utm_content=HitomiTenshi/Dekinai&utm_campaign=Badge_Coverage) [![Build Status](https://travis-ci.org/HitomiTenshi/Dekinai.svg?branch=master)](https://travis-ci.org/HitomiTenshi/Dekinai) [![Build status](https://ci.appveyor.com/api/projects/status/grse53o3jc48jrhx/branch/master?svg=true)](https://ci.appveyor.com/project/HitomiTenshi/dekinai/branch/master)
 Dekinai is a highly configurable self-hosted file storage server.
 
-Dekinai will only work with **Node.js 8.1.0** or higher, due to `util.promisify` usage.
-
-## Quick Start
-
-Download the latest release from [here](https://github.com/HitomiTenshi/Dekinai/releases/latest) or clone the repository
-```
-$ git clone https://github.com/HitomiTenshi/Dekinai.git
-$ cd Dekinai
-```
-
-Then install dependencies and start the app
-```
-$ npm install
-$ npm start
-```
-
-You can change the server configuration in the `config.json` file, which is located in the root folder after running `npm install`.
-
 ## Production Setup
 
-Install PM2 to manage Node.js apps
+Download the latest release from [here](https://github.com/HitomiTenshi/Dekinai/releases/latest) and execute `dekinai.exe` (`dekinai` on Linux). You can change the server configuration in the `config.json` file.
+
+## Alternative Setup
+
+If you are using a Mac or an x86 platform which currently are not covered by the release binaries, you can setup the app by using Node.js.
+
+**Attention:** Dekinai will only work with **Node.js 8.1.0** or higher, due to `util.promisify` usage.
+
+Install Node.js from [here](https://nodejs.org). Choose a version that is higher than **8.1.0**. Node.js already comes with `npm`.
+
+Install [PM2](https://github.com/Unitech/pm2) to manage Node.js apps
 ```
 $ npm install pm2 -g
 ```
 
-Download the latest release from [here](https://github.com/HitomiTenshi/Dekinai/releases/latest) or clone the repository
+Clone the repository
 ```
 $ git clone https://github.com/HitomiTenshi/Dekinai.git
 $ cd Dekinai
@@ -51,7 +43,7 @@ $ pm2 startup
 
 PM2 should now tell you to execute a line with sudo, do that to start dekinai with your server.
 
-If you want to be on the safe side, execute the `pm2 save` and `pm2 startup` commands as a different user with less privileges, then run the sudo line with an admin user. PM2 will then startup dekinai with that user.
+If you want to be on the safe side, execute the `pm2` commands as a different user with less privileges, then run the sudo line with an admin user. PM2 will then startup dekinai with that user.
 
 Make sure that the user with less privileges can still read / write to the upload and temp folders that are defined in your `config.json` if you do that.
 
