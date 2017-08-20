@@ -4,33 +4,47 @@ Dekinai is a highly configurable self-hosted file storage server.
 Dekinai will only work with **Node.js 8.1.0** or higher, due to `util.promisify` usage.
 
 ## Quick Start
+
+Download the latest release from [here](https://github.com/HitomiTenshi/Dekinai/releases/latest) or clone the repository
 ```
-git clone https://github.com/HitomiTenshi/Dekinai.git
-cd Dekinai
-npm install
-npm start
+$ git clone https://github.com/HitomiTenshi/Dekinai.git
+$ cd Dekinai
+```
+
+Then install dependencies and start the app
+```
+$ npm install
+$ npm start
 ```
 
 You can change the server configuration in the `config.json` file, which is located in the root folder after running `npm install`.
 
 ## Production Setup
 
-```
 Install PM2 to manage Node.js apps
+```
 $ npm install pm2 -g
+```
 
-Clone the repository
+Download the latest release from [here](https://github.com/HitomiTenshi/Dekinai/releases/latest) or clone the repository
+```
 $ git clone https://github.com/HitomiTenshi/Dekinai.git
 $ cd Dekinai
+```
 
 Install dependencies and run the release script
+```
 $ npm install
 $ npm run release
+```
 
 Start the bundled and minified app via PM2
+```
 $ pm2 start dekinai.min.js
+```
 
 Save and add the PM2 process list to your server boot up
+```
 $ pm2 save
 $ pm2 startup
 ```
