@@ -1,9 +1,9 @@
 # Dekinai [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/eab00b1242e84e65b130e58b082ae1c6)](https://www.codacy.com/app/johann.rekowski/Dekinai?utm_source=github.com&utm_medium=referral&utm_content=HitomiTenshi/Dekinai&utm_campaign=Badge_Coverage) [![Build Status](https://travis-ci.org/HitomiTenshi/Dekinai.svg?branch=master)](https://travis-ci.org/HitomiTenshi/Dekinai) [![Build status](https://ci.appveyor.com/api/projects/status/grse53o3jc48jrhx/branch/master?svg=true)](https://ci.appveyor.com/project/HitomiTenshi/dekinai/branch/master)
 Dekinai is a highly configurable self-hosted file storage server.
 
-Dekinai will only work with **Node JS 8.1.0** or higher, due to `util.promisify` usage.
+Dekinai will only work with **Node.js 8.1.0** or higher, due to `util.promisify` usage.
 
-## QuickStart
+## Quick Start
 ```
 git clone https://github.com/HitomiTenshi/Dekinai.git
 cd Dekinai
@@ -13,8 +13,33 @@ npm start
 
 You can change the server configuration in the `config.json` file, which is located in the root folder after running `npm install`.
 
-## Production Setup (WIP)
-Documentation in progress
+## Production Setup
+
+```
+Install PM2 to manage Node.js apps
+$ npm install pm2 -g
+
+Clone the repository
+$ git clone https://github.com/HitomiTenshi/Dekinai.git
+$ cd Dekinai
+
+Install dependencies and run the release script
+$ npm install
+$ npm run release
+
+Start the bundled and minified app via PM2
+$ pm2 start dekinai.min.js
+
+Save and add the PM2 process list to your server boot up
+$ pm2 save
+$ pm2 startup
+```
+
+PM2 should now tell you to execute a line with sudo, do that to start dekinai with your server.
+
+If you want to be on the safe side, execute the `pm2 save` and `pm2 startup` commands as a different user with less privileges, then run the sudo line with an admin user. PM2 will then startup dekinai with that user.
+
+Make sure that the user with less privileges can still read / write to the upload and temp folders that are defined in your `config.json` if you do that.
 
 ## Project Goals
 - Be as minimalistic as possible while maintaining code readability
