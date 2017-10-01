@@ -3,10 +3,12 @@ import resolve from 'rollup-plugin-node-resolve'
 import commonjs from 'rollup-plugin-commonjs'
 
 export default {
-  entry: 'main.ts',
-  dest: 'dekinai.js',
-  format: 'cjs',
-  sourceMap: true,
+  input: 'main.ts',
+  output: {
+    file: 'dekinai.js',
+    format: 'cjs',
+    sourcemap: true
+  },
   external: [
     'crypto',
     'sqlite',

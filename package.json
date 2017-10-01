@@ -36,21 +36,21 @@
   "devDependencies": {
     "@types/form-data": "^2.2.0",
     "@types/koa": "^2.0.39",
-    "@types/mocha": "^2.2.41",
-    "@types/node": "^8.0.24",
+    "@types/mocha": "^2.2.43",
+    "@types/node": "^8.0.31",
     "@types/shelljs": "^0.7.4",
-    "codacy-coverage": "^2.0.2",
-    "form-data": "^2.2.0",
+    "codacy-coverage": "^2.0.3",
+    "form-data": "^2.3.1",
     "got": "^7.1.0",
-    "mocha": "^3.5.0",
-    "nyc": "^11.1.0",
-    "rollup": "^0.47.6",
-    "rollup-plugin-commonjs": "^8.1.0",
+    "mocha": "^3.5.3",
+    "nyc": "^11.2.1",
+    "rollup": "^0.50.0",
+    "rollup-plugin-commonjs": "^8.2.1",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-typescript2": "0.4.6",
+    "rollup-plugin-typescript2": "0.7.0",
     "shelljs": "^0.7.8",
     "shx": "^0.2.2",
-    "typescript": "^2.4.2",
-    "uglify-es": "^3.0.28"
+    "typescript": "^2.5.3",
+    "uglify-es": "^3.1.2"
   }
 }
