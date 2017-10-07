@@ -1,4 +1,5 @@
 import { Container } from 'inversify'
+
 import { Config } from '.'
 import { Middleware, Server, Util, Watchdog } from '..'
 import { Database } from '../backend'

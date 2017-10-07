@@ -1,12 +1,9 @@
 import { injectable, inject } from 'inversify'
-import * as fs from 'fs'
-import * as util from 'util'
 import * as path from 'path'
 import * as crypto from 'crypto'
 
+import { fsExists } from '.'
 import { IConfig, IUtil } from './interfaces'
-
-const exists = util.promisify(fs.exists) as (path: string | Buffer) => Promise<boolean>
 
 @injectable()
 export class Util implements IUtil {
@@ -39,7 +36,7 @@ export class Util implements IUtil {
       generatedFilename += extension
     }
 
-    const fileExists = await exists(path.join(this.config.uploadDir, generatedFilename))
+    const fileExists = await fsExists(path.join(this.config.uploadDir, generatedFilename))
 
     if (!fileExists) {
       return generatedFilename

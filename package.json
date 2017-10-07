@@ -6,7 +6,7 @@
   "scripts": {
     "postinstall": "shx cp -n template/config.json . && shx cp template/config.json tests/ && shx mkdir -p uploads temp tests/uploads tests/temp",
     "start": "tsc && node main.js",
-    "test": "tsc && cd tests && mocha .",
+    "test": "tsc && cd tests && mocha --exit .",
     "codacy": "nyc --reporter=text-lcov npm run test | codacy-coverage --language typescript",
     "nyc": "nyc --reporter=html npm run test",
     "rollup": "tsc -p bundle/tsconfig-rollup.json && rollup -c bundle/rollup.js",
@@ -37,12 +37,12 @@
     "@types/form-data": "^2.2.0",
     "@types/koa": "^2.0.39",
     "@types/mocha": "^2.2.43",
-    "@types/node": "^8.0.31",
+    "@types/node": "^8.0.33",
     "@types/shelljs": "^0.7.4",
     "codacy-coverage": "^2.0.3",
     "form-data": "^2.3.1",
     "got": "^7.1.0",
-    "mocha": "^3.5.3",
+    "mocha": "^4.0.1",
     "nyc": "^11.2.1",
     "rollup": "^0.50.0",
     "rollup-plugin-commonjs": "^8.2.1",
@@ -51,6 +51,6 @@
     "shelljs": "^0.7.8",
     "shx": "^0.2.2",
     "typescript": "^2.5.3",
-    "uglify-es": "^3.1.2"
+    "uglify-es": "^3.1.3"
   }
 }

@@ -1,14 +1,12 @@
 import { injectable, inject } from 'inversify'
 import * as fs from 'fs'
-import * as util from 'util'
 import * as path from 'path'
 import * as url from 'url'
 import * as koa from 'koa'
 
+import { fsRename } from '.'
 import { IConfig, IDatabase, IUtil, IMiddleware, IPOST } from './interfaces'
 import { File } from './backend'
-
-const rename = util.promisify(fs.rename) as (oldPath: string, newPath: string) => Promise<void>
 
 @injectable()
 export class Middleware implements IMiddleware {
@@ -253,7 +251,7 @@ export class Middleware implements IMiddleware {
 
   resolveUrl(): koa.Middleware {
     return async (ctx: koa.Context) => {
-      await rename(ctx.state.filepath, path.join(this.config.uploadDir, ctx.state.filename))
+      await fsRename(ctx.state.filepath, path.join(this.config.uploadDir, ctx.state.filename))
 
       const temporary: boolean = ctx.state.postTemporary !== undefined
         ? ctx.state.postTemporary
