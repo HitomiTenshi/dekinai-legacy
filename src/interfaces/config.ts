@@ -2,7 +2,7 @@ export interface IConfig {
   readonly port: number
   readonly uploadUrl: string
   readonly uploadDir: string
-  readonly tempDir: string | null
+  readonly dekinaiDir: string
   readonly strict: boolean
   readonly extensionBlacklist: string[] | null
 

@@ -11,7 +11,7 @@ export class TestConfig implements IConfig {
   port: number
   uploadUrl: string
   uploadDir: string
-  tempDir: string | null
+  dekinaiDir: string
   strict: boolean
   extensionBlacklist: string[] | null
 
@@ -62,7 +62,7 @@ export class TestConfig implements IConfig {
     this.port = config.port
     this.uploadUrl = config.uploadUrl
     this.uploadDir = config.uploadDir
-    this.tempDir = config.tempDir
+    this.dekinaiDir = config.dekinaiDir
     this.strict = config.strict
     this.extensionBlacklist = config.extensionBlacklist
     this.temporaryStorage = config.temporaryStorage

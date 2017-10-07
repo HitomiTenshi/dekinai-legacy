@@ -1,5 +1,6 @@
 import { injectable } from 'inversify'
 import * as fs from 'fs'
+import * as path from 'path'
 
 import { IConfig } from '../interfaces'
 
@@ -8,7 +9,7 @@ export class Config implements IConfig {
   readonly port: number
   readonly uploadUrl: string
   readonly uploadDir: string
-  readonly tempDir: string | null
+  readonly dekinaiDir: string
   readonly strict: boolean
   readonly extensionBlacklist: string[] | null
 
@@ -55,7 +56,7 @@ export class Config implements IConfig {
     this.port = config.port
     this.uploadUrl = config.uploadUrl
     this.uploadDir = config.uploadDir
-    this.tempDir = config.tempDir
+    this.dekinaiDir = config.dekinaiDir
     this.strict = config.strict
     this.temporaryStorage = config.temporaryStorage
     this.backend = config.backend
@@ -67,6 +68,13 @@ export class Config implements IConfig {
     this.extensionBlacklist = config.extensionBlacklist !== null
       ? config.extensionBlacklist.map(value => !value.startsWith('.') ? `.${value}` : value)
       : config.extensionBlacklist
+
+    // Ensure that a backend folder exists in dekinaiDir
+    const backendDir = path.join(this.dekinaiDir, 'backend')
+
+    if (!fs.existsSync(backendDir)) {
+      fs.mkdirSync(backendDir)
+    }
   }
 
   private loadConfigFile(): IConfig {
@@ -90,7 +98,7 @@ export class Config implements IConfig {
     if (config.port === undefined) errors.push('"port" is not defined in the configuration file.')
     if (config.uploadUrl === undefined) errors.push('"uploadUrl" is not defined in the configuration file.')
     if (config.uploadDir === undefined) errors.push('"uploadDir" is not defined in the configuration file.')
-    if (config.tempDir === undefined) errors.push('"tempDir" is not defined in the configuration file.')
+    if (config.dekinaiDir === undefined) errors.push('"dekinaiDir" is not defined in the configuration file.')
     if (config.strict === undefined) errors.push('"strict" is not defined in the configuration file.')
     if (config.extensionBlacklist === undefined) errors.push('"extensionBlacklist" is not defined in the configuration file.')
 
@@ -165,12 +173,9 @@ export class Config implements IConfig {
     // String type checks
     if (typeof config.uploadUrl !== 'string') errors.push('"uploadUrl" is not a string.')
     if (typeof config.uploadDir !== 'string') errors.push('"uploadDir" is not a string.')
+    if (typeof config.dekinaiDir !== 'string') errors.push('"dekinaiDir" is not a string.')
     if (typeof config.backend.adapter !== 'string') errors.push('"backend.adapter" is not a string.')
     if (typeof config.randomString.placement !== 'string') errors.push('"randomString.placement" is not a string.')
-
-    if (config.tempDir !== null) {
-      if (typeof config.tempDir !== 'string') errors.push('"tempDir" is not a string.')
-    }
 
     if (config.filename.separator !== null) {
       if (typeof config.filename.separator !== 'string') errors.push('"filename.separator" is not a string.')
@@ -250,13 +255,11 @@ export class Config implements IConfig {
       errors.push(`The path defined in "uploadDir" does not exist or does not have write permissions. ${error}`)
     }
 
-    if (config.tempDir !== null) {
-      try {
-        fs.accessSync(config.tempDir as string, fs.constants.W_OK)
-      }
-      catch (error) {
-        errors.push(`The path defined in "tempDir" does not exist or does not have write permissions. ${error}`)
-      }
+    try {
+      fs.accessSync(config.dekinaiDir, fs.constants.W_OK)
+    }
+    catch (error) {
+      errors.push(`The path defined in "dekinaiDir" does not exist or does not have write permissions. ${error}`)
     }
 
     // Throw if parameters have invalid values

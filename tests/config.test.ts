@@ -102,7 +102,7 @@ describe('Config', () => {
         `"port" is not defined in the configuration file.
         "uploadUrl" is not defined in the configuration file.
         "uploadDir" is not defined in the configuration file.
-        "tempDir" is not defined in the configuration file.
+        "dekinaiDir" is not defined in the configuration file.
         "strict" is not defined in the configuration file.
         "extensionBlacklist" is not defined in the configuration file.
         "temporaryStorage" is not defined in the configuration file.
@@ -238,7 +238,7 @@ describe('Config', () => {
           "port": {},
           "uploadUrl": {},
           "uploadDir": {},
-          "tempDir": {},
+          "dekinaiDir": {},
           "strict": {},
           "extensionBlacklist": {},
 
@@ -288,9 +288,9 @@ describe('Config', () => {
         error!.message,
         `"uploadUrl" is not a string.
         "uploadDir" is not a string.
+        "dekinaiDir" is not a string.
         "backend.adapter" is not a string.
         "randomString.placement" is not a string.
-        "tempDir" is not a string.
         "filename.separator" is not a string.
         "strict" is not a boolean.
         "temporaryStorage.forceDefaultEnabled" is not a boolean.
@@ -336,8 +336,7 @@ describe('Config', () => {
     it('should allow certain parameters to define null as their value', () => {
       let error: Error | undefined
 
-      // Set invalid values
-      config.tempDir = null
+      // Set valid values
       config.extensionBlacklist = null
       config.filename.separator = null
 
@@ -930,12 +929,12 @@ describe('Config', () => {
       })
     })
 
-    describe('tempDir', () => {
+    describe('dekinaiDir', () => {
       it('should throw an error if the value points to a path that does not exist', () => {
         let error: Error | undefined
 
         // Set invalid value
-        config.tempDir = './invalid_path'
+        config.dekinaiDir = './invalid_path'
 
         // Create the config file
         fs.writeFileSync('config.json', JSON.stringify(config))
@@ -948,7 +947,7 @@ describe('Config', () => {
         }
 
         assert.notStrictEqual(error, undefined)
-        assert.strictEqual(error!.message.startsWith('The path defined in "tempDir" does not exist or does not have write permissions.'), true)
+        assert.strictEqual(error!.message.startsWith('The path defined in "dekinaiDir" does not exist or does not have write permissions.'), true)
       })
     })
   })

@@ -1,14 +1,18 @@
 import { injectable, inject } from 'inversify'
+import * as path from 'path'
 
 import { IConfig, IFile, IDatabase, IDatabaseAdapter } from '../interfaces'
 import { container } from '../configuration'
 
 @injectable()
 export class Database implements IDatabase {
+  static backendDir: string
   readonly adapter?: IDatabaseAdapter
 
   constructor(
     @inject('Config') config: IConfig) {
+      Database.backendDir = path.join(config.dekinaiDir, 'backend')
+
       if (!(config.temporaryStorage.forceDefaultEnabled && !config.temporaryStorage.defaultEnabled)) {
         switch (config.backend.adapter) {
           case 'sqlite':

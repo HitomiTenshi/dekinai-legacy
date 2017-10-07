@@ -4,7 +4,7 @@
   "description": "A highly configurable self-hosted file storage server",
   "main": "main.js",
   "scripts": {
-    "postinstall": "shx cp -n template/config.json . && shx cp template/config.json tests/ && shx mkdir -p uploads temp tests/uploads tests/temp",
+    "postinstall": "shx cp -n template/config.json . && shx cp template/config.json tests/ && shx mkdir -p uploads dekinai tests/uploads tests/dekinai",
     "start": "tsc && node main.js",
     "test": "tsc && cd tests && mocha --exit .",
     "codacy": "nyc --reporter=text-lcov npm run test | codacy-coverage --language typescript",

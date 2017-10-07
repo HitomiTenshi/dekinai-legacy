@@ -15,7 +15,7 @@ export class Server implements IServer {
     @inject('Watchdog') public watchdog: IWatchdog,
     @inject('Middleware') middleware: IMiddleware) {
       this.app.use(middleware.onlyAllowPOST())
-      this.app.use(uploader({ dest: config.tempDir }))
+      this.app.use(uploader({ dest: config.dekinaiDir }))
       this.app.use(middleware.processFiles())
       this.app.use(middleware.validatePOST())
       this.app.use(middleware.checkExtension())

@@ -4,6 +4,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 
 import { IConfig, IFile, IDatabaseAdapter } from '../../interfaces'
+import { Database } from '..'
 
 @injectable()
 export class SQLiteAdapter implements IDatabaseAdapter {
@@ -12,7 +13,7 @@ export class SQLiteAdapter implements IDatabaseAdapter {
   constructor(@inject('Config') private config: IConfig) { }
 
   async open(): Promise<void> {
-    this.database = await sqlite.open('database.sqlite')
+    this.database = await sqlite.open(path.join(Database.backendDir, 'database.sqlite'))
     await this.database.run('CREATE TABLE IF NOT EXISTS files (terminationTime INTEGER, filename TEXT)')
   }
 
