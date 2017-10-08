@@ -1,0 +1,14 @@
+﻿{
+  "Name": "dekinai",
+  "DestinationType": "ImageUploader, TextUploader, FileUploader",
+  "RequestType": "POST",
+  "RequestURL": "http://your.domain.here/path/to/api",
+  "FileFormName": "file",
+  "Arguments": {
+    "temporary": "true",
+    "append": "true",
+    "TTL": "604800",
+    "length": "3"
+  },
+  "ResponseType": "Text"
+}
