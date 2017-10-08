@@ -30,14 +30,14 @@
 
   "filename": {
     "forceDefaultAppendFilename": false,
-    "defaultAppendFilename": false,
+    "defaultAppendFilename": true,
     "separator": "_"
   },
 
   "randomString": {
     "forceDefaultLength": false,
     "maxLength": 10,
-    "minLength": 5,
+    "minLength": 3,
     "defaultLength": 5,
     "placement": "end"
   }
