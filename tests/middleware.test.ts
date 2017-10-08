@@ -464,9 +464,7 @@ describe('Middleware', () => {
         assert.strictEqual(fileExists, true)
       })
 
-      it('should reply with 403 to POST requests when TTL and temporary are defined with strict mode; temporary set to false', async () => {
-        let error: any
-
+      it('should reply with 200 to POST requests when TTL and temporary are defined with strict mode; temporary set to false', async () => {
         // Prepare FormData
         formData.append('temporary', 'false')
         formData.append('TTL', '1000')
@@ -476,17 +474,14 @@ describe('Middleware', () => {
         config.temporaryStorage.forceDefaultEnabled = false
         config.temporaryStorage.forceDefaultTTL = false
 
-        try {
-          await got.post(url, {
-            body: formData
-          })
-        }
-        catch (err) {
-          error = err
-        }
+        const response = await got.post(url, {
+          body: formData
+        })
 
-        assert.notStrictEqual(error, undefined)
-        assert.strictEqual(error.statusCode, 403)
+        const fileExists = await Helper.checkFile(response.body)
+
+        assert.strictEqual(response.statusCode, 200)
+        assert.strictEqual(fileExists, true)
       })
 
       it('should reply with 200 to POST requests when TTL and temporary are defined without strict mode; temporary set to false', async () => {
