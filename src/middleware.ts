@@ -127,16 +127,6 @@ export class Middleware implements IMiddleware {
             }
           }
           else {
-            if (ctx.state.postTemporary === false) {
-              if (this.config.strict) {
-                fs.unlink(ctx.state.filepath, () => null)
-                ctx.body = 'Custom temporary setting must be "true" when custom TTL is defined.'
-                ctx.status = 403
-                return
-              }
-            }
-
-            ctx.state.postTemporary = true
             ctx.state.postTTL = customTTL
           }
         }
