@@ -5,7 +5,7 @@ node_modules/
 .rpt2_cache/
 coverage/
 uploads/
-temp/
+dekinai/
 /config.json
 /tests/config.json
 database.sqlite
