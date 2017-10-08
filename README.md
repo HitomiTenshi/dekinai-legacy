@@ -45,7 +45,7 @@ PM2 should now tell you to execute a line with sudo, do that to start dekinai wi
 
 If you want to be on the safe side, execute the `pm2` commands as a different user with less privileges, then run the sudo line with an admin user. PM2 will then startup dekinai with that user.
 
-Make sure that the user with less privileges can still read / write to the upload and temp folders that are defined in your `config.json` if you do that.
+Make sure that the user with less privileges can still read / write to the `uploadDir` and `dekinaiDir` folders that are defined in your `config.json` if you do that.
 
 ## Project Goals
 - Be as minimalistic as possible while maintaining code readability
