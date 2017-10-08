@@ -895,6 +895,8 @@ describe('Middleware', () => {
       config.randomString.minLength = 1
       config.randomString.maxLength = 1
       config.randomString.defaultLength = 1
+      config.filename.forceDefaultAppendFilename = true
+      config.filename.defaultAppendFilename = false
 
       try {
         await got.post(url, {

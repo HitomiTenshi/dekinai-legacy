@@ -11,7 +11,11 @@ describe('Util', () => {
   let util: Util
 
   // Get Util from the IoC container
-  before(() => util = config.getContainerType<IUtil>('Util') as Util)
+  before(() => {
+    util = config.getContainerType<IUtil>('Util') as Util
+    config.filename.forceDefaultAppendFilename = true
+    config.filename.defaultAppendFilename = false
+  })
 
   describe('isExtensionAllowed', () => {
     it('should return true for ".png"', () => {
