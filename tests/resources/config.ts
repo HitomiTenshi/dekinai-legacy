@@ -8,14 +8,14 @@ import { Config } from '../../src/configuration'
 export class TestConfig implements IConfig {
   private container: Container
 
-  port: number
-  uploadUrl: string
-  uploadDir: string
-  dekinaiDir: string
-  strict: boolean
-  extensionBlacklist: string[] | null
+  port!: number
+  uploadUrl!: string
+  uploadDir!: string
+  dekinaiDir!: string
+  strict!: boolean
+  extensionBlacklist!: string[] | null
 
-  temporaryStorage: {
+  temporaryStorage!: {
     forceDefaultEnabled: boolean
     forceDefaultTTL: boolean
     defaultEnabled: boolean
@@ -24,21 +24,21 @@ export class TestConfig implements IConfig {
     defaultTTL: number
   }
 
-  backend: {
+  backend!: {
     adapter: 'sqlite'
   }
 
-  watchdog: {
+  watchdog!: {
     scanInterval: number
   }
 
-  filename: {
+  filename!: {
     forceDefaultAppendFilename: boolean
     defaultAppendFilename: boolean
     separator: string | null
   }
 
-  randomString: {
+  randomString!: {
     forceDefaultLength: boolean
     maxLength: number
     minLength: number
