@@ -193,19 +193,27 @@ describe('Database', () => {
 
   describe('Adapter', () => {
     // Reset the config to the default state
-    before(() => config.reset())
+    before(() => {
+      config.reset()
+    })
 
     // Get the database from the IoC container before each "it"
-    beforeEach(() => database = config.getContainerType<IDatabase>('Database', true))
+    beforeEach(() => {
+      database = config.getContainerType<IDatabase>('Database', true)
+    })
 
     describe('SQLite', () => {
       let adapter: SQLiteAdapter
 
       // Use the SQLite adapter
-      before(() => config.backend.adapter = 'sqlite')
+      before(() => {
+        config.backend.adapter = 'sqlite'
+      })
 
       // Assign the SQLite adapter before each "it"
-      beforeEach(() => adapter = database.adapter as SQLiteAdapter)
+      beforeEach(() => {
+        adapter = database.adapter as SQLiteAdapter
+      })
 
       it('should have an SQLite adapter when the backend is set to "sqlite"', () => {
         assert.strictEqual(adapter instanceof SQLiteAdapter, true)
@@ -266,7 +274,9 @@ describe('Database', () => {
 
       describe('terminateFiles', () => {
         // Wait 5 ms to exceed the testFile's TTL
-        before(done => setTimeout(done, 5))
+        before(done => {
+          setTimeout(done, 5)
+        })
 
         it('should throw an error if the database has not been opened before executing this function', async () => {
           let error: Error | undefined

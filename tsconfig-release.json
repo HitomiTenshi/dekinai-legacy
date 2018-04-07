@@ -1,22 +1,20 @@
 {
   "compilerOptions": {
-    "target": "es2017",
-    "module": "es2015",
+    "target": "esnext",
+    "module": "esnext",
     "moduleResolution": "node",
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "sourceMap": false,
-    "noImplicitAny": false
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "sourceMap": false
   },
 
   "exclude": [
-    "**/*"
-  ],
-
-  "files": [
-    "rollup.ts"
+    "node_modules",
+    "bundle"
   ]
 }

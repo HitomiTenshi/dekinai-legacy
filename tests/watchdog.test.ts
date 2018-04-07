@@ -11,7 +11,9 @@ describe('Watchdog', () => {
   let watchdog: Watchdog
 
   // Get Watchdog from the IoC container before each "it"
-  beforeEach(() => watchdog = config.getContainerType<IWatchdog>('Watchdog', true) as Watchdog)
+  beforeEach(() => {
+    watchdog = config.getContainerType<IWatchdog>('Watchdog', true) as Watchdog
+  })
 
   describe('start', () => {
     it('should start the watchdog', async () => {

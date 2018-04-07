@@ -39,7 +39,9 @@ describe('Util', () => {
 
   describe('getRandomFilename', () => {
     // Clean the uploads folder after running all tests
-    after(() => Helper.cleanUploads())
+    after(() => {
+      Helper.cleanUploads()
+    })
 
     it('should return a random filename that is 5 characters long', async () => {
       const filename = await util.getRandomFilename(5, '', '', false)

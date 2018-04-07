@@ -32,10 +32,14 @@ describe('Middleware', () => {
   })
 
   // Clean the uploads folder after each "it"
-  afterEach(() => Helper.cleanUploads())
+  afterEach(() => {
+    Helper.cleanUploads()
+  })
 
   // Stop the server after running all tests
-  after(async () => await server.stop())
+  after(async () => {
+    await server.stop()
+  })
 
   describe('onlyAllowPOST', () => {
     it('should reply with 404 to GET requests', async () => {

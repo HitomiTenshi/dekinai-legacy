@@ -7,7 +7,7 @@ export default {
   output: {
     file: 'dekinai.js',
     format: 'cjs',
-    sourcemap: true
+    sourcemap: false
   },
   external: [
     'crypto',
@@ -20,7 +20,7 @@ export default {
   ],
   plugins: [
     typescript({
-      tsconfig: 'tsconfig.json',
+      tsconfig: 'tsconfig-release.json',
       clean: true
     }),
     resolve({
@@ -31,7 +31,7 @@ export default {
     }),
     commonjs({
       include: 'node_modules/**',
-      sourceMap: true
+      sourceMap: false
     })
   ]
 }

@@ -10,10 +10,14 @@ const config = new TestConfig()
 
 describe('Config', () => {
   // Reset the config to the default state before each "it"
-  beforeEach(() => config.reset())
+  beforeEach(() => {
+    config.reset()
+  })
 
   // Restore the default config file after running all tests
-  after(() => shell.cp('../template/config.json', '.'))
+  after(() => {
+    shell.cp('../template/config.json', '.')
+  })
 
   describe('loadConfigFile', () => {
     it('should throw an error if the config file cannot be loaded', () => {
