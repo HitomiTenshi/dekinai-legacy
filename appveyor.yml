@@ -32,7 +32,8 @@ after_build:
   - 7z a dekinai.zip ./dist/*
 
 test_script:
-  - npm run codacy
+  - cmd: npm run codacy
+  - sh: npm test
 
 artifacts:
   - path: dekinai.zip
