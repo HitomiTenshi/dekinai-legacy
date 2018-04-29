@@ -1,8 +1,9 @@
 import 'reflect-metadata'
+
 import * as assert from 'assert'
+import * as got from 'got'
 import * as FormData from 'form-data'
 import * as fs from 'fs'
-const got = require('got')
 
 import { Util } from '../src'
 import { IServer, IUtil } from '../src/interfaces'

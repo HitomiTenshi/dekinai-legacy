@@ -1,8 +1,9 @@
 import 'reflect-metadata'
+
 import * as assert from 'assert'
+import * as got from 'got'
 import * as FormData from 'form-data'
 import * as fs from 'fs'
-const got = require('got')
 
 import { File } from '../src/backend'
 import { SQLiteAdapter } from '../src/backend/adapters'
@@ -143,13 +144,13 @@ describe('Database', () => {
     })
 
     it('should delete expired files', async function () {
-      // This test might be slow due to fs operations
-      this.slow(200)
+      // This test is slow because of the 100 ms delay on the watchdog
+      this.slow(1000)
 
       // Set values
       config.temporaryStorage.forceDefaultEnabled = false
       config.temporaryStorage.defaultEnabled = true
-      config.watchdog.scanInterval = 0
+      config.watchdog.scanInterval = 0.1
       config.temporaryStorage.minTTL = 0
       config.temporaryStorage.defaultTTL = 0
 
@@ -172,8 +173,8 @@ describe('Database', () => {
       // File should exist
       const fileShouldExist = await Helper.checkFile(response.body)
 
-      // Wait 5 ms
-      await new Promise(resolve => setTimeout(resolve, 5))
+      // Wait 100 ms
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       // File should be deleted after 5 ms
       const fileShouldNotExist = await Helper.checkFile(response.body)
@@ -222,7 +223,7 @@ describe('Database', () => {
       describe('open', () => {
         it('should open the database', async () => {
           await database.open()
-          assert.strictEqual((adapter.database as any).driver.open, true)
+          assert.strictEqual(adapter.database!.open, true)
         })
       })
 
@@ -244,7 +245,7 @@ describe('Database', () => {
         it('should close the database', async () => {
           await database.open()
           await database.close()
-          assert.strictEqual((adapter.database as any).driver.open, false)
+          assert.strictEqual(adapter.database!.open, false)
         })
       })
 
@@ -266,7 +267,11 @@ describe('Database', () => {
         it('should add the testFile', async () => {
           await database.open()
           await database.addFile(testFile)
-          const file = await adapter.database!.get(`SELECT * FROM files WHERE filename = '${testFile.filename}' LIMIT 1`) as IFile
+
+          const file = adapter.database!
+            .prepare('SELECT * FROM files WHERE filename = ? LIMIT 1')
+            .get(testFile.filename) as IFile
+
           assert.strictEqual(file.terminationTime, testFile.terminationTime)
           assert.strictEqual(file.filename, testFile.filename)
         })
@@ -295,7 +300,11 @@ describe('Database', () => {
         it('should terminate the testFile after 5 ms', async () => {
           await database.open()
           await database.terminateFiles()
-          const file = await adapter.database!.get(`SELECT * FROM files WHERE filename = '${testFile.filename}' LIMIT 1`) as IFile
+
+          const file = adapter.database!
+            .prepare('SELECT * FROM files WHERE filename = ? LIMIT 1')
+            .get(testFile.filename) as IFile
+
           assert.strictEqual(file, undefined)
         })
       })

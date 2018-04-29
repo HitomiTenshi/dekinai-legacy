@@ -1,4 +1,5 @@
 import 'reflect-metadata'
+
 import * as assert from 'assert'
 
 import { Util } from '../src'

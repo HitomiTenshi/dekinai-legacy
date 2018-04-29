@@ -10,8 +10,8 @@ export default {
     sourcemap: false
   },
   external: [
+    'better-sqlite3',
     'crypto',
-    'sqlite',
     'path',
     'util',
     'url',

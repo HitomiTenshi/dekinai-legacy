@@ -23,8 +23,8 @@ build_script:
   - npm run release
   - cmd: npx pkg -t node9-win-x64 -o dist/dekinai.exe dekinai.min.js
   - sh: npx pkg -t node9-linux-x64 -o dist/dekinai dekinai.min.js
-  - ps: Get-Item node_modules\sqlite3\lib\binding\**\node_sqlite3.node | Copy-Item -Destination dist
   - ps: New-Item -ItemType directory -Path dist\app,dist\template,dist\uploads
+  - ps: Copy-Item node_modules\better-sqlite3\build\Release\better_sqlite3.node -Destination dist
   - ps: Copy-Item template\config.json -Destination dist
   - ps: Copy-Item template\dekinai.sxcu -Destination dist\template
 

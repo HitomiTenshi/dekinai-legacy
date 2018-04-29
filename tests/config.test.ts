@@ -1,4 +1,5 @@
 import 'reflect-metadata'
+
 import * as assert from 'assert'
 import * as shell from 'shelljs'
 import * as fs from 'fs'

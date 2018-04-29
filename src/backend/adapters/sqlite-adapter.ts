@@ -1,5 +1,5 @@
 import { injectable, inject } from 'inversify'
-import * as sqlite from 'sqlite'
+import * as SQLiteDatabase from 'better-sqlite3'
 import * as fs from 'fs'
 import * as path from 'path'
 
@@ -8,18 +8,21 @@ import { Database } from '..'
 
 @injectable()
 export class SQLiteAdapter implements IDatabaseAdapter {
-  database?: sqlite.Database
+  database?: SQLiteDatabase
 
   constructor(@inject('Config') private config: IConfig) { }
 
   async open(): Promise<void> {
-    this.database = await sqlite.open(path.join(Database.backendDir, 'database.sqlite'))
-    await this.database.run('CREATE TABLE IF NOT EXISTS files (terminationTime INTEGER, filename TEXT)')
+    this.database = new SQLiteDatabase(path.join(Database.backendDir, 'database.sqlite'))
+
+    this.database
+      .prepare('CREATE TABLE IF NOT EXISTS files (terminationTime INTEGER, filename TEXT)')
+      .run()
   }
 
   async close(): Promise<void> {
     if (this.database !== undefined) {
-      await this.database.close()
+      this.database.close()
     }
     else {
       throw Error('Database has not been opened.')
@@ -28,7 +31,9 @@ export class SQLiteAdapter implements IDatabaseAdapter {
 
   async addFile(file: IFile): Promise<void> {
     if (this.database !== undefined) {
-      await this.database.run(`INSERT INTO files VALUES(${file.terminationTime}, ?)`, file.filename)
+      this.database
+        .prepare('INSERT INTO files VALUES(?, ?)')
+        .run(file.terminationTime, file.filename)
     }
     else {
       throw Error('Database has not been opened.')
@@ -38,13 +43,18 @@ export class SQLiteAdapter implements IDatabaseAdapter {
   async terminateFiles(): Promise<void> {
     if (this.database !== undefined) {
       const now = Date.now()
-      const files = await this.database.all(`SELECT * FROM files WHERE terminationTime < ${now}`) as IFile[]
+
+      const files = this.database
+        .prepare('SELECT * FROM files WHERE terminationTime < ?')
+        .all(now) as IFile[]
 
       for (const file of files) {
         fs.unlink(path.join(this.config.uploadDir, file.filename), () => null)
       }
 
-      await this.database.run(`DELETE FROM files WHERE terminationTime < ${now}`)
+      this.database
+        .prepare('DELETE FROM files WHERE terminationTime < ?')
+        .run(now)
     }
     else {
       throw Error('Database has not been opened.')

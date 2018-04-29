@@ -1,6 +1,6 @@
 {
   "name": "dekinai",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "A highly configurable self-hosted file storage server",
   "main": "main.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "codacy": "nyc --reporter=text-lcov npm run test | codacy-coverage --language typescript",
     "nyc": "nyc --reporter=html npm run test",
     "rollup": "tsc -p bundle/tsconfig-rollup.json && rollup -c bundle/rollup.js",
-    "minify": "uglifyjs --ecma 8 --compress ecma=8,hoist_funs,pure_getters,toplevel,unsafe,unsafe_arrows,unsafe_comps,unsafe_Function,unsafe_math,unsafe_methods,unsafe_proto,unsafe_regexp,passes=6 --mangle toplevel,eval --toplevel --output dekinai.min.js dekinai.js",
+    "minify": "uglifyjs --ecma 8 --compress ecma=8,hoist_funs,pure_getters,toplevel,unsafe,unsafe_arrows,unsafe_comps,unsafe_Function,unsafe_math,unsafe_methods,unsafe_proto,unsafe_regexp,passes=5 --mangle toplevel,eval --toplevel --output dekinai.min.js dekinai.js",
     "release": "npm run rollup && npm run minify"
   },
   "keywords": [
@@ -27,30 +27,32 @@
   },
   "license": "MIT",
   "dependencies": {
-    "inversify": "^4.11.1",
-    "koa": "^2.5.0",
+    "better-sqlite3": "^4.1.0",
+    "inversify": "^4.13.0",
+    "koa": "^2.5.1",
     "koa-busboy": "^1.1.1",
-    "reflect-metadata": "^0.1.12",
-    "sqlite": "^2.9.1"
+    "reflect-metadata": "^0.1.12"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^3.1.3",
     "@types/form-data": "^2.2.1",
+    "@types/got": "^8.3.0",
     "@types/koa": "^2.0.45",
-    "@types/mocha": "^5.0.0",
-    "@types/node": "^9.6.4",
+    "@types/mocha": "^5.2.0",
+    "@types/node": "^9.6.7",
     "@types/shelljs": "^0.7.8",
-    "codacy-coverage": "^2.1.1",
+    "codacy-coverage": "^3.0.0",
     "form-data": "^2.3.2",
     "got": "^8.3.0",
-    "mocha": "^5.0.5",
-    "nyc": "^11.6.0",
-    "rollup": "^0.57.1",
+    "mocha": "^5.1.1",
+    "nyc": "^11.7.1",
+    "rollup": "^0.58.2",
     "rollup-plugin-commonjs": "^9.1.0",
     "rollup-plugin-node-resolve": "^3.3.0",
-    "rollup-plugin-typescript2": "^0.12.0",
+    "rollup-plugin-typescript2": "^0.13.0",
     "shelljs": "^0.8.1",
     "shx": "^0.2.2",
-    "typescript": "2.8.1",
+    "typescript": "~2.8.3",
     "uglify-es": "^3.3.10"
   }
 }
