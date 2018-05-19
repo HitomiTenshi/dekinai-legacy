@@ -2,9 +2,10 @@ import 'reflect-metadata'
 
 import * as assert from 'assert'
 
-import { Util } from '../src'
-import { IUtil } from '../src/interfaces'
-import { TestConfig, Helper } from './resources'
+import { Util } from '../src/util'
+import { IUtil } from '../src/interfaces/util'
+import { TestConfig } from './resources/config'
+import { Helper } from './resources/helper'
 
 const config = new TestConfig()
 

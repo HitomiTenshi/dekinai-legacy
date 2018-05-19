@@ -5,10 +5,13 @@ import * as got from 'got'
 import * as FormData from 'form-data'
 import * as fs from 'fs'
 
-import { File } from '../src/backend'
-import { SQLiteAdapter } from '../src/backend/adapters'
-import { IServer, IDatabase, IFile } from '../src/interfaces'
-import { TestConfig, Helper } from './resources'
+import { File } from '../src/backend/file'
+import { SQLiteAdapter } from '../src/backend/adapters/sqlite-adapter'
+import { IServer } from '../src/interfaces/server'
+import { IDatabase } from '../src/interfaces/database'
+import { IFile } from '../src/interfaces/file'
+import { TestConfig } from './resources/config'
+import { Helper } from './resources/helper'
 
 const config = new TestConfig()
 const testFile = new File(Date.now(), 'test.txt')

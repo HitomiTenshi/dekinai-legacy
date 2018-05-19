@@ -3,8 +3,10 @@ import * as SQLiteDatabase from 'better-sqlite3'
 import * as fs from 'fs'
 import * as path from 'path'
 
-import { IConfig, IFile, IDatabaseAdapter } from '../../interfaces'
-import { Database } from '..'
+import { IConfig } from '../../interfaces/config'
+import { IFile } from '../../interfaces/file'
+import { IDatabaseAdapter } from '../../interfaces/database'
+import { Database } from '../database'
 
 @injectable()
 export class SQLiteAdapter implements IDatabaseAdapter {

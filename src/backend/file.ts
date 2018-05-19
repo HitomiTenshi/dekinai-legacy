@@ -1,4 +1,4 @@
-import { IFile } from '../interfaces'
+import { IFile } from '../interfaces/file'
 
 export class File implements IFile {
   constructor(

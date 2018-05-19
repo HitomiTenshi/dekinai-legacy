@@ -2,8 +2,8 @@ import * as shell from 'shelljs'
 import * as path from 'path'
 import * as url from 'url'
 
-import { TestConfig } from '.'
-import { fsExists } from '../../src'
+import { TestConfig } from './config'
+import { fsExists } from '../../src/fs'
 
 export module Helper {
   const config = new TestConfig()

@@ -2,8 +2,9 @@ import { injectable, inject } from 'inversify'
 import * as path from 'path'
 import * as crypto from 'crypto'
 
-import { fsExists } from '.'
-import { IConfig, IUtil } from './interfaces'
+import { fsExists } from './fs'
+import { IConfig } from './interfaces/config'
+import { IUtil } from './interfaces/util'
 
 @injectable()
 export class Util implements IUtil {

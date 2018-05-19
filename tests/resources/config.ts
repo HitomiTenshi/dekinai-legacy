@@ -1,9 +1,9 @@
 import { Container } from 'inversify'
 import * as shell from 'shelljs'
 
-import { createContainer } from '../../src/configuration'
-import { IConfig } from '../../src/interfaces'
-import { Config } from '../../src/configuration'
+import { createContainer } from '../../src/configuration/ioc'
+import { IConfig } from '../../src/interfaces/config'
+import { Config } from '../../src/configuration/config'
 
 export class TestConfig implements IConfig {
   private container: Container

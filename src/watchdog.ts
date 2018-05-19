@@ -1,6 +1,8 @@
 import { injectable, inject } from 'inversify'
 
-import { IConfig, IDatabase, IWatchdog } from './interfaces'
+import { IConfig } from './interfaces/config'
+import { IDatabase } from './interfaces/database'
+import { IWatchdog } from './interfaces/watchdog'
 
 @injectable()
 export class Watchdog implements IWatchdog {

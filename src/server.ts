@@ -3,7 +3,10 @@ import * as http from 'http'
 import * as koa from 'koa'
 const uploader = require('koa-busboy')
 
-import { IConfig, IMiddleware, IServer, IWatchdog } from './interfaces'
+import { IConfig } from './interfaces/config'
+import { IMiddleware } from './interfaces/middleware'
+import { IServer } from './interfaces/server'
+import { IWatchdog } from './interfaces/watchdog'
 
 @injectable()
 export class Server implements IServer {

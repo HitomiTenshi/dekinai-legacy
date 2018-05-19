@@ -2,9 +2,9 @@ import 'reflect-metadata'
 
 import * as assert from 'assert'
 
-import { Watchdog } from '../src'
-import { IWatchdog } from '../src/interfaces'
-import { TestConfig } from './resources'
+import { Watchdog } from '../src/watchdog'
+import { IWatchdog } from '../src/interfaces/watchdog'
+import { TestConfig } from './resources/config'
 
 const config = new TestConfig()
 

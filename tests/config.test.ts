@@ -4,8 +4,8 @@ import * as assert from 'assert'
 import * as shell from 'shelljs'
 import * as fs from 'fs'
 
-import { Config } from '../src/configuration'
-import { TestConfig } from './resources'
+import { Config } from '../src/configuration/config'
+import { TestConfig } from './resources/config'
 
 const config = new TestConfig()
 

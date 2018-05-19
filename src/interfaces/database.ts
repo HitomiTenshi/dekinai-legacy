@@ -1,4 +1,4 @@
-import { IFile } from '.'
+import { IFile } from './file'
 
 export interface IDatabaseAdapter {
   open(): Promise<void>

@@ -1,8 +1,10 @@
 import { injectable, inject } from 'inversify'
 import * as path from 'path'
 
-import { IConfig, IFile, IDatabase, IDatabaseAdapter } from '../interfaces'
-import { container } from '../configuration'
+import { IConfig } from '../interfaces/config'
+import { IFile } from '../interfaces/file'
+import { IDatabase, IDatabaseAdapter } from '../interfaces/database'
+import { container } from '../configuration/ioc'
 
 @injectable()
 export class Database implements IDatabase {

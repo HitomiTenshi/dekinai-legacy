@@ -4,9 +4,13 @@ import * as path from 'path'
 import * as url from 'url'
 import * as koa from 'koa'
 
-import { fsRename } from '.'
-import { IConfig, IDatabase, IUtil, IMiddleware, IPOST } from './interfaces'
-import { File } from './backend'
+import { fsRename } from './fs'
+import { IConfig } from './interfaces/config'
+import { IDatabase } from './interfaces/database'
+import { IUtil } from './interfaces/util'
+import { IMiddleware } from './interfaces/middleware'
+import { IPOST } from './interfaces/post'
+import { File } from './backend/file'
 
 @injectable()
 export class Middleware implements IMiddleware {

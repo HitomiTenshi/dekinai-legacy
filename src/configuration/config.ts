@@ -2,7 +2,7 @@ import { injectable } from 'inversify'
 import * as fs from 'fs'
 import * as path from 'path'
 
-import { IConfig } from '../interfaces'
+import { IConfig } from '../interfaces/config'
 
 @injectable()
 export class Config implements IConfig {

@@ -1,10 +1,18 @@
 import { Container } from 'inversify'
 
-import { Config } from '.'
-import { Middleware, Server, Util, Watchdog } from '..'
-import { Database } from '../backend'
-import { SQLiteAdapter } from '../backend/adapters'
-import { IConfig, IUtil, IDatabase, IDatabaseAdapter, IMiddleware, IServer, IWatchdog } from '../interfaces'
+import { Config } from './config'
+import { Middleware } from '../middleware'
+import { Server } from '../server'
+import { Util } from '../util'
+import { Watchdog } from '../watchdog'
+import { Database } from '../backend/database'
+import { SQLiteAdapter } from '../backend/adapters/sqlite-adapter'
+import { IConfig } from '../interfaces/config'
+import { IUtil } from '../interfaces/util'
+import { IDatabase, IDatabaseAdapter } from '../interfaces/database'
+import { IMiddleware } from '../interfaces/middleware'
+import { IServer } from '../interfaces/server'
+import { IWatchdog } from '../interfaces/watchdog'
 
 export function createContainer(testConfig?: IConfig): Container {
   const container = new Container()

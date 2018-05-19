@@ -1,7 +1,8 @@
 import 'reflect-metadata'
 
-import { container } from './src/configuration'
-import { IServer, IConfig } from './src/interfaces'
+import { container } from './src/configuration/ioc'
+import { IConfig } from './src/interfaces/config'
+import { IServer } from './src/interfaces/server'
 
 const config = container.get<IConfig>('Config')
 const server = container.get<IServer>('Server')

@@ -5,9 +5,11 @@ import * as got from 'got'
 import * as FormData from 'form-data'
 import * as fs from 'fs'
 
-import { Util } from '../src'
-import { IServer, IUtil } from '../src/interfaces'
-import { TestConfig, Helper } from './resources'
+import { Util } from '../src/util'
+import { IServer } from '../src/interfaces/server'
+import { IUtil } from '../src/interfaces/util'
+import { TestConfig } from './resources/config'
+import { Helper } from './resources/helper'
 
 const config = new TestConfig()
 const url = `http://localhost:${config.port}`
