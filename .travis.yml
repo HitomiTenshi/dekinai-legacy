@@ -7,10 +7,6 @@ os:
   - linux
   - osx
 
-before_script:
-  - node --version
-  - npm --version
-
 script:
   - npm test
   - npm run release
