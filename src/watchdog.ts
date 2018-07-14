@@ -16,7 +16,7 @@ export class Watchdog implements IWatchdog {
     await this.database.open()
     await this.database.terminateFiles()
 
-    this.timer = setInterval(
+    this.timer = global.setInterval(
       async () => await this.database.terminateFiles(),
       this.config.watchdog.scanInterval * 1000
     )
@@ -24,7 +24,7 @@ export class Watchdog implements IWatchdog {
 
   async stop(): Promise<void> {
     if (this.timer !== undefined) {
-      clearInterval(this.timer)
+      global.clearInterval(this.timer)
       this.timer = undefined
       await this.database.close()
     }

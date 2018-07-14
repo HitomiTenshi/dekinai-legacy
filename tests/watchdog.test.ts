@@ -33,7 +33,7 @@ describe('Watchdog', () => {
       assert.strictEqual((watchdog.timer as any)._called, false)
 
       // Wait 5 ms
-      await new Promise(resolve => setTimeout(resolve, 5))
+      await new Promise(resolve => global.setTimeout(resolve, 5))
 
       // Assert
       assert.strictEqual((watchdog.timer as any)._called, true)

@@ -177,7 +177,7 @@ describe('Database', () => {
       const fileShouldExist = await Helper.checkFile(response.body)
 
       // Wait 100 ms
-      await new Promise(resolve => setTimeout(resolve, 100))
+      await new Promise(resolve => global.setTimeout(resolve, 100))
 
       // File should be deleted after 5 ms
       const fileShouldNotExist = await Helper.checkFile(response.body)
@@ -283,7 +283,7 @@ describe('Database', () => {
       describe('terminateFiles', () => {
         // Wait 5 ms to exceed the testFile's TTL
         before(done => {
-          setTimeout(done, 5)
+          global.setTimeout(done, 5)
         })
 
         it('should throw an error if the database has not been opened before executing this function', async () => {
