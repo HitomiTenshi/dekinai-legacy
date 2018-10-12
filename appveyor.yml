@@ -22,9 +22,11 @@ before_build:
 build_script:
   - npm run release
   - cmd: npx pkg -t node10-win-x64 -o dist/dekinai.exe dekinai.min.js
-  - cmd: copy node_modules\better-sqlite3\build\Release\better_sqlite3.node dist
+  - cmd: copy node_modules\better-sqlite3\build\better_sqlite3.node dist
+  - cmd: copy node_modules\integer\build\integer.node dist
   - sh: npx pkg -t node10-linux-x64 -o dist/dekinai dekinai.min.js
-  - sh: cp node_modules/better-sqlite3/build/Release/better_sqlite3.node dist
+  - sh: cp node_modules/better-sqlite3/build/better_sqlite3.node dist
+  - sh: cp node_modules/integer/build/integer.node dist
   - ps: New-Item -ItemType directory -Path dist\app,dist\template,dist\uploads
   - ps: Copy-Item template\config.json -Destination dist
   - ps: Copy-Item template\dekinai.sxcu -Destination dist\template
